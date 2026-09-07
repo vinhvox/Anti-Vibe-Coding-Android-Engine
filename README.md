@@ -1,88 +1,223 @@
-# 🚀 Antigravity Android OS
+# 🚀 Anti-Vibe-Coding-Android-Engine
 ### The Pragmatic CTO & Android Principal Architect AI Cognitive Operating System
 *Zero-Crash. Zero-ANR. Zero-Leak. Zero-AI-Slop. 60/120 FPS by Default.*
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Android](https://img.shields.io/badge/Platform-Modern_Android_2026-green.svg)](https://developer.android.com)
+[![Platform](https://img.shields.io/badge/Platform-Modern_Android_2026_%7C_KMP-green.svg)](https://developer.android.com)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose_M3-4285F4.svg)](https://developer.android.com/jetpack/compose)
-[![Navigation 3](https://img.shields.io/badge/Router-Navigation_3_Type--Safe-34A853.svg)](https://developer.android.com/guide/navigation)
-[![Enforcement Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E28-EA4335.svg)](rules/21-enforcement-engine.md)
+[![Adaptive HAL](https://img.shields.io/badge/Stack-Hilt_%7C_Koin_%7C_Retrofit_%7C_Ktor-orange.svg)](#-adaptive-stack-architecture-hardware-abstraction-layer)
+[![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E28-EA4335.svg)](#-the-28-quality-gates-e1--e28-deep-dive)
+[![Vitals](https://img.shields.io/badge/Android_Vitals-Zero--Crash_%7C_16KB_Safe-34A853.svg)](rules/27-app-quality-vitals.md)
 
 ---
 
-## 💡 THE MANIFESTO: ANTI-VIBE-CODING
+## 💡 THE MANIFESTO: WHAT IS "ANTI-VIBE-CODING"?
 
-Most AI coding assistants practice **"Vibe Coding"**:
-- ❌ Guessing requirements and fabricating fake APIs.
-- ❌ Spraying `try-catch` everywhere to hide underlying architecture flaws.
-- ❌ Generating clichéd, uninspired "AI-Slop" UI (purple-on-dark neon glow, vibrating biscuit pills, nested cards).
-- ❌ Breaking Compose recomposition stability with unkeyed Lazy layouts and unstable lambdas.
-- ❌ Claiming tasks are "done" without ever verifying against a real compiler.
+In recent years, AI coding assistants have introduced a massive productivity paradox known as **"Vibe Coding"**:
+- ❌ **Guessing & Hallucination:** Fabricating non-existent APIs, guessing business rules, or using deprecated methods without verifying official documentation.
+- ❌ **Try-Catch Sprawl:** Wrapping entire screens, ViewModels, or Composable functions in generic `try-catch (e: Exception)` blocks to hide underlying architectural flaws and crashes.
+- ❌ **Fake Simulation & Delays:** Inserting dummy `delay(1000)` calls with hardcoded mock lists to fake feature completion, leaving the developer with broken production code.
+- ❌ **"AI-Slop" UI:** Generating clichéd, uninspired interfaces (purple-on-dark neon glow, vibrating biscuit pill badges, nested cards 4-levels deep, zero accessibility bounds).
+- ❌ **Android Lifecycle Ignorance:** Dropping frames on unkeyed `LazyColumn` layouts, losing form input on screen rotation/Process Death, forgetting keyboard `imePadding()`, and ignoring the 16KB memory page alignment mandated by Android 15+.
+- ❌ **False "Done" Claims:** Declaring tasks "completely finished" without ever executing a real terminal compilation command or verifying Gradle test logs.
+- ❌ **Dogmatic Library Imposition:** Forcing arbitrary frameworks onto existing legacy codebases, breaking project architecture.
 
-**Antigravity Android OS** transforms your AI agent from a fragile auto-complete into a seasoned **Chief Technology Officer (CTO) & Android Principal Architect**. It operates through a deterministic **8-layer cognitive operating system** governed by **28 automated Quality Gates (E1 to E28)**.
+**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a seasoned **Chief Technology Officer (CTO) & Android Principal Architect**. It provides a deterministic, **8-layer cognitive operating system** governed by **28 automated Quality Gates (E1 to E28)**, adapting seamlessly to your existing project without dictating your tech stack.
 
 ---
 
-## 🏛️ THE 8-TIER COGNITIVE ARCHITECTURE
+### ⚖️ SIDE-BY-SIDE: VIBE CODING VS. ANTI-VIBE-CODING ENGINE
 
-Every engineering request flows through an invariant sequence:
+| Engineering Aspect | ❌ The "Vibe Coding" AI Experience | ✅ Anti-Vibe-Coding-Android-Engine |
+|:---|:---|:---|
+| **Thinking Rhythm** | Immediately spits out code on the first prompt based on intuition and guesswork. | **11-Engine Brain Pipeline:** Clarifies ambiguity, computes confidence score (>=85% required), and plans before touching code. |
+| **Error Handling** | Paranoic `try-catch` sprawl across UI and ViewModel to sweep crashes under the rug. | **Structural Safety:** Kotlin null safety, exhaustive `when`, and strict I/O boundary wrapping with `AppResult<T>`. |
+| **Feature Delivery** | Injects `delay(1000)` and fake dummy lists, then claims "Feature works perfectly!". | **Stub/Placeholder Ban:** Scans and forbids fake stubs. Binds real DataSources, repositories, and Room entities. |
+| **UI/UX Design** | Purple-on-dark neon glowing cards, vibrating pills, unkeyed lists that stutter at 20 FPS. | **Rule 36 & UI/UX Pro Max:** 0.5dp subtle borders, tonal surfaces, 8-pt grid, explicit `key` + `contentType` for 60/120 FPS. |
+| **Platform Defense** | App crashes on screen rotation, keyboard covers input fields, rejected on Android 15+ (16KB). | **19 Core Domains:** `SavedStateHandle` process death survival, `.imePadding()`, 16KB memory alignment flags. |
+| **Verification Gate** | "I have completed all changes!" (Zero compilation performed, project fails to build). | **Real Compiler Gate:** Bắt buộc chạy `./gradlew compileDebugKotlin` / `test` và có log `BUILD SUCCESSFUL`. |
+| **Tech Stack Policy** | Dictates "You must use library X", breaking existing code. | **Adaptive Stack HAL:** Auto-detects Hilt vs Koin, Retrofit vs Ktor, and enforces safety on *your* stack. |
+
+---
+
+## 🏛️ THE 8-TIER COGNITIVE OPERATING SYSTEM
+
+Every prompt and feature request processed by the AI flows through an invariant 8-tier cognitive sequence:
 
 ```mermaid
 flowchart TD
     User([User Request / Prompt]) --> Phase0[Phase 0: Workspace & Stack Auto-Discovery]
-    Phase0 --> Brain[1. Brain Engine: 11 Cognitive Engines]
-    Brain --> Memory[2. Memory Core: 6-Tier Project Memory]
-    Memory --> Workflow[3. Workflow Engine: 10 Specialized Workflows]
-    Workflow --> Skills[4. Skills Engine: Specialized Blueprints]
-    Skills --> Rules[5. Rules Engine: 37 Standards & Gates E1-E28]
-    Rules --> PlanApproval{Plan Approval Gate}
-    PlanApproval -->|User Approves| Implementation[6. Native Implementation: write_to_file]
-    Implementation --> Verification[7. Real Verification: ./gradlew compileDebugKotlin]
-    Verification --> Reflection[8. Reflection & Gate E1-E28 Audit]
-    Reflection --> MemoryUpdate[Memory & Living ADR Update]
-    MemoryUpdate --> FinalDelivery([CTO-Grade Result Delivered])
+    Phase0 --> Brain[Tier 1: Brain Engine - 11 Cognitive Engines]
+    Brain --> Memory[Tier 2: Memory Core - 6-Tier Architecture Knowledge]
+    Memory --> HAL[Tier 3: Adaptive Stack HAL - Koin/Hilt & Ktor/Retrofit]
+    HAL --> Workflow[Tier 4: Workflow Engine - 10 Disciplined Pipelines]
+    Workflow --> Skills[Tier 5: Skills Engine - Specialized Blueprints]
+    Skills --> Rules[Tier 6: Rules Engine - 37 Standards & Gates E1-E28]
+    Rules --> PlanGate{Plan Approval Gate}
+    PlanGate -->|User Explicit Approval| Implementation[Native Tool Implementation: write_to_file]
+    Implementation --> Verification[Tier 7: Real Verification: ./gradlew compileDebugKotlin]
+    Verification --> Reflection[Tier 8: Reflection & Gate E1-E28 Audit]
+    Reflection --> MemoryUpdate[Memory & Living ADR Auto-Update]
+    MemoryUpdate --> FinalDelivery([CTO-Grade Production Delivery])
 ```
+
+### 1. The 11 Cognitive Engines (`brain/`)
+The AI thinks before acting through a sequential cognitive pipeline:
+1. **Context Engine (`02-context-engine.md`):** Collects codebase architecture, Gradle catalogs, and constraints.
+2. **Clarification Engine (`03-clarification-engine.md`):** Identifies missing business logic; stops and clarifies instead of guessing.
+3. **Assumption Engine (`04-assumption-engine.md`):** Marks assumptions with reasons and impact; forbids inventing business requirements.
+4. **Decision Engine (`05-decision-engine.md`):** Chooses execution strategy (Clarify, Plan, Implement, Refactor, Debug).
+5. **Confidence Engine (`06-confidence-engine.md`):** Calculates internal confidence. If < 85%, halts execution to ask the user.
+6. **Planning Engine (`07-planning-engine.md`):** Designs Tracer-Bullet Vertical Slices before writing any code.
+7. **Execution Engine (`08-execution-engine.md`):** Coordinates disciplined, incremental coding.
+8. **Reflection Engine (`09-reflection-engine.md`):** Self-evaluates: Did we solve the real problem? Is there duplicate code?
+9. **Enforcement Engine (`21-enforcement-engine.md`):** Audits code against all 28 Quality Gates (E1 to E28).
+10. **Initiative Engine (`10-initiative-engine.md`):** Proactively highlights performance risks, memory leaks, and architectural bottlenecks.
+11. **Learning Engine (`11-learning-engine.md`):** Extracts reusable design patterns and lessons learned into long-term memory.
+
+### 2. The 6-Tier Memory Core (`memory/`)
+Prevents "AI dementia" by preserving stable knowledge across sessions:
+* **Project Memory (`01-project-memory.md`):** Active project profile, architecture boundaries, and module graph.
+* **Session Memory (`02-session-memory.md`):** Ephemeral conversation context and immediate working objectives.
+* **Task Memory (`03-task-memory.md`):** Living task state, dependencies, blockers, and completion criteria.
+* **Decision Memory (`04-decision-memory.md`):** Architecture Decision Records (ADRs) to never repeat past mistakes.
+* **Pattern Memory (`05-pattern-memory.md`):** Approved UI and architectural patterns verified within the codebase.
+* **User Preference Memory (`06-user-preference-memory.md`):** Developer collaboration style, Anti-AI-slop rules, no auto-commit.
 
 ---
 
 ## ⚡ ADAPTIVE STACK ARCHITECTURE (HARDWARE ABSTRACTION LAYER)
 
-As a true **AI Cognitive Operating System**, Antigravity automatically detects your active stack during **Phase 0** and binds the corresponding quality drivers without imposing uninvited migrations:
+The Anti-Vibe-Coding Engine is **framework-agnostic**. During **Phase 0 (Workspace & Stack Auto-Discovery)**, it inspects your `settings.gradle.kts`, `build.gradle.kts`, or `libs.versions.toml` and binds the corresponding stack driver:
 
-| Domain | Adaptive Drivers (Auto-Detected) | Universal Cognitive Invariant |
-|---|---|---|
-| **UI System** | Jetpack Compose / Compose Multiplatform | Material 3 Tokens, 60/120 FPS, explicit `key` & `contentType` for Lazy Layouts. |
-| **Aesthetics** | [Rule 36 (World-Class UI/UX)](rules/36-ui-ux-design-standard.md) | Subtle 0.5dp borders, tonal surfaces, 8-pt grid. Ban on cliché AI neon slop. |
-| **Dependency Injection** | **Koin 4.x** OR **Hilt / Dagger** | Strict Constructor Injection. Zero manual instantiation in Presentation. Scope isolation. |
+```mermaid
+graph TD
+    HAL[Adaptive Stack Hardware Abstraction Layer]
+    
+    subgraph DI [Dependency Injection Driver]
+        Koin[Koin 4.x: singleOf / viewModelOf]
+        Hilt[Hilt / Dagger: @HiltViewModel / @Inject]
+    end
+    
+    subgraph Net [Networking Driver]
+        Ktor[Ktor Client: CIO / OkHttp / ContentNegotiation]
+        Retrofit[Retrofit + OkHttp: suspend / Moshi / Converters]
+    end
+    
+    subgraph Nav [Navigation Driver]
+        Nav3[Navigation 3: SnapshotStateList / Type-Safe NavKeys]
+        NavCompose[Jetpack Navigation Compose: @Serializable Routes]
+    end
+    
+    subgraph Storage [Storage Driver]
+        Room[Room Database: SQLite WAL / MigrationTestHelper]
+        SQLDelight[SQLDelight: Type-Safe SQL Drivers]
+    end
+    
+    HAL --> DI
+    HAL --> Net
+    HAL --> Nav
+    HAL --> Storage
+```
+
+| Architectural Layer | Adaptive Stack Drivers (Auto-Detected) | Universal Cognitive Invariants (Mandatory) |
+|:---|:---|:---|
+| **UI Toolkit** | Jetpack Compose / Compose Multiplatform | Material 3 Design Tokens, 60/120 FPS, explicit `key` & `contentType` on Lazy Layouts. |
+| **Aesthetics** | [Rule 36 (World-Class UI/UX)](rules/36-ui-ux-design-standard.md) | Subtle 0.5dp borders, tonal surfaces, 8-pt grid, anti-AI design clichés. |
+| **Dependency Injection** | **Koin 4.x** OR **Hilt / Dagger** | 100% Constructor Injection. Zero manual instantiation in Presentation. Scope isolation. |
 | **Networking** | **Ktor Client** OR **Retrofit + OkHttp** | Non-blocking I/O (`Dispatchers.IO`), DTO-to-Domain mappers, structured `AppResult<T>` boundary. |
 | **Navigation** | **Navigation 3** OR **Jetpack Nav Compose** | Compile-time type safety via Kotlin `@Serializable` routes. 400ms transition debounce. |
 | **Local Storage** | **Room Database** OR **SQLDelight** | Single Source of Truth (SSOT), WAL mode enabled, zero data loss migration defense. |
 | **Presentation** | MVI / UDF (`BaseViewModel<State, Intent, Effect>`) | Immutable `StateFlow<UIState>` exposed to UI. Pure UI intent emission. |
-| **Vitals & Memory** | [App Quality Vitals](skills/app-quality-vitals/SKILL.md) & [Stack vs Heap](skills/stack-heap-memory/SKILL.md) | Zero-Crash, Zero-ANR, Zero-Leak, Startup TTID < 500ms, 16KB page alignment. |
+| **Android Vitals** | [App Quality Vitals](skills/app-quality-vitals/SKILL.md) & [Stack vs Heap](skills/stack-heap-memory/SKILL.md) | Zero-Crash, Zero-ANR, Zero-Leak, Startup TTID < 500ms, 16KB page alignment. |
 
 ---
 
-## 🛡️ THE 28 QUALITY GATES (E1 — E28)
+## 🛡️ THE 28 QUALITY GATES (E1 — E28) DEEP DIVE
 
-Before any code modification is reported as complete, it must pass all 28 automated checks defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
+Every piece of code generated or reviewed by the AI must pass all 28 automated quality gates defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
 
-* **Gates E1 — E5:** Clean Architecture layer boundaries, BaseViewModel inheritance, pure MVI Intent handling.
-* **Gates E6 — E10:** Navigation 3 type safety, Single Source of Truth, debounce navigation actions.
-* **Gates E11 — E15:** Compose stability, zero hardcoded colors/dp, mandatory `key` & `contentType` on Lazy Layouts.
-* **Gates E16 — E20:** Main-Thread purity, structured concurrency, non-cancellable cleanup in WorkManager.
-* **Gate E21:** Comprehensive Enforcement Audit before completion.
-* **Gate E27:** World-Class Aesthetic Audit (Anti-AI-Slop verification).
-* **Gate E28:** Ubiquitous Language & Domain Precision (Zero fluff, domain dictionary alignment).
+| Gate ID | Category | Name | Enforcement Invariant |
+|:---|:---|:---|:---|
+| **Gate E1** | Architecture | **Clean Architecture Boundary** | Domain has zero dependencies on Data or Presentation. |
+| **Gate E2** | Presentation | **BaseViewModel Inheritance** | Every ViewModel extends `BaseViewModel<State, Intent, Effect>`. Direct `ViewModel()` is forbidden. |
+| **Gate E3** | Concurrency | **Safe Coroutine Scope** | All ViewModel coroutines use `safeLaunch {}`. Direct `viewModelScope.launch` is banned. |
+| **Gate E4** | Presentation | **Pure MVI Intent Handling** | `when (intent)` must be exhaustive without an `else ->` wildcard. |
+| **Gate E5** | Presentation | **StateFlow Immutability** | Presentation exposes only read-only `StateFlow<UIState>`. MutableStateFlow is strictly private. |
+| **Gate E6** | Navigation | **Type-Safe Route Definition** | Internal navigation routes MUST use `@Serializable` classes/objects. Raw string paths are banned. |
+| **Gate E7** | Architecture | **Single Source of Truth (SSOT)** | UI observes local database. Network syncs to database; network never feeds UI directly. |
+| **Gate E8** | Navigation | **Navigation Debounce** | Navigation actions must debounce with a minimum 400ms threshold to prevent double-push. |
+| **Gate E9** | Data | **DTO Boundary Isolation** | DTOs live strictly in Data layer and map to pure Domain models before leaving Repository. |
+| **Gate E10**| Data | **Error Boundary Wrapping** | Remote/local operations must wrap exceptions in `AppResult<T>` or `Result<T>`. |
+| **Gate E11**| UI | **Design System Token Purity** | Zero hardcoded colors (`Color(0x...)`) or sizes (`16.dp`). 100% mapped to `AppTheme` tokens. |
+| **Gate E12**| UI | **Lazy Layout Key Stability** | Every item in `LazyColumn`/`LazyRow` MUST specify an explicit `key = { it.id }` and `contentType`. |
+| **Gate E13**| UI | **Recomposition Stability** | External models annotated with `@Immutable` or `@Stable`. Lambdas memoized via `remember`. |
+| **Gate E14**| UI | **Dark Theme Compatibility** | Direct use of `Color.White` or `Color.Black` is forbidden. All surfaces adapt to theme mode. |
+| **Gate E15**| UI | **Accessibility Bounds** | All clickable elements have a minimum touch target of 48x48dp (`minimumInteractiveComponentSize`). |
+| **Gate E16**| Concurrency | **Main-Thread Purity** | Zero blocking calls or file/network I/O on `Dispatchers.Main`. All I/O runs on `Dispatchers.IO`. |
+| **Gate E17**| Concurrency | **Cancellation Preservation** | Never swallow `CancellationException` in coroutine exception handling blocks. |
+| **Gate E18**| Background | **WorkManager NonCancellable** | Deferrable background work uses WorkManager. Cleanup blocks run in `NonCancellable`. |
+| **Gate E19**| Storage | **Database WAL & Migrations** | Room database configured with WAL mode. `fallbackToDestructiveMigration()` forbidden in prod. |
+| **Gate E20**| Security | **Hardware Keystore & Security** | Tokens stored in `EncryptedSharedPreferences` / Keystore. `FLAG_SECURE` on payment screens. |
+| **Gate E21**| Audit | **Enforcement Pre-Delivery Audit**| Full self-audit across modified files. Zero violations tolerated before task handover. |
+| **Gate E22**| Minimalism | **Anti-Overengineering Gate** | Zero redundant wrappers or 1-line delegate UseCases. Ponytail minimalist standard. |
+| **Gate E23**| Resilience | **The 7 AI Blind Spots Defense** | SavedStateHandle survives Process Death, `.imePadding()`, JIT permissions, zero fake delays. |
+| **Gate E24**| Testing | **Modern Testing & QA Gate** | StateFlow emissions tested via Turbine. Fakes preferred over fragile mocks. |
+| **Gate E25**| SDK/Core | **Modular Public Surface Isolation**| Core libraries use `internal` by default. Pluggable `:testing` fakes provided. |
+| **Gate E26**| Release | **DB Migration & R8 ProGuard Gate** | ProGuard `consumer-rules.pro` synthesized. Release builds verified with R8 minification. |
+| **Gate E27**| Aesthetic | **World-Class UI/UX Audit** | Zero purple neon AI clichés. Subtle 0.5dp borders, tonal depth, 8-pt grid, domain palette. |
+| **Gate E28**| Domain | **Ubiquitous Language & Precision** | 1-to-1 mapping between business domain dictionary (`CONTEXT.md`) and code symbols. Zero fluff. |
+
+---
+
+## 📱 THE 19 CORE MOBILE ENGINEERING DOMAINS
+
+The engine embeds deep architectural defenses across the 19 core mobile domains defined in [rules/31-mobile-engineering-core.md](rules/31-mobile-engineering-core.md):
+
+```
+1. Lifecycle & State Management    7. Adaptive UI & Insets            13. Cross-Platform Bridge
+2. Background Execution           8. Accessibility (a11y)            14. System Integrations (Camera/Sensors)
+3. Permissions & Privacy           9. Localization & Theming          15. Security & Cryptography
+4. Networking & Offline-First     10. Concurrency & Asynchronous Flow 16. Build & 16KB Release Engineering
+5. Persistence & Migration        11. Performance & Android Vitals   17. Observability, Telemetry & Tracing
+6. Navigation & Deep Links        12. Platform-Specific Behaviors    18. Testing & Automation Strategy
+                                                                     19. Complete Failure Modeling
+```
+
+---
+
+## 👁️ THE 7 AI BLIND SPOTS DEFENSE MATRIX
+
+AI models typically introduce 7 recurring architectural bugs when generating Android code. The engine automatically monitors and blocks them:
+
+1. **Lazy Layout Recomposition Lag:** AI forgets `key = { it.id }` and `contentType`, causing Compose to recompose the entire list on every state change and dropping FPS to 20.  
+   *Engine Fix:* Gate E12 automatically checks and requires `key` on every Lazy list item.
+2. **Duplicate Click Race Conditions:** Fast double-tapping a button launches duplicate network requests or pushes duplicate screens onto the backstack.  
+   *Engine Fix:* Mandates ViewModel-level click locks and a 400ms navigation debounce.
+3. **Loss of Form State on Rotation / Process Death:** AI uses simple `remember { mutableStateOf("") }` which resets user inputs when the device rotates or Android OS reclaims memory.  
+   *Engine Fix:* Mandates `rememberSaveable` or hoisting state into `SavedStateHandle`.
+4. **Keyboard Covering Input Fields:** Bottom input fields become inaccessible when the soft keyboard appears.  
+   *Engine Fix:* Mandates `Modifier.imePadding()` with scrollable containers and `BringIntoViewRequester`.
+5. **String Concatenation in UI:** AI writes `Text("$count items")` or `Text("$ " + price)`, breaking pluralization and localization rules.  
+   *Engine Fix:* Mandates `pluralStringResource` and localized string templates.
+6. **Fake Simulations & Delays:** AI adds `delay(1000)` and fake dummy lists when it doesn't know how to implement the real API.  
+   *Engine Fix:* Stub/Placeholder detection blocks fake delays and requires real DataSource bindings.
+7. **16KB Memory Page Alignment Blindness:** Starting in Android 15, all native C/C++ libraries (`.so`) MUST be aligned to 16KB page boundaries or the app crashes immediately on launch.  
+   *Engine Fix:* Rule 19 & Rule 31 automatically enforce 16KB linker flags (`-Wl,-z,max-page-size=16384`) and audit 3rd-party dependencies.
 
 ---
 
 ## 📦 QUICKSTART INSTALLATION (IN 60 SECONDS)
 
-### Option 1: One-Line Installer (Recommended)
-Run the automated installer in your terminal (macOS / Linux / WSL):
+### Option 1: One-Line Automated Installer (Recommended)
+Run this single command in your terminal (macOS / Linux / WSL):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/vinhvox/Anti-Vibe-Coding-Android-Engine/main/scripts/install.sh | bash
 ```
+The installer automatically:
+1. Detects your operating system and shell environment.
+2. Installs or updates the engine into `~/.antigravity`.
+3. Grants execution permissions and runs an automated environment diagnostic.
 
 ### Option 2: Clone and Install Locally
 ```bash
@@ -91,51 +226,108 @@ cd Anti-Vibe-Coding-Android-Engine
 bash scripts/install.sh
 ```
 
-### Option 3: Run Diagnostic Doctor
-Verify that your environment (JDK 17+, Android SDK, Git) is fully configured:
+### Option 3: Run Diagnostic Health Check
+Verify that your development environment (JDK 17+, Android SDK, Git) is fully configured:
 ```bash
 bash scripts/doctor.sh
 ```
 
 ---
 
-## 🗂️ REPOSITORY LAYOUT
-
-```
-antigravity-android-os/
-├── brain/             # 11 Cognitive engines (Context, Decision, Confidence, Reflection...)
-├── rules/             # 37 Standards and Gates E1 to E28
-├── workflow/          # 10 Specialized workflows (Implementation, Refactor, Review, Debug...)
-├── skills/            # Deep-dive skills (UI/UX Pro Max, Mobile Core, App Vitals, Ask-CTO...)
-├── memory/            # 6-Tier memory architecture & baseline Modern Android profile
-├── templates/         # Project Memory and Developer Preference starter templates
-├── scripts/           # install.sh, doctor.sh, uninstall.sh
-├── bin/               # CLI entry points and doctor wrapper
-├── docs/              # Comprehensive architecture documentation & ADRs
-├── .context-digest.md # 5.4K token compressed instant-boot context
-└── README.md          # Project homepage
-```
-
----
-
 ## 🛠️ CUSTOMIZING FOR YOUR PROJECT
 
-1. Copy the project template into your repository:
+The engine is 100% plug-and-play. To customize it for a specific project repository:
+
+1. Copy the project memory template into your project's root:
    ```bash
    mkdir -p .antigravity/memory
    cp templates/memory/project-memory.template.md .antigravity/memory/01-project-memory.md
    ```
-2. Customize your app's dependencies, database, and package hierarchy.
-3. Your AI agent will automatically detect your project's identity and apply the full CTO governance.
+2. Fill in your application's details (Package name, active DI framework, database, and repository boundaries).
+3. Any AI coding assistant (Antigravity CLI, Cursor, Claude Code, Gemini CLI) will automatically discover your project's profile and enforce CTO-grade engineering.
+
+---
+
+## 🤖 AI COMPATIBILITY MATRIX
+
+Anti-Vibe-Coding-Android-Engine is designed to empower any modern AI coding tool:
+
+| AI Tool / Environment | Integration Method | Supported Features |
+|:---|:---|:---|
+| **Google Antigravity CLI (`agy`)** | Native custom framework (`~/.antigravity`) | Full 8-tier cognitive pipeline, skills, subagents, rules, auto-hooks. |
+| **Cursor IDE** | Include as `.cursorrules` or system prompt reference | Full 28 Quality Gates, Clean Architecture enforcement, Rule 36 UI/UX. |
+| **Claude Code (Anthropic)** | Load via `CLAUDE.md` linking to `.context-digest.md` | Invariant enforcement, Tracer-Bullet planning, compiler verification. |
+| **Gemini CLI** | Native custom configuration | Brain reasoning, adaptive HAL, zero-crash default invariant. |
+| **Windsurf / GitHub Copilot** | Workspace rules reference | Compose stability, design system token purity, 19 core mobile domains. |
+
+---
+
+## 🗂️ REPOSITORY DIRECTORY LAYOUT
+
+```
+Anti-Vibe-Coding-Android-Engine/
+├── .github/
+│   ├── workflows/lint-and-validate.yml  # GitHub Actions CI for path sanitization & syntax
+│   └── ISSUE_TEMPLATE/                  # Standardized bug reports & feature requests
+├── bin/
+│   ├── agy-doctor                       # Fast CLI diagnostic shortcut
+│   └── load-antigravity.py              # Context bootstrap utility
+├── brain/                               # 11 Cognitive engines (Context, Clarification, Decision...)
+│   ├── 00-master-cognition.md
+│   ├── ...
+│   └── 11-learning-engine.md
+├── rules/                               # 37 Standards & Gates E1 to E28
+│   ├── 00-system-mandate.md             # Highest system priority mandate
+│   ├── 01-tech-stack.md                 # Adaptive Stack Hardware Abstraction Layer (HAL)
+│   ├── 09-networking.md                 # Ktor Client & Retrofit + OkHttp standards
+│   ├── 12-dependency-injection.md       # Koin 4.x & Hilt/Dagger standards
+│   ├── 21-enforcement-engine.md         # The 28 Quality Gates (E1 to E28)
+│   ├── 31-mobile-engineering-core.md    # The 19 Core Mobile Engineering Domains
+│   ├── 36-ui-ux-design-standard.md      # World-Class UI/UX & Anti-AI-Slop standard
+│   └── 37-ubiquitous-language-standard.md # Domain Dictionary & Ubiquitous Language standard
+├── workflow/                            # 10 Specialized engineering workflows
+│   ├── 00-master-workflow.md            # Central orchestrator (Phases 0 to 8)
+│   ├── 03-architecture-design.md        # Architecture design & driver binding
+│   ├── 04-implementation-planning.md    # Tracer-Bullet Vertical Slicing planning
+│   ├── 06-code-review.md                # Gates E1-E28 code review audit
+│   └── 07-testing-validation.md         # Mandatory real terminal compiler execution
+├── skills/                              # Specialized drop-in domain skills
+│   ├── ask-cto/                         # Meta-router for instant technical diagnosis
+│   ├── ui-ux-pro-max/                   # 240+ UI styles, 170+ palettes, 150+ font pairings
+│   ├── app-quality-vitals/              # Google Play Vitals, Zero-Crash, TTID < 500ms
+│   ├── stack-heap-memory/               # Stack vs Heap memory allocation discipline
+│   ├── ponytail-minimalist/             # Zero over-engineering & Kotlin idioms
+│   ├── spec-driven-development/         # Tri-Artifact standard (Spec -> Plan -> Tasks)
+│   └── systematic-debugging/            # 4-step scientific root cause analysis
+├── memory/                              # 6-Tier memory architecture & generic profile
+│   ├── 00-memory-core.md
+│   └── 01-project-memory.md
+├── templates/                           # Reusable project starter templates
+│   └── memory/
+│       ├── project-memory.template.md   # App identity & architecture template
+│       └── user-preference.template.md  # Developer preferences template
+├── scripts/                             # Automation scripts
+│   ├── install.sh                       # Automated curl-to-bash installer
+│   ├── doctor.sh                        # Environment diagnostic health check
+│   └── uninstall.sh                     # Safe uninstaller with backup archiving
+├── .context-digest.md                   # Ultra-dense 5.4K token instant boot context
+├── INDEX.md                             # Full cross-reference index
+├── CONTRIBUTING.md                      # Open-source contribution guidelines
+├── LICENSE                              # Apache License 2.0
+├── README.md                            # Comprehensive project homepage
+└── install.sh                           # Root installer convenience wrapper
+```
 
 ---
 
 ## 🤝 CONTRIBUTING
 
-We welcome contributions from Android architects, developers, and AI engineers! Please review our [Contributing Guidelines](CONTRIBUTING.md) before submitting a Pull Request.
+We welcome contributions from Android architects, mobile engineers, and AI developers passionate about bringing true engineering rigor to AI coding assistants!
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how to propose new Quality Gates, domain skills, or architectural drivers.
 
 ---
 
 ## 📄 LICENSE
 
-This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
+This project is open-sourced under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
