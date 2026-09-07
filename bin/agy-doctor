@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# CLI Entrypoint for Antigravity Doctor
+# ==============================================================================
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+if [ -f "$SCRIPT_DIR/scripts/doctor.sh" ]; then
+    exec bash "$SCRIPT_DIR/scripts/doctor.sh" "$@"
+elif [ -f "${ANTIGRAVITY_HOME:-$HOME/.antigravity}/scripts/doctor.sh" ]; then
+    exec bash "${ANTIGRAVITY_HOME:-$HOME/.antigravity}/scripts/doctor.sh" "$@"
+else
+    echo "❌ doctor.sh not found. Please verify Antigravity installation."
+    exit 1
+fi

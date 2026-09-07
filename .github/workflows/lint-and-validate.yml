@@ -1,0 +1,48 @@
+name: Lint & Validate Antigravity OS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    name: Framework Integrity & Sanitization Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Sanitization Audit (Zero Hardcoded Personal Paths)
+        run: |
+          echo "Checking for any hardcoded /Users/ paths..."
+          if grep -rn "/Users/" . --exclude-dir=.git --exclude-dir=plan; then
+            echo "❌ Error: Hardcoded personal paths found in repository!"
+            exit 1
+          else
+            echo "✅ Sanitization check passed: No hardcoded user paths found."
+          fi
+
+      - name: Validate Shell Script Syntax
+        run: |
+          echo "Validating installer and doctor scripts..."
+          if [ -d "scripts" ]; then
+            for script in scripts/*.sh; do
+              if [ -f "$script" ]; then
+                bash -n "$script"
+                echo "✅ Syntax valid: $script"
+              fi
+            done
+          fi
+
+      - name: Validate Core Engines Existence
+        run: |
+          echo "Verifying mandatory core engines..."
+          test -f "rules/00-system-mandate.md" || { echo "❌ Missing system mandate"; exit 1; }
+          test -f "workflow/00-master-workflow.md" || { echo "❌ Missing master workflow"; exit 1; }
+          test -f "brain/00-master-cognition.md" || { echo "❌ Missing master cognition"; exit 1; }
+          test -f "rules/21-enforcement-engine.md" || { echo "❌ Missing enforcement engine"; exit 1; }
+          test -f "INDEX.md" || { echo "❌ Missing INDEX.md"; exit 1; }
+          echo "✅ All mandatory architectural files verified."
