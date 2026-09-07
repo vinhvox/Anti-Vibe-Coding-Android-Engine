@@ -45,17 +45,20 @@ flowchart TD
 
 ---
 
-## ⚡ CORE CAPABILITIES & TECH STACK
+## ⚡ ADAPTIVE STACK ARCHITECTURE (HARDWARE ABSTRACTION LAYER)
 
-| Domain | Technology / Pattern | Engineering Invariant |
+As a true **AI Cognitive Operating System**, Antigravity automatically detects your active stack during **Phase 0** and binds the corresponding quality drivers without imposing uninvited migrations:
+
+| Domain | Adaptive Drivers (Auto-Detected) | Universal Cognitive Invariant |
 |---|---|---|
-| **UI Toolkit** | Jetpack Compose (Material 3 BOM) | 100% semantic `AppTheme` tokens. Recomposition stable (`@Immutable`). |
-| **Aesthetics** | [Rule 36 (World-Class UI/UX)](rules/36-ui-ux-design-standard.md) | Subtle 0.5dp borders, tonal surfaces, 8-pt grid. Ban on cliché AI neon. |
-| **Navigation** | Navigation 3 (State-driven) | `@Serializable` routes. Reactive `SnapshotStateList<Screen>`. 400ms debounce. |
-| **Presentation** | MVI / Uni-Directional Data Flow | ViewModels inherit `BaseViewModel<State, Intent, Effect>`. Lifecycle `safeLaunch`. |
-| **Architecture** | Clean Architecture (Domain ➔ Data ➔ UI) | SSOT Room database as single truth, Ktor as background sync updater. |
-| **Dependency Injection**| Koin 4.2.1 | Constructor-based DI, lightweight, Kotlin Multiplatform (KMP) ready. |
-| **Vitals & Memory** | [App Quality Vitals](skills/app-quality-vitals/SKILL.md) & [Stack vs Heap](skills/stack-heap-memory/SKILL.md) | Zero-Crash, Zero-ANR, Zero-Leak, TTID < 500ms, 16KB page alignment. |
+| **UI System** | Jetpack Compose / Compose Multiplatform | Material 3 Tokens, 60/120 FPS, explicit `key` & `contentType` for Lazy Layouts. |
+| **Aesthetics** | [Rule 36 (World-Class UI/UX)](rules/36-ui-ux-design-standard.md) | Subtle 0.5dp borders, tonal surfaces, 8-pt grid. Ban on cliché AI neon slop. |
+| **Dependency Injection** | **Koin 4.x** OR **Hilt / Dagger** | Strict Constructor Injection. Zero manual instantiation in Presentation. Scope isolation. |
+| **Networking** | **Ktor Client** OR **Retrofit + OkHttp** | Non-blocking I/O (`Dispatchers.IO`), DTO-to-Domain mappers, structured `AppResult<T>` boundary. |
+| **Navigation** | **Navigation 3** OR **Jetpack Nav Compose** | Compile-time type safety via Kotlin `@Serializable` routes. 400ms transition debounce. |
+| **Local Storage** | **Room Database** OR **SQLDelight** | Single Source of Truth (SSOT), WAL mode enabled, zero data loss migration defense. |
+| **Presentation** | MVI / UDF (`BaseViewModel<State, Intent, Effect>`) | Immutable `StateFlow<UIState>` exposed to UI. Pure UI intent emission. |
+| **Vitals & Memory** | [App Quality Vitals](skills/app-quality-vitals/SKILL.md) & [Stack vs Heap](skills/stack-heap-memory/SKILL.md) | Zero-Crash, Zero-ANR, Zero-Leak, Startup TTID < 500ms, 16KB page alignment. |
 
 ---
 

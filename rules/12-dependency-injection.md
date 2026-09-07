@@ -2,578 +2,78 @@
 
 # Purpose
 
-This document defines the dependency injection architecture for the project.
+This document defines the dependency injection (DI) architecture for the Antigravity Android Framework.
 
 Dependency Injection exists to:
-
 - Reduce coupling
 - Improve testability
 - Increase modularity
 - Simplify object creation
-- Improve maintainability
+- Enforce clean architectural boundaries
 
-The project uses:
-
-- Koin
-- Constructor Injection
-- Feature-based Modules
-
-Avoid Service Locator patterns.
+As a true **AI Cognitive Operating System**, the AI does not mandate a single DI framework. It enforces universal dependency inversion invariants while adapting to the project's chosen DI system (**Koin** or **Hilt/Dagger**).
 
 ---
 
-# Core Principles
+# Core Principles (Universal Invariants)
 
-Dependencies should be injected.
+Regardless of the DI framework used:
 
-Objects should never create their own dependencies.
+1. **Constructor Injection is Mandatory:**
+   Every class must receive its dependencies through its primary constructor.
+   ```kotlin
+   // GOOD
+   class GetUserUseCase(
+       private val userRepository: UserRepository
+   )
+   
+   // BAD — Self-instantiation violates DI
+   class GetUserUseCase {
+       private val userRepository = UserRepositoryImpl()
+   }
+   ```
 
-Preferred:
+2. **Zero Manual Instantiation in Presentation:**
+   Never instantiate Repositories, UseCases, DataSources, or HTTP clients manually inside a Composable or ViewModel.
 
-```text
-Koin
+3. **Inversion of Control (IoC) at Layer Boundaries:**
+   Presentation depends on Domain interfaces.  
+   Data implements Domain interfaces.  
+   DI wires the implementation to the interface.
 
-↓
-
-Constructor Injection
-
-↓
-
-Class
-```
-
-Avoid:
-
-```kotlin
-class UserRepository {
-
-    private val api = UserApi()
-
-}
-```
-
----
-
-# Approved DI Framework
-
-Only use:
-
-- Koin
-
-Do not introduce:
-
-- Hilt
-- Dagger
-- Manual Service Locator
+4. **Avoid Service Locator Anti-Pattern:**
+   Do not pass DI containers around or call global locator methods (`GlobalContext.get()`) deep inside business logic.
 
 ---
 
-# Constructor Injection
+# Adaptive DI Drivers (Koin & Hilt)
 
-Always prefer constructor injection.
+The AI detects the DI framework during **Phase 0: Workspace & Stack Auto-Discovery**:
 
-Good:
+## Driver A: Koin (Lightweight & KMP Preferred)
+- Use constructor DSL: `singleOf(::UserRepositoryImpl) bind UserRepository::class`, `viewModelOf(::HomeViewModel)`.
+- Organize modules cleanly:
+  - `coreModule`: Network client, Preferences, App dispatchers.
+  - `databaseModule`: Room database, DAOs.
+  - `networkModule`: API services, DTO serializers.
+  - `featureModule`: UseCases, ViewModels for specific features.
+- Zero reflection in production.
+- Use `koinViewModel()` or `viewModel()` in Composables to retrieve ViewModels.
 
-```kotlin
-class HomeViewModel(
-    private val getFiles: GetFilesUseCase
-)
-```
-
-Avoid:
-
-```kotlin
-lateinit var repository: Repository
-```
-
-or
-
-```kotlin
-val repository = Repository()
-```
-
----
-
-# Dependency Direction
-
-Dependencies must always point inward.
-
-```text
-Presentation
-        │
-        ▼
-Domain
-        │
-        ▼
-Data
-```
-
-Never reverse this direction.
+## Driver B: Hilt / Dagger (Industry Standard Enterprise Android)
+- Annotate the Application class with `@HiltAndroidApp`.
+- Annotate ViewModels with `@HiltViewModel` and `@Inject constructor(...)`.
+- Use `@Module` with `@InstallIn(SingletonComponent::class)` for app-wide singletons (Database, Network Client, Repositories).
+- Use `@Binds` inside abstract modules for binding implementations to interfaces (avoids boilerplate `@Provides`).
+- Use `@ActivityRetainedScoped` for scoped feature state if needed.
+- In Compose, obtain ViewModels via `hiltViewModel()`.
+- **Strict Prohibition:** NEVER use `@Inject lateinit var` field injection in Domain UseCases or Repositories; field injection is only permissible in Android-framework entry points (Activities/Services/BroadcastReceivers).
 
 ---
 
-# Module Organization
-
-Modules should be organized by feature.
-
-Example:
-
-```text
-core/
-
-feature/
-
-home/
-
-homeModule
-
-settings/
-
-settingsModule
-
-player/
-
-playerModule
-```
-
-Avoid a single massive module.
-
----
-
-# Core Modules
-
-Typical core modules:
-
-```text
-networkModule
-
-databaseModule
-
-dispatcherModule
-
-navigationModule
-
-preferenceModule
-
-permissionModule
-
-loggerModule
-
-serializationModule
-```
-
-Each module owns one responsibility.
-
----
-
-# Feature Modules
-
-Every feature owns its own DI module.
-
-Example:
-
-```text
-feature/home
-
-↓
-
-homeModule
-```
-
-Register only feature-specific dependencies.
-
----
-
-# Registration Rules
-
-Singleton:
-
-Use when there should be exactly one instance.
-
-Examples:
-
-- HttpClient
-- RoomDatabase
-- Preferences
-- Logger
-- Navigator
-- Repository (when stateless)
-
-Example:
-
-```kotlin
-single {
-    HttpClient(...)
-}
-```
-
----
-
-# Factory Rules
-
-Use factory when every request should create a new instance.
-
-Examples:
-
-- Formatter
-- Temporary Mapper
-- Utility with mutable state
-
-Example:
-
-```kotlin
-factory {
-    FileFormatter()
-}
-```
-
----
-
-# ViewModel Rules
-
-Register ViewModels using Koin ViewModel DSL.
-
-Example:
-
-```kotlin
-viewModel {
-    HomeViewModel(
-        get()
-    )
-}
-```
-
-Never instantiate ViewModel manually.
-
----
-
-# Scoped Dependencies
-
-Use Scope only when object lifetime must match a feature lifecycle.
-
-Examples:
-
-- Wizard Flow
-- Checkout Flow
-- Authentication Flow
-
-Avoid unnecessary scopes.
-
----
-
-# Interface Binding
-
-Depend on abstractions.
-
-Preferred:
-
-```text
-UserRepository
-
-↓
-
-UserRepositoryImpl
-```
-
-Register:
-
-```kotlin
-single<UserRepository> {
-
-    UserRepositoryImpl(
-        get()
-    )
-
-}
-```
-
-Avoid depending directly on implementations.
-
----
-
-# Dependency Graph
-
-Preferred flow:
-
-```text
-ViewModel
-
-↓
-
-UseCase
-
-↓
-
-Repository
-
-↓
-
-RemoteDataSource
-
-↓
-
-HttpClient
-```
-
-Never skip layers.
-
----
-
-# Module Dependencies
-
-Feature modules may depend on:
-
-Core modules.
-
-Core modules must never depend on feature modules.
-
----
-
-# Lazy Injection
-
-Prefer constructor injection.
-
-Use lazy injection only when:
-
-- Expensive initialization
-- Circular dependency cannot be avoided
-
-Avoid overusing lazy injection.
-
----
-
-# Circular Dependencies
-
-Circular dependencies are prohibited.
-
-Bad:
-
-```text
-Repository
-
-↓
-
-UseCase
-
-↓
-
-Repository
-```
-
-Refactor instead.
-
----
-
-# Runtime Parameters
-
-Use parameters only for runtime values.
-
-Examples:
-
-- File ID
-- User ID
-- Configuration
-
-Avoid passing dependencies through parameters.
-
----
-
-# Singleton Rules
-
-Singletons must be:
-
-- Thread-safe
-- Stateless where possible
-- Immutable where practical
-
-Avoid mutable global state.
-
----
-
-# Dispatcher Injection
-
-Dispatchers should be injected.
-
-Example:
-
-```kotlin
-data class AppDispatchers(
-    val main: CoroutineDispatcher,
-    val io: CoroutineDispatcher,
-    val default: CoroutineDispatcher
-)
-```
-
-Avoid hardcoding Dispatchers.IO throughout the codebase.
-
----
-
-# Testability
-
-Every dependency should be replaceable.
-
-Tests should provide fake or mock implementations through DI.
-
-Avoid hidden dependencies.
-
----
-
-# Initialization
-
-Application startup should initialize:
-
-- Core modules
-- Feature modules
-- Third-party SDKs (if required)
-
-Avoid eager initialization of heavy objects unless necessary.
-
----
-
-# Module Naming
-
-Use descriptive names.
-
-Good:
-
-```text
-networkModule
-
-databaseModule
-
-homeModule
-
-settingsModule
-```
-
-Avoid:
-
-```text
-module1
-
-commonModule
-
-utilsModule
-```
-
----
-
-# Dependency Lifetime
-
-Choose the smallest appropriate lifetime.
-
-Priority:
-
-```text
-Factory
-
-↓
-
-Scoped
-
-↓
-
-Singleton
-```
-
-Do not default everything to Singleton.
-
----
-
-# Logging
-
-Log dependency initialization only when useful for debugging.
-
-Avoid excessive startup logs in Release builds.
-
----
-
-# Review Checklist
-
-Before completing dependency registration:
-
-□ Constructor Injection
-
-□ No manual object creation
-
-□ Feature module exists
-
-□ Interface binding used
-
-□ Correct lifetime selected
-
-□ ViewModel registered
-
-□ No circular dependency
-
-□ Dispatchers injected
-
-□ Testable
-
-□ Minimal module responsibility
-
----
-
-# Anti-patterns
-
-Do not:
-
-ViewModel()
-
-inside Composable
-
-Do not:
-
-Repository()
-
-inside ViewModel
-
-Do not:
-
-HttpClient()
-
-inside Repository
-
-Do not:
-
-Global singleton object
-
-Do not:
-
-Service Locator
-
-Do not:
-
-Circular dependency
-
----
-
-# Decision Priority
-
-When introducing a dependency:
-
-1. Can an existing dependency be reused?
-
-2. Should it be an interface?
-
-3. What is its lifecycle?
-
-4. Which module owns it?
-
-5. Is it testable?
-
-6. Does it introduce coupling?
-
----
-
-# Final Rule
-
-Dependency Injection is responsible only for object creation and wiring.
-
-Business logic belongs to UseCases.
-
-State belongs to ViewModels.
-
-Persistence belongs to Repositories.
-
-Keep dependencies explicit, constructor-injected, modular, and easy to replace.
+# Forbidden Anti-Patterns
+
+❌ NEVER instantiate dependencies directly inside Composable functions (`val repo = UserRepositoryImpl()`).  
+❌ NEVER create circular dependencies between modules.  
+❌ NEVER inject `Context` or `Activity` into Domain UseCases or Repositories.  
+❌ NEVER use reflection-heavy DI patterns in performance-critical hot paths.

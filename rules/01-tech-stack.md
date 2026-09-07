@@ -2,377 +2,95 @@
 
 # Purpose
 
-This document defines the approved technology stack for the Android project.
+This document defines the **Adaptive Technology Architecture (Hardware Abstraction Layer - HAL)** for the Antigravity Android Framework.
 
-The agent MUST follow these rules whenever generating, modifying, or reviewing production code.
-
-Do not introduce alternative technologies unless explicitly requested.
+As a true **AI Cognitive Operating System**, the AI does NOT dictate or force a single dogmatic stack onto existing projects. Instead, it enforces universal engineering invariants while seamlessly adapting to the project's chosen libraries (detected automatically during **Phase 0: Workspace & Stack Auto-Discovery**).
 
 ---
 
-# Project Stack
+# 1. Universal Engineering Invariants (All Projects)
 
-| Category | Technology | Platform Support |
-|----------|------------|------------------|
-| Language | Kotlin (2.0+) | Multiplatform (`commonMain`, Android, iOS, Desktop) |
-| UI | Compose Multiplatform / Jetpack Compose | Multiplatform (`commonMain`, Android, iOS, Desktop) |
-| Design | Material 3 (Design Tokens) | Multiplatform |
-| Architecture | MVI / UDF + Clean Architecture | Multiplatform (`commonMain`) |
-| Async | Kotlin Coroutines + Flow | Multiplatform (`commonMain`) |
-| UI State | StateFlow (`BaseViewModel`) | Multiplatform (`commonMain`) |
-| Dependency Injection | Koin (4.x Multiplatform) | Multiplatform (`commonMain` + Platform Hooks) |
-| Networking | Ktor Client (3.x Multiplatform) | Multiplatform (OkHttp / Darwin / CIO) |
-| Local Database | Room KMP (2.7+) / SQLiteDriver | Multiplatform (`BundledSQLiteDriver`) |
-| Memory Management | Stack vs Heap Architecture (`@JvmInline value class`, Primitive State, Zero-Heap Compose) | Multiplatform (`commonMain` + ART/JVM) |
-| Preferences | DataStore Preferences / Multiplatform Settings | Multiplatform |
-| Serialization | kotlinx.serialization | Multiplatform (`commonMain`) |
-| Image Loading | Coil 3 (Multiplatform) | Multiplatform |
-| Navigation | Navigation 3 / Type-Safe NavKeys | Multiplatform |
-| Build | Gradle Kotlin DSL + KMP Plugin | Multiplatform |
-| Dependency Management | Version Catalog (`libs.versions.toml`) | Multiplatform |
-| Annotation Processing | KSP (Multiplatform) | Multiplatform |
+Regardless of the libraries used, every implementation MUST satisfy:
+
+| Invariant | Standard | Enforcement |
+|---|---|---|
+| **Language** | Kotlin (2.0+) | Strict null safety, immutable collections (`val`), sealed interfaces. |
+| **UI System** | Jetpack Compose / Compose Multiplatform | Material 3 Design Tokens, 60/120 FPS recomposition stability, explicit `key` & `contentType` for Lazy Layouts. |
+| **Aesthetic Standard** | [Rule 36 (World-Class UI/UX)](36-ui-ux-design-standard.md) | 0.5dp subtle borders, tonal surfaces, 8-pt grid, anti-AI design clichés. |
+| **Architecture** | Clean Architecture (Domain ➔ Data ➔ UI) | Strict layer boundaries; Domain never depends on Data or Presentation. |
+| **State Pattern** | MVI / Uni-Directional Data Flow (UDF) | Immutable `StateFlow<UIState>` exposed to UI; UI emits pure intents. |
+| **Concurrency** | Kotlin Coroutines & Flow | Main-Thread purity (`Dispatchers.Main` for UI only, `Dispatchers.IO` for I/O). |
+| **Memory Discipline** | [Rule 26 (Stack vs Heap)](26-stack-heap-memory.md) | Zero object allocation in Composable render loops; `@JvmInline value class` for IDs. |
+| **Android Vitals** | [Rule 27 (App Quality Vitals)](27-app-quality-vitals.md) | Zero-Crash, Zero-ANR, Zero-Leak, Startup TTID < 500ms, 16KB page alignment. |
 
 ---
 
-# Core Principles
+# 2. Adaptive Stack Drivers (Plug-and-Play)
 
-Every implementation should be:
+During Phase 0, the AI inspects `libs.versions.toml` or `build.gradle.kts` and activates the corresponding driver:
 
-- Simple
-- Readable
-- Testable
-- Maintainable
-- Lifecycle-safe
-- Multiplatform-Ready (Maximize `commonMain` code sharing)
-- Production-ready
+## A. Dependency Injection Drivers
+* **Driver 1: Koin (Lightweight / KMP Preferred)**
+  - Use constructor injection (`viewModelOf`, `singleOf`, `factoryOf`).
+  - Modularize DI: `coreModule`, `networkModule`, `databaseModule`, `featureModule`.
+  - Zero reflection in production.
+* **Driver 2: Hilt / Dagger (Enterprise Android Standard)**
+  - Use `@HiltViewModel` for ViewModels, `@Inject constructor(...)` for classes.
+  - Bind interfaces via `@Binds` in abstract `@Module` with `@InstallIn(SingletonComponent::class)`.
+  - Strict scope isolation: `@Singleton` for Repositories/Clients, `@ActivityRetainedScoped` for feature-level caches.
+  - Zero field injection (`@Inject lateinit var`) in Domain or Data classes.
 
-Prefer existing project conventions over introducing new patterns.
+## B. Networking Drivers
+* **Driver 1: Ktor Client (Modern / KMP Preferred)**
+  - ContentNegotiation with `kotlinx.serialization`.
+  - Platform-appropriate engines (OkHttp for Android, Darwin for iOS, CIO for Server).
+  - HttpTimeout configuration and unified exception mapping to `AppResult<T>`.
+* **Driver 2: Retrofit + OkHttp (Industry Standard Android)**
+  - Suspend functions for all API declarations.
+  - `kotlinx.serialization` or `Moshi` converter (avoid legacy Gson).
+  - Custom Interceptors for Auth, Logging, and Headers.
+  - Dedicated DTO-to-Domain mappers; never leak Retrofit DTOs into Presentation.
 
----
+## C. Navigation Drivers
+* **Driver 1: Navigation 3 (Compose-first, State-driven)**
+  - Strongly typed `@Serializable` destinations.
+  - Centralized reactive router with `SnapshotStateList<Screen>`.
+  - 400ms debounce on navigation transitions.
+* **Driver 2: Jetpack Navigation Compose**
+  - Type-safe routes via Kotlin `@Serializable` objects (Navigation 2.8+).
+  - Scope ViewModels to navigation graph entries (`hiltViewModel()`).
+* **Driver 3: Voyager / Decompose (KMP Navigation)**
+  - Type-safe Screen models with screen lifecycle hooks.
 
-# Approved Technologies
-
-The agent SHOULD use:
-
-- Kotlin Multiplatform & Compose Multiplatform
-- Material 3 Design System
-- Coroutines & Flow (StateFlow, SharedFlow)
-- BaseViewModel (MVI UDF pattern)
-- Koin Dependency Injection
-- Ktor Client (Multiplatform Engines)
-- Room KMP Database
-- Coil 3 Image Loading
-- kotlinx.serialization & kotlinx.datetime
-- Version Catalog (`libs.versions.toml`)
-- Gradle Kotlin DSL & KSP
-
----
-
-# Forbidden Technologies
-
-Unless explicitly requested, NEVER introduce:
-
-- Java
-- Hilt
-- Dagger
-- Retrofit
-- Gson
-- Moshi
-- RxJava
-- LiveData
-- AsyncTask
-- ButterKnife
-- DataBinding
-- ViewBinding for new Compose screens
-
-Existing legacy code may continue using these technologies if migration is not part of the requested task.
+## D. Local Storage Drivers
+* **Driver 1: Room Database (Android / KMP)**
+  - SQLiteDriver with WAL (Write-Ahead Logging) enabled.
+  - Safe migrations with `MigrationTestHelper` and `exportSchema = true`.
+  - Single Source of Truth (SSOT): Database as truth, Network as updater.
+* **Driver 2: SQLDelight (KMP Standard)**
+  - Type-safe SQL queries generated at compile time.
+* **Driver 3: Jetpack DataStore (Preferences & Proto)**
+  - Coroutine-based, non-blocking asynchronous key-value persistence.
 
 ---
 
-# Kotlin Rules
+# 3. Strictly Forbidden Anti-Patterns & Obsolete Technologies
 
-All new production source files MUST use Kotlin.
+Unless maintaining untouchable legacy modules, the AI MUST NEVER introduce:
 
-Prefer:
-
-- data class
-- sealed interface
-- object
-- value class (when appropriate)
-- extension functions
-- null safety
-- immutable collections
-
-Avoid Java-style coding patterns.
+- ❌ `AsyncTask`, raw `Thread()`, `java.util.Timer` (Violates structured concurrency).
+- ❌ `ButterKnife`, synthetic view accessors (Obsolete, causes memory leaks).
+- ❌ `Loaders`, `CursorAdapter`, legacy `ContentProvider` auto-init (Slows startup TTID).
+- ❌ Raw string SQL queries without parameter binding (SQL injection hazard).
+- ❌ Blocking operations on `Dispatchers.Main` (`Thread.sleep()`, synchronous file/network I/O).
+- ❌ Lazy `try-catch` sprawl across UI or ViewModel to sweep errors under the rug.
+- ❌ Purple-on-dark neon glows and cliché AI design patterns ([Rule 36](36-ui-ux-design-standard.md)).
 
 ---
 
-# Compose Rules
-
-All newly created screens MUST use Jetpack Compose.
-
-Do not create XML layouts unless:
-
-- The project already requires XML for that screen.
-- Migration is not requested.
-- The task explicitly requires XML.
-
----
-
-# State Management
-
-Screen state MUST use:
-
-StateFlow
-
-Example:
-
-```kotlin
-private val _uiState = MutableStateFlow(HomeUiState())
-val uiState = _uiState.asStateFlow()
-```
-
-Do not expose MutableStateFlow publicly.
-
-Do not use LiveData for new features.
-
----
-
-# Asynchronous Programming
-
-Use:
-
-- suspend functions
-- CoroutineScope
-- viewModelScope
-- lifecycleScope
-- Flow
-- SharedFlow
-
-Never use:
-
-- Thread
-- Timer
-- AsyncTask
-- RxJava
-
----
-
-# Networking
-
-Networking MUST use:
-
-Ktor
-
-Preferred flow:
-
-Remote API
-
-↓
-
-DTO
-
-↓
-
-Mapper
-
-↓
-
-Domain Model
-
-↓
-
-UI
-
-Do not expose DTOs outside the Data layer.
-
----
-
-# Local Storage
-
-Persistent storage MUST use Room.
-
-Preferred flow:
-
-Entity
-
-↓
-
-DAO
-
-↓
-
-LocalDataSource
-
-↓
-
-Repository
-
-↓
-
-Domain
-
-Never expose Entity to Presentation.
-
----
-
-# Dependency Injection
-
-Use:
-
-Koin
-
-Prefer constructor injection.
-
-Never manually instantiate:
-
-- Repository
-- UseCase
-- Service
-- DataSource
-
-inside ViewModel or Composable.
-
----
-
-# Image Loading
-
-Use:
-
-Coil
-
-Do not introduce Glide or Picasso.
-
----
-
-# Serialization
-
-Preferred:
-
-kotlinx.serialization
-
-Do not introduce Gson or Moshi unless required for legacy compatibility.
-
----
-
-# Gradle
-
-Use:
-
-Gradle Kotlin DSL
-
-Do not generate Groovy build scripts.
-
-Use Version Catalog whenever possible.
-
-Dependencies should be added through:
-
-libs.versions.toml
-
-instead of hardcoded versions.
-
----
-
-# Annotation Processing
-
-Preferred:
-
-KSP
-
-Avoid:
-
-kapt
-
-unless required by an existing dependency.
-
----
-
-# Android APIs
-
-Prefer modern AndroidX APIs.
-
-Avoid deprecated APIs.
-
-If both a legacy and a modern API exist, choose the modern implementation.
-
----
-
-# Decision Checklist
-
-Before introducing a new technology, verify:
-
-□ Does the project already use it?
-
-□ Is it officially approved?
-
-□ Can an existing library solve the problem?
-
-□ Will it increase maintenance cost?
-
-□ Is migration required?
-
-If any answer is uncertain, reuse the existing stack.
-
----
-
-# Anti-patterns
-
-Do not:
-
-Compose
-↓
-
-Retrofit
-
-Compose
-↓
-
-Database
-
-Compose
-↓
-
-Business Logic
-
-ViewModel
-↓
-
-File I/O
-
-Repository
-↓
-
-UI State
-
-DTO
-↓
-
-Presentation
-
-Entity
-↓
-
-Composable
-
----
-
-# Technology Decision Priority
-
-When multiple solutions exist:
-
-1. Existing project implementation
-2. Android official recommendation
-3. Kotlin idiomatic solution
-4. Simplicity
-5. Performance
-6. Maintainability
-
----
-
-# Final Rule
-
-The agent must NOT introduce a new technology solely because it is newer or more popular.
-
-Consistency across the codebase is more valuable than adopting additional frameworks.
-
-Always prefer the existing project stack.
+# 4. Stack Decision Priority
+
+When working on any codebase:
+1. **Existing Codebase Stack:** Match what the project already uses (e.g. if Hilt is used, write Hilt; do not migrate to Koin unprompted).
+2. **Official Android Modern Standards:** Compose, Coroutines, Flow, Version Catalog.
+3. **Simplicity & Performance:** The simplest solution that satisfies all 28 Quality Gates (E1–E28).
