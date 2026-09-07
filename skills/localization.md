@@ -35,12 +35,12 @@ This skill defines the rules and best practices for multi-language support, stri
     <string name="error_file_not_found">File not found: %1$s</string>
 </resources>
 
-<!-- res/values-vi/strings.xml (Vietnamese) -->
+<!-- res/values-es/strings.xml (Spanish) -->
 <resources>
-    <string name="action_compress">Nén tập tin</string>
-    <string name="action_extract">Giải nén</string>
-    <string name="dialog_compress_title">Nén %1$s tập tin</string>
-    <string name="error_file_not_found">Không tìm thấy tập tin: %1$s</string>
+    <string name="action_compress">Comprimir archivo</string>
+    <string name="action_extract">Extraer</string>
+    <string name="dialog_compress_title">Comprimir %1$s archivos</string>
+    <string name="error_file_not_found">Archivo no encontrado: %1$s</string>
 </resources>
 ```
 

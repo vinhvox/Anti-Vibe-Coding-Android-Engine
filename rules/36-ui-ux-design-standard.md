@@ -8,7 +8,7 @@ Its mission is to permanently eliminate robotic, flat, generic, and unpolished "
 
 ---
 
-# 1. THE 6 FORBIDDEN AI DESIGN CLICHÉS (STRICTLY BANNED)
+# 1. THE 6 FORBIDDEN AI DESIGN CLICHES (STRICTLY BANNED)
 
 UNLESS explicitly requested by the user, the AI is STRICTLY PROHIBITED from generating:
 

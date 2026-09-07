@@ -35,7 +35,7 @@ When the user presents an idea, technical requirement, UI flow, or code snippet:
    - **CTO Lens (Performance & Architecture)**: Check for excessive recompositions, heap allocations in composables, Main-thread stalls, missing `SavedStateHandle` process death recovery, un-isolated navigation scopes.
    - **PO Lens (Product & User Experience)**: Check for dead-end flows, missing 5-State UI coverage (Loading, Content, Empty, Error, Offline), touch targets < 48dp, keyboard overlap, unhandled text scaling (200%), and non-intuitive friction.
 
-2. **Step 2: Constructive Counter-Argument (Phản biện Xây dựng)**:
+2. **Step 2: Constructive Counter-Argument**:
    - Politely but directly explain *why* the standard approach might degrade Google Play Vitals or cause poor user retention.
 
 3. **Step 3: Recommended High-Impact Solution**:

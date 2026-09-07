@@ -83,12 +83,12 @@ In declarative Jetpack Compose applications, every screen and interactive organi
 All business logic, Use Cases, and ViewModel Intents MUST specify acceptance criteria using standard Gherkin syntax:
 
 ```gherkin
-Scenario: [Tên kịch bản kiểm thử hành vi]
-  Given [Tiền điều kiện / Trạng thái ban đầu của hệ thống]
-  And [Dữ liệu hoặc Mocking đã được chuẩn bị]
-  When [Người dùng thực hiện hành động / ViewModel nhận Intent]
-  Then [Trạng thái UiState cập nhật tương ứng]
-  And [Tác vụ phụ Effect / Navigation được kích hoạt]
+Scenario: [Behavioral test scenario name]
+  Given [Precondition / Initial system state]
+  And [Prepared test fixture or mock data]
+  When [User performs an action / ViewModel receives Intent]
+  Then [UiState updates accordingly]
+  And [Side-effect Effect / Navigation is triggered]
 ```
 
 ---

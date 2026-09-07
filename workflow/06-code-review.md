@@ -4,7 +4,7 @@ description: Phase 6 workflow to perform structured static review, architecture 
 triggers:
   - "code review"
   - "review code"
-  - "kiểm tra chất lượng code"
+  - "review code quality"
 prerequisites:
   - ".antigravity/workflow/05-feature-development.md"
 next_step: ".antigravity/workflow/07-testing-validation.md"

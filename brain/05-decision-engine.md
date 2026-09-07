@@ -209,18 +209,18 @@ Only introduce new technologies when justified.
 
 ---
 
-# The Mandatory Ponytail Cognitive Ladder (Thang Ra Quyết Định Tối Giản)
+# The Mandatory Ponytail Cognitive Ladder
 
 Before approving any architectural decision, plan, or implementation strategy, the Decision Engine MUST climb the Ponytail Decision Ladder and stop at the lowest possible rung:
 
 ```text
-1. Does this need to exist? (YAGNI)       ──► NO  ──► SKIP IT (Không tạo, không viết gì cả)
-2. Already in this codebase?              ──► YES ──► REUSE IT (Tái sử dụng pattern/component có sẵn)
-3. Stdlib does it?                        ──► YES ──► USE STDLIB (Dùng hàm Kotlin Stdlib/Java Time)
-4. Native platform feature?               ──► YES ──► USE NATIVE (Dùng Compose M3 / Android SDK gốc)
-5. Installed dependency does it?          ──► YES ──► USE EXISTING (Tận dụng lib đã cài, cấm thêm mới)
-6. Can it be one line?                    ──► YES ──► WRITE ONE LINE (Dùng single-expression '=')
-7. ONLY THEN                              ──► WRITE MINIMUM WORKING CODE (Viết lượng code tối thiểu)
+1. Does this need to exist? (YAGNI)       ──► NO  ──► SKIP IT (Do not create or write anything)
+2. Already in this codebase?              ──► YES ──► REUSE IT (Reuse existing pattern/component)
+3. Stdlib does it?                        ──► YES ──► USE STDLIB (Use Kotlin Stdlib / Java Time functions)
+4. Native platform feature?               ──► YES ──► USE NATIVE (Use Compose M3 / Android SDK directly)
+5. Installed dependency does it?          ──► YES ──► USE EXISTING (Leverage installed dependencies, no new libs)
+6. Can it be one line?                    ──► YES ──► WRITE ONE LINE (Use single-expression '=')
+7. ONLY THEN                              ──► WRITE MINIMUM WORKING CODE (Write the minimum necessary code)
 ```
 
 **Guardrail:** Lazy about solutions, deep about reading. Never sacrifice trust-boundary validation, error handling, security, accessibility, memory boundaries, or 16KB alignment.

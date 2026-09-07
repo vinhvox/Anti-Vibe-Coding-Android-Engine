@@ -3,8 +3,8 @@ name: architecture-design
 description: Phase 3 workflow to transform analyzed requirements and codebase inspection into a maintainable, scalable, and testable architecture blueprint.
 triggers:
   - "architecture design"
-  - "thiết kế kiến trúc"
-  - "thiết kế giải pháp"
+  - "design architecture"
+  - "solution design"
 prerequisites:
   - ".antigravity/workflow/01-requirement-analysis.md"
   - ".antigravity/workflow/02-codebase-analysis.md"

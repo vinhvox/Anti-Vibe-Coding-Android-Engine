@@ -73,7 +73,7 @@ Uncaught exceptions in asynchronous Coroutines or background tasks crash the ent
        setState { copy(data = result) }
    }
    ```
-2. **Safe DTO Mapping:** Tầng Data mapping DTO sang Domain Model bắt buộc phải có giá trị mặc định an toàn (default fallback values), không bao giờ để `NullPointerException` hoặc `SerializationException` lọt lên tầng Domain/UI.
+2. **Safe DTO Mapping:** The Data layer mapping from DTO to Domain Model must provide safe default fallback values, never allowing a `NullPointerException` or `SerializationException` to leak up to the Domain or UI layer.
 
 ---
 

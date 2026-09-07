@@ -3,8 +3,8 @@ name: codebase-analysis
 description: Phase 2 workflow to inspect existing codebase, locate modules, detect reusable components, and analyze impact.
 triggers:
   - "codebase analysis"
-  - "phân tích codebase"
-  - "kiểm tra code cũ"
+  - "analyze codebase"
+  - "inspect existing code"
 prerequisites:
   - ".antigravity/workflow/01-requirement-analysis.md"
 next_step: ".antigravity/workflow/03-architecture-design.md"

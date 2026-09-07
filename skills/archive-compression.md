@@ -119,8 +119,8 @@ suspend fun isArchiveEncrypted(archiveFile: File): Boolean = withContext(Dispatc
 ## UI/UX Best Practices
 
 1. **Conditional Action Visibility:**
-   - Show "Extract" / "Giải nén" ONLY when file has `.zip`, `.rar`, `.7z`, `.tar`, `.gz`.
-   - Show "Compress" / "Nén" ONLY for uncompressed files/folders.
+   - Show "Extract" ONLY when file has `.zip`, `.rar`, `.7z`, `.tar`, `.gz`.
+   - Show "Compress" ONLY for uncompressed files/folders.
 2. **Smart Password Field:**
    - Detect encryption upfront using `isArchiveEncrypted()`.
    - If encrypted: Show password input field in `ExtractDialog`.

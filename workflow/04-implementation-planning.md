@@ -3,8 +3,8 @@ name: implementation-planning
 description: Phase 4 workflow to transform an approved architecture blueprint into a persistent Living Feature Spec saved directly in project repo under docs/plans/feature_<name>.md.
 triggers:
   - "implementation planning"
-  - "lập kế hoạch triển khai"
-  - "tạo execution plan"
+  - "implementation planning"
+  - "create execution plan"
 prerequisites:
   - ".antigravity/workflow/01-requirement-analysis.md"
   - ".antigravity/workflow/02-codebase-analysis.md"

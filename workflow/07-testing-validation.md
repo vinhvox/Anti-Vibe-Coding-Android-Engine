@@ -4,7 +4,7 @@ description: Phase 7 workflow to perform end-to-end functional, architectural, i
 triggers:
   - "testing validation"
   - "test and validate"
-  - "kiểm thử và xác minh"
+  - "test and validate"
 prerequisites:
   - ".antigravity/workflow/06-code-review.md"
 next_step: ".antigravity/workflow/08-performance-review.md"

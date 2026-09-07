@@ -14,12 +14,12 @@ It serves as an expert UI/UX Principal Architect when creating, refactoring, or 
 
 ## Mandate: Function-Driven Design & Anti-Cliché Rules
 
-### 1. Function-Driven Design (Tư duy thiết kế theo chức năng)
+### 1. Function-Driven Design
 - Analyze the primary utility of the product before choosing any visual style.
 - Prioritize frictionless interaction, information hierarchy, and visual scannability.
 - Every pixel, container, padding, and micro-interaction must earn its place.
 
-### 2. Forbidden Cliché Design Tropes (Tuyệt đối cấm)
+### 2. Forbidden Cliché Design Tropes (Strictly Banned)
 UNLESS explicitly requested by the user, DO NOT produce:
 - ❌ **No Purple on Dark:** Purple fonts or violet accents on dark theme backgrounds.
 - ❌ **No Colored Border Accents:** Glowing colored outlines or high-contrast border accents around dark containers.

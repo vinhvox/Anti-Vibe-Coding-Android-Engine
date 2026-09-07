@@ -341,117 +341,115 @@ Confuse project standards with user preferences.
 
 # Active User Preferences
 
-- **World-Class UI/UX Design & Anti-AI-Slop Mandate (QUY TẮC THIẾT KẾ UI/UX ĐẲNG CẤP & XÓA BỎ GIAO DIỆN AI CODE):**
-  - **Triệt Tiêu 100% Mô-típ AI Sáo Rỗng (Anti-AI-Design-Clichés):** Tuyệt đối CẤM tạo giao diện có nền tím tối lạm dụng (purple on dark), viền phát sáng neon, badge hình viên thuốc (biscuit pills) nhấp nháy, gradient chữ lòe loẹt, và card lồng card 3-4 tầng ngột ngạt.
-  - **Phân Tầng Độ Sâu & Viền Tinh Tế (Visual Depth & Subtle Borders):** Mọi Card/Container bắt buộc có viền mỏng **0.5dp — 1dp** bán trong suốt (`AppTheme.colors.outlineVariant.copy(alpha = 0.5f)`) và phối hợp các lớp Tonal Surface (`surfaceContainerLowest` đến `surfaceContainerHigh`) để tạo chiều sâu quang học sang trọng.
-  - **Tỷ Lệ Vàng Typography 3 Tầng:** Tương phản rõ rệt giữa Hero Display (28-34sp Bold, tracking -0.5sp) > Section Title (18-22sp SemiBold) > Body (14-16sp, line-height 1.4x) > Meta (11-12sp onSurfaceVariant).
-  - **Nhịp Điệu Lưới 8-Point Grid:** 100% khoảng cách bám theo tokens `4dp`, `8dp`, `16dp`, `24dp`, `32dp`.
-  - **Bản Sắc Riêng Theo Ngành Dọc (Domain-Tailored Aesthetics):** Thiết kế đúng bản sắc ngành (Fintech tin cậy, E-Commerce kích thích mua sắm, SaaS tối giản dữ liệu, Media sống động).
-  - **Micro-Interactions Tinh Tế:** Bắt buộc có ripple effect mượt mà và shimmer skeleton loading tự nhiên.
+- **World-Class UI/UX Design & Anti-AI-Slop Mandate:**
+  - **Eliminate 100% of Cliché AI Motifs (Anti-AI-Design-Clichés):** Strictly FORBID interfaces with excessive dark-purple backgrounds (purple on dark), glowing neon outlines, pulsing biscuit/pill badges, flashy text gradients, and claustrophobic 3-4 level nested cards.
+  - **Visual Depth & Subtle Borders:** Every Card/Container must have a subtle **0.5dp — 1dp** translucent border (`AppTheme.colors.outlineVariant.copy(alpha = 0.5f)`) and coordinate tonal surface layers (`surfaceContainerLowest` to `surfaceContainerHigh`) to create optical depth and sophistication.
+  - **Golden Ratio 3-Tier Typography:** Distinct contrast between Hero Display (28-34sp Bold, tracking -0.5sp) > Section Title (18-22sp SemiBold) > Body (14-16sp, line-height 1.4x) > Meta (11-12sp onSurfaceVariant).
+  - **8-Point Grid Rhythm:** 100% of spacing aligns with tokens `4dp`, `8dp`, `16dp`, `24dp`, `32dp`.
+  - **Domain-Tailored Aesthetics:** Design according to industry domain identity (Fintech: trustworthiness, E-Commerce: high-conversion clarity, SaaS: minimal data density, Media: vibrant visuals).
+  - **Delicate Micro-Interactions:** Mandatory smooth ripple effects and natural shimmer skeleton loading states.
 
-- **Automated ProGuard & R8 Rules Synthesis Mandate (QUY TẮC TỰ ĐỘNG QUÉT & SINH PROGUARD/R8 RULES):**
-  - **Tự Động Đọc & Phân Tích Codebase 100%:** Khi người dùng yêu cầu cấu hình ProGuard / R8 hoặc chuẩn bị đóng gói Release, AI tự động quét toàn bộ `libs.versions.toml`, `build.gradle.kts`, DTOs, Room Entities, và Navigation 3 Routes trong workspace.
-  - **Phân Tách 2 Tầng Rules Chuẩn Mực:**
-    1. Tầng Module/SDK: Tự động sinh file `consumer-rules.pro` (tự đóng gói keep rules cho DTOs, Entities, DAOs để App mẹ không phải cấu hình tay).
-    2. Tầng App Mẹ: Tự động sinh `proguard-rules.pro` (cấu hình R8 FullMode, Coroutines internals, và strip log trên Release).
-  - **Xác Thực Build Release Thực Tế:** Bắt buộc chạy `./gradlew assembleRelease` để chứng minh 0 lỗi missing keep rules trước khi bàn giao.
+- **Automated ProGuard & R8 Rules Synthesis Mandate:**
+  - **Automated Codebase Inspection:** When configuring ProGuard/R8 or preparing a Release build, the AI automatically scans `libs.versions.toml`, `build.gradle.kts`, DTOs, Room Entities, and Navigation 3 Routes across the workspace.
+  - **Standardized 2-Tier Rule Separation:**
+    1. Module/SDK Layer: Auto-generates `consumer-rules.pro` (bundles keep rules for DTOs, Entities, DAOs so host apps do not require manual configuration).
+    2. Host App Layer: Auto-generates `proguard-rules.pro` (configures R8 FullMode, Coroutines internals, and release log stripping).
+  - **Real Release Build Verification:** Mandatory execution of `./gradlew assembleRelease` to prove zero missing keep rules prior to completion.
 
-- **The 7 AI Blind Spots Defense Mandate (QUY TẮC PHÒNG VỆ 7 ĐIỂM MÙ KỸ THUẬT):**
-  1. *Lazy Layout Keys*: Bắt buộc chỉ định `key = { it.id }` và `contentType` trong `LazyColumn`/`LazyRow` để triệt tiêu recomposition toàn phần và giật lag danh sách.
-  2. *Duplicate Click Lock*: Khóa ngay trạng thái ở ViewModel (`if (state.value.isLoading) return@safeLaunch`) và áp dụng debounce 400ms trên các hành động điều hướng.
-  3. *Form State Survival*: Dùng `rememberSaveable` hoặc hoist vào `SavedStateHandle` cho toàn bộ input người dùng để sống sót qua xoay màn hình, đổi theme và Process Death.
-  4. *Keyboard Auto-Scroll*: Kết hợp `Modifier.imePadding()` với scroll container và `BringIntoViewRequester` để bàn phím không che mất ô nhập liệu ở đáy màn hình.
-  5. *Modern API & Navigation 3 Purity*: 100% dùng Material 3 API gốc và `@Serializable data class Screen` trong Navigation 3 (cấm Accompanist cũ và route chuỗi).
-  6. *Localization & Plurals*: 100% dùng `pluralStringResource` và `stringResource` có placeholder, cấm nối chuỗi thủ công `$count items` hay `"$ " + price`.
-  7. *Zero-Fluff Direct Communication*: Trình bày trực tiếp, súc tích, chuẩn CTO, không mở đầu bằng văn mẫu sáo rỗng.
+- **The 7 AI Blind Spots Defense Mandate:**
+  1. *Lazy Layout Keys*: Mandatory specification of `key = { it.id }` and `contentType` in `LazyColumn`/`LazyRow` to eliminate unnecessary full-list recompositions and frame drops.
+  2. *Duplicate Click Lock*: Lock state in ViewModel (`if (state.value.isLoading) return@safeLaunch`) and apply 400ms debounce on navigation actions.
+  3. *Form State Survival*: Use `rememberSaveable` or hoist into `SavedStateHandle` for all user inputs to survive configuration changes, theme swaps, and Process Death.
+  4. *Keyboard Auto-Scroll*: Pair `Modifier.imePadding()` with scroll containers and `BringIntoViewRequester` to prevent the software keyboard from covering input fields.
+  5. *Modern API & Navigation 3 Purity*: 100% native Material 3 APIs and `@Serializable data class Screen` in Navigation 3 (ban legacy Accompanist and raw string routes).
+  6. *Localization & Plurals*: 100% `pluralStringResource` and `stringResource` with placeholders; strictly ban manual string concatenation such as `"$count items"` or `"$ " + price`.
+  7. *Zero-Fluff Direct Communication*: Present findings concisely and directly with CTO-grade clarity, without generic introductory boilerplate.
 
-- **Self-Documenting Code & Ban on Trivial Comments (QUY TẮC CODE TỰ TƯỜNG MINH & CẤM COMMENT RÁC/NHỎ LẺ):**
-  - **Tên Phải Tự Nói Lên Ý Nghĩa (Self-Documenting Naming):** Tên biến, hàm, class, interface bắt buộc phải diễn đạt 100% mục đích và nghiệp vụ (`isUserSubscribed`, `fetchUserProfile`, `calculateDiscountAmount`).
-  - **Cấm Comment Nhỏ Lẻ & Hiển Nhiên (Zero Trivial Comments):** Tuyệt đối CẤM các comment hiển nhiên, lặp lại tên hàm/biến (như `// Tải dữ liệu`, `// ID người dùng`, `// Hàm xử lý click`, `// Khởi tạo viewModel`).
-  - **Chỉ Comment ở Bài Toán Phức Tạp Thực Sự (Comment for "WHY", Never "WHAT"):**
-    - Chỉ được phép viết comment khi giải thích:
-      1. Công thức toán học / thuật toán phức tạp.
-      2. Workaround bắt buộc cho bug của OS / thư viện ngoài.
-      3. Ràng buộc bất biến vi tế về phần cứng hoặc luồng đồng thời (Concurrency edge cases).
-    - Mọi comment thừa thãi khác đều bị coi là rác code (Code Clutter) và phải bị xóa bỏ.
+- **Self-Documenting Code & Ban on Trivial Comments:**
+  - **Self-Documenting Naming:** Variable, function, class, and interface names must unambiguously express intent and domain concepts (`isUserSubscribed`, `fetchUserProfile`, `calculateDiscountAmount`).
+  - **Zero Trivial Comments:** Strictly FORBID obvious comments that mirror function/variable names (e.g. `// Load data`, `// User ID`, `// Handle click`, `// Initialize viewModel`).
+  - **Comment for "WHY", Never "WHAT":**
+    - Comments are permitted only when explaining:
+      1. Complex mathematical formulas or non-obvious algorithms.
+      2. Mandatory workarounds for platform, OS, or third-party library bugs.
+      3. Subtle hardware invariants or concurrency edge cases.
+    - All other comments are considered code clutter and must be removed.
 
-- **Zero-Crash, Zero-ANR, Zero-Leak Default Invariant & Anti-Try-Catch-Sprawl Mandate (QUY TẮC AN TOÀN MẶC ĐỊNH & CẤM LẠM DỤNG TRY-CATCH BỪA BÃI):**
-  - **Mặc định Hiển nhiên (Default Invariant):** Người dùng KHÔNG CẦN phải nhắc lại câu "Hãy đảm bảo không bị crash, ANR, leak" ở mỗi prompt. Mọi đoạn code do AI viết ra bắt buộc phải đạt chuẩn Zero-Crash, Zero-ANR, Zero-Leak 100% theo mặc định.
-  - **Cấm Tuyệt Đối Lạm Dụng Try-Catch (Anti-Defensive Paranoia):** Cấm bọc `try-catch` bừa bãi trong tầng Presentation (Compose UI) hoặc ViewModel/Domain để "chữa cháy" crash.
-  - **Error Boundary Đúng Chỗ:** Chỉ đặt Error Handling/Result wrapper tại đúng **I/O Boundary duy nhất** (Network API, Room Database, File I/O, JSON Deserialization) thông qua `AppResult<T>`.
-  - **An Toàn Từ Bản Chất Kiến Trúc (Structural Safety):**
-    1. *Zero-Crash*: Đảm bảo qua Kotlin Null-Safety (`val`, `T?`, smart casts), exhaustive `when` không có `else ->`, và State Flow bất biến (`_state.update { copy(...) }`).
-    2. *Zero-ANR*: Đảm bảo qua Main-Thread Purity (`Dispatchers.IO` cho Disk/Network, `Dispatchers.Default` cho tính toán nặng, non-blocking asynchronous Flow).
-    3. *Zero-Leak*: Đảm bảo qua Lifecycle-bound scopes (`viewModelScope`, `DisposableEffect` với `onDispose`), cấm giữ static reference tới `Context`/`View`.
+- **Zero-Crash, Zero-ANR, Zero-Leak Default Invariant & Anti-Try-Catch-Sprawl Mandate:**
+  - **Default Invariant:** The user does NOT need to repeat "ensure no crash, ANR, or leak" on every prompt. All AI-written code must achieve Zero-Crash, Zero-ANR, Zero-Leak standards by default.
+  - **Ban on Indiscriminate Try-Catch (Anti-Defensive Paranoia):** Forbid wrapping Presentation (Compose UI) or ViewModel/Domain layers in generic try-catch blocks to conceal underlying flaws.
+  - **Precise Error Boundaries:** Place error handling and result wrappers strictly at the single **I/O Boundary** (Network APIs, Room Database, File I/O, JSON Deserialization) via `AppResult<T>`.
+  - **Structural Safety:**
+    1. *Zero-Crash*: Enforced via Kotlin Null-Safety (`val`, `T?`, smart casts), exhaustive `when` without fallback `else ->`, and immutable State Flow (`_state.update { copy(...) }`).
+    2. *Zero-ANR*: Enforced via Main-Thread Purity (`Dispatchers.IO` for Disk/Network, `Dispatchers.Default` for heavy computation, non-blocking asynchronous Flow).
+    3. *Zero-Leak*: Enforced via lifecycle-bound scopes (`viewModelScope`, `DisposableEffect` with `onDispose`), strictly forbidding static references to `Context` or `View`.
 
-- **Proactive CTO/PO Advisory & Constructive Pushback Rule (QUY TẮC PHẢN BIỆN & CỐ VẤN CHỦ ĐỘNG CTO/PO):**
-  - Khi nhận yêu cầu, ý tưởng, thiết kế hoặc đoạn code từ người dùng, AI BẮT BUỘC phải soi xét dưới 2 lăng kính:
-    1. **CTO Lens (Performance & Architecture)**: Recomposition stability, Heap allocations trong Composable, Main-thread purity, Process Death recovery, và 19 Core Domains.
-    2. **PO Lens (Product & UI/UX)**: 5-State UI Matrix, Zero Dead-ends, Insets & Keyboard scrolling, 48dp Touch Targets, Non-linear 200% font scaling, và Visual hierarchy.
-  - CẤM TUYỆT ĐỐI "vâng lời thụ động" (Anti-Yes-Man). Phải chủ động chỉ ra các điểm nghẽn tiềm tàng và đề xuất giải pháp tối ưu vượt trội (Recommended Architecture) kèm so sánh trực quan Trước vs Sau theo cấu trúc:
-    - 🎯 **CTO/PO Assessment** (Đánh giá mục tiêu & giá trị nghiệp vụ)
-    - ⚠️ **Critical Risks & Bottlenecks** (Chỉ ra rủi ro hiệu năng, lag giật, hoặc trải nghiệm cụt luồng)
-    - 💡 **Recommended Architectural Solution** (Kiến trúc & mã nguồn mẫu tối ưu chuẩn mực)
+- **Proactive CTO/PO Advisory & Constructive Pushback Rule:**
+  - When reviewing requirements, designs, or code snippets, evaluate through two lenses:
+    1. **CTO Lens (Performance & Architecture)**: Recomposition stability, heap allocations in composables, main-thread purity, Process Death recovery, and the 19 Core Domains.
+    2. **PO Lens (Product & UI/UX)**: 5-State UI Matrix, zero dead-ends, insets and keyboard handling, 48dp touch bounds, non-linear 200% font scaling, and visual hierarchy.
+  - Strictly FORBID passive agreement (Anti-Yes-Man). Proactively identify potential bottlenecks and propose superior architectural alternatives with structured Before vs After comparisons:
+    - 🎯 **CTO/PO Assessment** (Strategic objectives & business value)
+    - ⚠️ **Critical Risks & Bottlenecks** (Performance hazards, stutter, or dead-end user flows)
+    - 💡 **Recommended Architectural Solution** (Optimized architecture & production-ready code)
 
-- **Mandatory Pre-Completion Verification (QUY TẮC BẮT BUỘC KIỂM THỬ):**
-  - Trước khi báo "xong", "hoàn thành" hay "báo task xong" cho bất kỳ yêu cầu nào, AI bắt buộc phải chạy lệnh kiểm thử thực tế (`./gradlew compileDebugKotlin`, `./gradlew test` hoặc tương đương) và thu thập kết quả `BUILD SUCCESSFUL` thành công 100%.
-  - Tuyệt đối không được chỉ dựa vào sửa file code mà đã báo xong task.
+- **Mandatory Pre-Completion Verification:**
+  - Prior to claiming completion on any task, execute real compiler verification (`./gradlew compileDebugKotlin`, `./gradlew test` or equivalent) and verify `BUILD SUCCESSFUL` output.
+  - Never declare tasks finished based solely on code edits without terminal verification.
 
-- **Clarification & Explicit Confirmation Flow Rule (QUY TẮC XÁC NHẬN KẾ HOẠCH BẮT BUỘC):**
-  - Khi nhận yêu cầu từ người dùng, nếu có bất kỳ điểm nào chưa rõ ràng thì AI phải chủ động đặt câu hỏi làm rõ.
-  - Khi đã hiểu rõ yêu cầu, AI phải trình bày tóm tắt ý hiểu và danh sách chi tiết các công việc cần làm, sau đó **chờ người dùng xác nhận/đồng ý rồi mới được tiến hành sửa code và thực thi**.
+- **Clarification & Explicit Confirmation Flow Rule:**
+  - If requirements are ambiguous or underspecified, proactively ask clarifying questions.
+  - Once requirements are understood, present a clear summary of understanding and task breakdown, then wait for explicit confirmation before mutating code.
 
-- **3rd-Party Library Consent & 16KB Page Alignment Audit Rule (QUY TẮC PHÊ DUYỆT THƯ VIỆN BÊN THỨ 3 & KIỂM TRA 16KB):**
-  - Tất cả các thư viện bên thứ 3 (3rd-party dependencies) muốn thêm vào dự án đều **bắt buộc phải đề xuất và xin phép người dùng trước trong bước lên Plan**.
-  - Phải kiểm tra và đảm bảo thư viện an toàn tuyệt đối (không chứa virus/mã độc) và tuân thủ tương thích chuẩn căn chỉnh trang nhớ 16KB (16KB Memory Page Alignment compliance trên Android 15+).
+- **3rd-Party Library Consent & 16KB Page Alignment Audit Rule:**
+  - All proposed third-party dependencies must be explicitly presented and approved in the planning phase.
+  - Must verify that libraries are secure, maintained, and compliant with 16KB Memory Page Alignment requirements on Android 15+.
 
-- **Plan Artifact Project Storage Location Rule (QUY TẮC LƯU FILE PLAN VÀO DỰ ÁN):**
-  - Tất cả các kế hoạch (Plan) sau khi lập xong phải được lưu thành file Markdown trực tiếp vào thư mục `plan/` trong thư mục gốc của project (ví dụ: `~/Documents/ViO/Base-Jetpack_2026/plan/`).
+- **Plan Artifact Project Storage Location Rule:**
+  - All approved execution plans must be stored as Markdown files directly within the project's `docs/plans/` directory.
 
-- **Mandatory Code Quality Gate (QUY TẮC KIỂM TRA CHẤT LƯỢNG CODE BẮT BUỘC):**
-  - Trước khi báo hoàn thành BẤT KỲ task nào liên quan đến UI, AI bắt buộc phải thực hiện **self-audit** theo 5 bước trong `05-design-system.md#ENFORCEMENT`:
-    1. Scan `Color(0x` trong presentation → phải dùng `AppTheme.colors.*`
-    2. Scan hardcoded `.dp` → phải dùng `AppSpacing.*`, `AppShapes.*`
-    3. Scan `Text("` hardcoded → phải dùng `stringResource(R.string.xxx)`
-    4. Scan raw `Text()` với inline styling → phải dùng typography composables (`Heading1`, `Body1`...)
-    5. Verify Dark Theme compatibility → cấm `Color.White`, `Color.Black` trực tiếp
-  - Nếu phát hiện bất kỳ vi phạm nào → code bị REJECT, phải sửa trước khi báo xong.
+- **Mandatory Code Quality Gate:**
+  - Prior to completing any UI-related task, conduct a self-audit against Design System rules:
+    1. Scan for raw `Color(0x` in presentation → must use `AppTheme.colors.*`
+    2. Scan for hardcoded `.dp` → must use `AppSpacing.*`, `AppShapes.*`
+    3. Scan for hardcoded `Text("` → must use `stringResource(R.string.xxx)`
+    4. Scan for unstyled `Text()` → must use typography composables (`Heading1`, `Body1`...)
+    5. Verify Dark Theme compatibility → ban hardcoded `Color.White` or `Color.Black`
+  - Any violation rejects the implementation until rectified.
 
-- **Mandatory Architecture Compliance Gate (QUY TẮC KIỂM TRA KIẾN TRÚC BẮT BUỘC):**
-  - Trước khi báo hoàn thành BẤT KỲ task nào liên quan đến ViewModel, AI bắt buộc phải kiểm tra theo `07-viewmodel.md#ENFORCEMENT`:
-    1. Tất cả ViewModel PHẢI kế thừa `BaseViewModel<State, Intent, Effect>` — cấm tuyệt đối `ViewModel()` trực tiếp.
-    2. Tất cả coroutine PHẢI dùng `launch {}` (safeLaunch) — cấm tuyệt đối `viewModelScope.launch {}`.
-    3. Xóa dead code (method không còn được gọi từ `onIntent()`).
-    4. `when (intent)` phải exhaustive, cấm `else ->`.
-  - Nếu phát hiện ViewModel vi phạm → AI PHẢI dừng lại, báo cáo vi phạm, và từ chối thêm code mới cho đến khi ViewModel được migrate.
+- **Mandatory Architecture Compliance Gate:**
+  - Prior to completing any ViewModel-related task, conduct an architecture compliance check:
+    1. All ViewModels must inherit from `BaseViewModel<State, Intent, Effect>` — raw `ViewModel()` is prohibited.
+    2. All coroutines must use `launch {}` (safeLaunch) — raw `viewModelScope.launch {}` is prohibited.
+    3. Remove dead code (methods not dispatched from `onIntent()`).
+    4. `when (intent)` must be exhaustive without fallback `else ->`.
+  - Violations must be reported and resolved before proceeding with new feature logic.
 
-- **Stub/Placeholder Detection Rule (QUY TẮC PHÁT HIỆN TÍNH NĂNG GIẢ LẬP):**
-  - Khi tạo hoặc sửa bất kỳ tính năng nào, AI bắt buộc phải kiểm tra:
-    1. Có sử dụng `delay()` để giả lập tiến trình không?
-    2. Có hardcoded data giả (fake results) thay vì gọi backend/usecase thật không?
-    3. Có bất kỳ `// TODO`, `// placeholder`, `// stub`, `// fake` nào không?
-  - Nếu tính năng là placeholder/giả lập: AI PHẢI thông báo rõ ràng cho người dùng và gắn label "⚠️ Simulation/Coming Soon" trong báo cáo.
-  - Tuyệt đối KHÔNG ĐƯỢC báo tính năng "hoàn thành" nếu backend logic chỉ là delay + fake data.
+- **Stub/Placeholder Detection Rule:**
+  - When constructing or modifying features, verify:
+    1. Is `delay()` used to simulate asynchronous progress?
+    2. Is hardcoded dummy data used instead of real backend/repository integration?
+    3. Are any `// TODO`, `// placeholder`, `// stub`, or `// fake` tags present?
+  - If placeholder logic is unavoidable, clearly notify the user and label it as "⚠️ Simulation/Coming Soon". Never report completion if backend logic relies on fake delays.
 
-- **Violation-First Refactoring Rule (QUY TẮC ƯU TIÊN SỬA VI PHẠM TRƯỚC):**
-  - Khi AI phát hiện file hiện tại có vi phạm Design System/Architecture (hardcoded colors, bypass safeLaunch, broken MVI...) trong quá trình làm task mới:
-    1. AI PHẢI báo cáo vi phạm cho người dùng.
-    2. Đề xuất sửa vi phạm kèm theo task hiện tại.
-    3. KHÔNG ĐƯỢC thêm code vi phạm mới vào file đã có vi phạm cũ mà không báo cáo.
+- **Violation-First Refactoring Rule:**
+  - If existing files contain violations (hardcoded colors, bypassed safeLaunch, broken MVI):
+    1. Report the violation to the user.
+    2. Propose remediation alongside the current task.
+    3. Never add new code on top of unresolved legacy violations without reporting.
 
-- **Mandatory No Auto-Commit Mandate (QUY TẮC TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý COMMIT):**
-  - AI tuyệt đối KHÔNG BAO GIỜ được tự ý thực thi lệnh `git commit` trong bất kỳ trường hợp nào.
-  - Mọi thao tác commit phải do người dùng tự tay thực hiện hoặc phê duyệt.
+- **Mandatory No Auto-Commit Mandate:**
+  - The AI must NEVER execute `git commit` autonomously under any circumstances.
+  - All commit actions must be explicitly initiated or approved by the developer.
 
-- **Mandatory Background Task Cleanup & Non-Lingering Process Rule (QUY TẮC BẮT BUỘC DỌN DẸP TIẾN TRÌNH NGẦM & ĐÓNG TASK NGAY KHI XONG):**
-  - Khi chạy bất kỳ lệnh CLI/Gradle nào trong background (background task), sau khi kiểm tra xong output hoặc xác thực build/test thành công, AI **bắt buộc phải kiểm tra `manage_task(Action="list")` và lập tức gọi `manage_task(Action="kill", TaskId=...)`** để đóng luồng I/O và giải phóng hoàn toàn tiến trình ngầm.
-  - Tuyệt đối KHÔNG ĐƯỢC để task ngầm ở trạng thái `running` kéo dài trên giao diện UI sau khi công việc đã hoàn thành.
-  - Khi chạy lệnh Gradle hoặc build tool, ưu tiên cấu hình timeout hoặc đóng subshell ngay khi lệnh trả về kết quả.
+- **Mandatory Background Task Cleanup & Non-Lingering Process Rule:**
+  - When running background CLI or Gradle tasks, check `manage_task(Action="list")` upon output verification and call `manage_task(Action="kill", TaskId=...)` immediately to free resources.
+  - Never allow lingering background tasks in `running` state on the UI after execution completes.
 
-- **Project-Scoped Auto-Approval & Strict Out-of-Project Isolation Mandate (QUY TẮC ỦY QUYỀN TRONG DỰ ÁN & CÁCH LY TUYỆT ĐỐI NGOÀI DỰ ÁN):**
-  - **Trong phạm vi Dự án (In-Project Workspace):** Sau khi Kế hoạch (Plan) đã được người dùng phê duyệt, AI được phép tự động tạo và chỉnh sửa file mã nguồn trong các thư mục của dự án (`app/src/main/`, `domain/`, `data/`, `presentation/`, `di/`, `core/`, `plan/`) thông qua các công cụ Native (`write_to_file`, `replace_file_content`) mà không cần hỏi lại từng file đơn lẻ.
-  - **Chấm dứt Shell File Creation:** CẤM TUYỆT ĐỐI việc dùng `run_command` chạy các lệnh shell redirect (`cat << 'EOF' > ...`, `echo >`, `tee`) để ghi mã nguồn, nhằm triệt tiêu 100% popup xin quyền shell phiền phức.
-  - **Cách ly tuyệt đối Ngoài Dự án (Strict Out-of-Project Boundary):** AI TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý tạo, sửa, ghi đè hoặc xóa bất kỳ file nào nằm NGOÀI THƯ MỤC DỰ ÁN (như file hệ thống OS, `~/.zshrc`, `~/.bash_profile`, Desktop, các thư mục cá nhân). Mọi thao tác ngoài project bắt buộc phải dừng lại và có sự đồng ý rõ ràng từ người dùng.
+- **Project-Scoped Auto-Approval & Strict Out-of-Project Isolation Mandate:**
+  - **In-Project Workspace:** Once a plan is approved, the AI is authorized to create and modify source files inside project boundaries (`app/src/main/`, `domain/`, `data/`, `presentation/`, `di/`, `core/`) using native tools (`write_to_file`, `replace_file_content`).
+  - **Eliminate Shell File Creation:** Strictly FORBID shell redirection commands (`cat << 'EOF' > ...`, `echo >`, `tee`) for file mutations to prevent permission popups.
+  - **Strict Out-of-Project Boundary:** The AI is strictly FORBIDDEN from modifying, creating, or deleting any files outside the project workspace (system files, `~/.zshrc`, `~/.bash_profile`, Desktop, user directories). Any external operation requires explicit approval.
 
 ---
 

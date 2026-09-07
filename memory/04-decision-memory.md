@@ -419,7 +419,7 @@ Create conflicting decisions without explanation.
 - [2026-07] **Ktor over Retrofit** | Context: KMP-ready, coroutine-native, also used for local WebShare server | Alternatives: Retrofit, OkHttp
 - [2026-08] **Unified FileActionBottomSheet** | Context: Consistent action menu across all screens | Alternatives: Per-screen action menus
 - [2026-08] **Smart password detection for archives** | Context: Better UX by hiding password field when not needed | Alternatives: Always show password field
-- [2026-09] **Matt Pocock Skills Synthesis (Ubiquitous Language, Tracer Bullets, Living ADR, ask-cto Meta-Router)** | Context: Tiếp thu tinh hoa chống Vibe Coding từ mattpocock/skills; chuẩn hóa `CONTEXT.md` loại bỏ văn phong lan man ("20 words where 1 will do"), bắt buộc phân rã task lát cắt dọc (Tracer Bullets) thay vì tầng ngang cô lập, tự động hóa trích xuất ADR vào Git, và bổ sung meta-router `/ask-cto` điều phối 49 skills và 28 gates | Alternatives: Giữ nguyên quy trình cũ, hoặc cài đặt thô các skill TypeScript không tương thích với Android Native
+- [2026-09] **Matt Pocock Skills Synthesis (Ubiquitous Language, Tracer Bullets, Living ADR, ask-cto Meta-Router)** | Context: Integrated anti-vibe coding methodology from mattpocock/skills; standardized `CONTEXT.md` to eliminate verbosity ("20 words where 1 will do"), mandated vertical slicing (Tracer Bullets) over horizontal isolation, automated ADR extraction to Git, and added `/ask-cto` meta-router to coordinate 49 skills and 28 gates | Alternatives: Retaining legacy workflow or raw TypeScript skills incompatible with Native Android
 
 
 ---

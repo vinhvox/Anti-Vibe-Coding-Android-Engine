@@ -3,8 +3,8 @@ name: feature-development
 description: Phase 5 workflow to execute the actual coding of features incrementally across Data, Domain, Presentation, Navigation, and DI layers based on an approved plan.
 triggers:
   - "feature development"
-  - "triển khai feature"
-  - "viết code feature"
+  - "implement feature"
+  - "write feature code"
 prerequisites:
   - ".antigravity/workflow/04-implementation-planning.md"
   - "./.antigravity/plan/<task_name>_plan.md"

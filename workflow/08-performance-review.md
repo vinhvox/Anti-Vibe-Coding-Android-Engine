@@ -3,7 +3,7 @@ name: performance-review
 description: Phase 8 workflow to objectively measure, profile, and evaluate app performance across Compose recomposition, Memory, CPU, Database, Network, and Battery usage.
 triggers:
   - "performance review"
-  - "kiểm tra hiệu năng"
+  - "performance review"
   - "profile app"
 prerequisites:
   - ".antigravity/workflow/07-testing-validation.md"

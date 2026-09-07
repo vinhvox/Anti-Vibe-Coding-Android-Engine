@@ -35,7 +35,7 @@ All feature requests MUST execute the 13-Phase Master Workflow defined in `.skil
         ↓
 5. Dedicated Plan File Creation (./.antigravity/plan/<task_name>_plan.md)
         ↓
-6. User Approval Gate (/plan đồng ý)
+6. User Approval Gate (/plan approval)
         ↓
 7. Modular Layered Implementation
         ↓

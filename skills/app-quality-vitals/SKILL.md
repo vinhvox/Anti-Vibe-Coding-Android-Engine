@@ -22,11 +22,11 @@ graph TD
         J["Slow Rendering Frames (Bad: >= 50% | Mandate: < 1%)"]
     end
 
-    subgraph PENALTIES["⚠️ HẬU QUẢ VI PHẠM VITALS"]
-        P1["Bị bóp hiển thị tìm kiếm & gợi ý (Demoted Ranking)"]
-        P2["Bị tước quyền xuất hiện trên mục Thịnh hành (Featuring)"]
-        P3["Cảnh báo đỏ trên Play Store: 'App này thường xuyên bị lỗi'"]
-        P4["Tỷ lệ gỡ cài đặt (Uninstall Rate) tăng vọt"]
+    subgraph PENALTIES["⚠️ VITALS VIOLATION PENALTIES"]
+        P1["Demoted Search & Recommendation Ranking"]
+        P2["Loss of Store Featuring Eligibility"]
+        P3["Red Warning on Play Store: 'This app frequently crashes'"]
+        P4["Skyrocketing Uninstall Rates"]
     end
 
     C --> PENALTIES
@@ -135,37 +135,37 @@ sequenceDiagram
     participant AdEngine as SplashAdManager
     participant Nav as Router (Navigation 3)
 
-    User->>AndroidOS: Mở App (Cold Start)
+    User->>AndroidOS: Open App (Cold Start)
     AndroidOS->>MainAct: onCreate() -> installSplashScreen()
-    MainAct->>MainAct: Nạp Core DI & Theme (< 150ms)
-    MainAct->>AndroidOS: setKeepOnScreenCondition(false) [TẮT SYSTEM SPLASH]
-    AndroidOS-->>User: Hiển thị ngay frame đầu tiên (TTID < 300ms đạt chuẩn Vitals)
+    MainAct->>MainAct: Load Core DI & Theme (< 150ms)
+    MainAct->>AndroidOS: setKeepOnScreenCondition(false) [DISMISS SYSTEM SPLASH]
+    AndroidOS-->>User: Render first frame immediately (TTID < 300ms Vitals compliant)
 
     MainAct->>ComposeUI: Render SplashRoute (Logo + Brand Animation + Status)
     ComposeUI->>VM: Intent(InitializeApp)
 
-    par Luồng 1: Đồng bộ Remote Config (Timeout: 2.5s)
+    par Stream 1: Sync Remote Config (Timeout: 2.5s)
         VM->>Config: fetchAndActivate(timeout = 2500ms)
-        Config-->>VM: Config Synced (hoặc Default Fallback)
-    and Luồng 2: Tải trước Database / Local Preferences
+        Config-->>VM: Config Synced (or Default Fallback)
+    and Stream 2: Preload Database / Local Preferences
         VM->>VM: Warm up caches
     end
 
-    alt Ad Bị Tắt hoặc User Mới (First Launch)
+    alt Ad Disabled or New User (First Launch)
         VM->>Nav: Effect(NavigateToHome / NavigateToOnboarding)
-    else Ad Được Bật & User Cũ (Returning User)
+    else Ad Enabled & Returning User
         VM->>AdEngine: loadSplashAd(timeout = 3500ms)
-        alt Load Thành Công
+        alt Load Succeeded
             AdEngine-->>VM: AdReady
             VM->>ComposeUI: Effect(ShowAd)
             ComposeUI->>AdEngine: show(Activity)
-            AdEngine-->>User: Hiển thị Quảng cáo Toàn màn hình
-            User->>AdEngine: Đóng Quảng cáo (Dismiss)
+            AdEngine-->>User: Display Fullscreen Ad
+            User->>AdEngine: Dismiss Ad
             AdEngine->>VM: onAdDismissed()
-            VM->>Nav: Effect(NavigateToHome) [Pop Splash khỏi Backstack]
-        else Hết Timeout hoặc Load Lỗi
+            VM->>Nav: Effect(NavigateToHome) [Pop Splash from Backstack]
+        else Timeout or Load Error
             AdEngine-->>VM: Timeout / Error
-            VM->>Nav: Effect(NavigateToHome) [Vào Home ngay, không để user chờ]
+            VM->>Nav: Effect(NavigateToHome) [Proceed to Home immediately, zero user stall]
         end
     end
 ```
@@ -230,7 +230,7 @@ class SplashViewModel(
             }
 
             // 3. Load Ad with 3.5s Timeout
-            setState { copy(statusText = "Đang tải dữ liệu...", isAdLoading = true) }
+            setState { copy(statusText = "Loading application resources...", isAdLoading = true) }
             val adResult = withTimeoutOrNull(3500L) {
                 adManager.loadSplashAd()
             }

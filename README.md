@@ -7,13 +7,13 @@
 [![Platform](https://img.shields.io/badge/Platform-Modern_Android_2026_%7C_KMP-green.svg)](https://developer.android.com)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose_M3-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![Adaptive HAL](https://img.shields.io/badge/Stack-Hilt_%7C_Koin_%7C_Retrofit_%7C_Ktor-orange.svg)](#-adaptive-stack-architecture-hardware-abstraction-layer)
-[![Multi-Role Council](https://img.shields.io/badge/Council-10_Specialized_Roles-9C27B0.svg)](#-the-multi-role-engineering-syndicate-hội-đồng-kỹ-sư-cấp-cao-đa-vai-trò)
+[![Multi-Role Council](https://img.shields.io/badge/Council-10_Specialized_Roles-9C27B0.svg)](#-the-multi-role-engineering-syndicate)
 [![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E28-EA4335.svg)](#-the-28-quality-gates-e1--e28-deep-dive)
 [![Vitals](https://img.shields.io/badge/Android_Vitals-Zero--Crash_%7C_16KB_Safe-34A853.svg)](rules/27-app-quality-vitals.md)
 
 ---
 
-## 👥 THE MULTI-ROLE ENGINEERING SYNDICATE (HỘI ĐỒNG KỸ SƯ CẤP CAO ĐA VAI TRÒ)
+## 👥 THE MULTI-ROLE ENGINEERING SYNDICATE
 
 Anti-Vibe-Coding-Android-Engine **is not a single monolithic AI persona**. It is an **Executive Engineering Syndicate** composed of **10 specialized virtual engineering roles**.
 
@@ -39,20 +39,20 @@ flowchart TD
     Syndicate <--> Project
 ```
 
-### 📋 Bảng Phân Nhiệm 10 Vai Trò Chuyên Trách
+### 📋 10-Role Responsibility & Governance Matrix
 
-| # | Chuyên Gia / Vai Trò | Lăng Kính & Trách Nhiệm Cốt Lõi | Quy Tắc & Kỹ Năng Phụ Trách | Bất Biến & Tiêu Chuẩn Nghiệm Thu |
+| # | Specialist / Role | Cognitive Lens & Core Responsibility | Governed Rules & Skills | Invariants & Acceptance Standards |
 |:---|:---|:---|:---|:---|
-| **1** | **Chief Technology Officer (CTO) & Principal Architect** | Kiến trúc tổng thể, ranh giới Clean Architecture, kiểm soát nợ kỹ thuật (tech debt), cố vấn và phản biện chủ động (constructive pushback). | `rules/00-system-mandate.md`<br/>`rules/01-architecture.md`<br/>`rules/01-tech-stack.md` | Single Source of Truth (SSOT), cấm rò rỉ Presentation sang Data, tự động xuất Living ADR vào `docs/adr/`. |
-| **2** | **Product Owner (PO) & Product Strategist** | Tính khả thi sản phẩm (product viability), trải nghiệm người dùng liền mạch không góc chết, tối ưu tỷ lệ chuyển đổi. | `memory/06-user-preference-memory.md`<br/>`skills/spec-driven-development` | **5-State UI Matrix** (Empty, Loading, Error, Content, Offline), vùng chạm tối thiểu 48x48dp, phóng to chữ 200% không vỡ layout. |
-| **3** | **Lead UI/UX Architect & Product Design Director** | Xóa sổ hoàn toàn giao diện AI thô cứng; thiết lập chuẩn mực thẩm mỹ cao cấp, chiều sâu quang học sang trọng. | `rules/36-ui-ux-design-standard.md`<br/>`skills/ui-ux-pro-max`<br/>**Gate E27** | Viền mỏng 0.5dp bán trong suốt, phối lớp Tonal Surface, nhịp lưới 8-pt, typography 3 tầng, cấm 100% nền tím neon và biscuit pills. |
-| **4** | **Google Play Vitals & Zero-Crash Principal Engineer** | Tối ưu hóa chỉ số Vitals trên Google Play Console, triệt tiêu crash và ANR ngầm, tăng tốc khởi động ứng dụng. | `rules/27-app-quality-vitals.md`<br/>`rules/19-build.md`<br/>`skills/app-quality-vitals` | Cold start TTID < 500ms, TTFD < 800ms, 2-Tier Hybrid Splash, Baseline Profiles, Zero-Crash & Zero-ANR Invariants. |
-| **5** | **Low-Level Memory & ART Runtime Specialist** | Kỷ luật bộ nhớ Stack vs Heap, triệt tiêu Garbage Collection (GC) churn trong vòng lặp Composable, tối ưu 60/120 FPS. | `rules/26-stack-heap-memory.md`<br/>`skills/stack-heap-memory` | Cấm cấp phát Object trong render loop, bắt buộc `@JvmInline value class` cho IDs, Primitive State, căn chỉnh trang nhớ 16KB. |
-| **6** | **Principal Modular Core & SDK Architect** | Thiết kế module hóa cao cấp, cô lập thư viện dùng chung, bảo vệ app chủ khỏi rủi ro crash từ SDK bên thứ 3. | `rules/34-sdk-modular-architecture.md`<br/>`skills/sdk-modular-engineering`<br/>**Gate E25** | Mọi API là `internal` theo mặc định, cung cấp sẵn `:testing` fakes, zero ContentProvider auto-init, tương thích ngược nhị phân (ABI). |
-| **7** | **Staff QA & Test Automation Architect** | Phát triển hướng kiểm thử (TDD), loại bỏ hoàn toàn hiện tượng test chập chờn (flaky tests), kiểm thử luồng bất đồng bộ. | `rules/20-testing.md`<br/>`rules/22-superpowers-tdd.md`<br/>`rules/30-build-runtime-verification.md` | Chu trình Red-Green-Refactor, kiểm thử Flow bằng Turbine, kiểm tra Koin graph (`verify()`), bắt buộc build terminal thật trước khi bàn giao. |
-| **8** | **Senior Android Security & Cryptography Specialist** | Bảo vệ dữ liệu nhạy cảm ở trạng thái lưu trữ (at rest) và truyền tải (in transit), chống tấn công dịch ngược. | `rules/17-security.md`<br/>Android Keystore & Crypto | Kho khóa phần cứng Android Keystore, `FLAG_SECURE` trên màn hình tài chính/vault, `EncryptedSharedPreferences`, cấm cleartext HTTP. |
-| **9** | **Domain Modeler & Ubiquitous Language Guardian** | Thống nhất ngôn ngữ nghiệp vụ giữa Product và Code, triệt tiêu văn mẫu sáo rỗng, triển khai lát cắt dọc mỏng. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Từ điển nghiệp vụ sống (`CONTEXT.md`), ánh xạ 1-1 khái niệm sang code symbols, **Tracer-Bullet Vertical Slicing**, giao tiếp súc tích. |
-| **10**| **Chief Engineering Router & Meta-Orchestrator** | Chẩn đoán tức thời các triệu chứng kỹ thuật và định tuyến chính xác đến chuyên gia & cổng kiểm soát tương ứng. | `skills/ask-cto/SKILL.md`<br/>`skills/dispatching-parallel-agents` | Định tuyến triệu chứng (drop FPS, memory leak, process death, offline sync) sang đúng 1-2 skills và quality gates phù hợp mà không gây ngợp context. |
+| **1** | **Chief Technology Officer (CTO) & Principal Architect** | Overall architecture, Clean Architecture boundaries, technical debt governance, proactive technical advisory & constructive pushback (**Anti-Yes-Man Protocol**). | `rules/00-system-mandate.md`<br/>`rules/01-architecture.md`<br/>`rules/01-tech-stack.md` | Single Source of Truth (SSOT), strictly forbids presentation leaks into data layer, auto-extracts Living ADRs into `docs/adr/`. |
+| **2** | **Product Owner (PO) & Product Strategist** | Product viability, seamless user experience with zero dead-ends, conversion rate optimization. | `memory/06-user-preference-memory.md`<br/>`skills/spec-driven-development` | **5-State UI Matrix** (Empty, Loading, Error, Content, Offline), minimum 48x48dp touch bounds, non-linear 200% font scaling defense. |
+| **3** | **Lead UI/UX Architect & Product Design Director** | Completely eliminates rigid AI aesthetic tropes (**Anti-AI-Slop**); enforces premium visual depth and human-grade craft. | `rules/36-ui-ux-design-standard.md`<br/>`skills/ui-ux-pro-max`<br/>**Gate E27** | Subtle 0.5dp translucent borders, layered tonal surfaces, 8-pt grid visual rhythm, 3-tier typography, 0% neon purple glows or vibrating pills. |
+| **4** | **Google Play Vitals & Zero-Crash Principal Engineer** | Optimizes Google Play Console vitals, eliminates silent crashes and background ANRs, accelerates cold startup. | `rules/27-app-quality-vitals.md`<br/>`rules/19-build.md`<br/>`skills/app-quality-vitals` | Cold start TTID < 500ms, TTFD < 800ms, 2-Tier Hybrid Splash Orchestration, Baseline Profiles, Zero-Crash & Zero-ANR invariants. |
+| **5** | **Low-Level Memory & ART Runtime Specialist** | Stack vs Heap memory discipline, eliminates Garbage Collection (GC) churn in Composable render loops, optimizes 60/120 FPS. | `rules/26-stack-heap-memory.md`<br/>`skills/stack-heap-memory` | Zero object allocations in render loops, mandatory `@JvmInline value class` for IDs, primitive State, 16KB memory page alignment. |
+| **6** | **Principal Modular Core & SDK Architect** | Advanced modular design, shared library isolation, host app protection from 3rd-party SDK crashes. | `rules/34-sdk-modular-architecture.md`<br/>`skills/sdk-modular-engineering`<br/>**Gate E25** | All APIs `internal` by default, bundled `:testing` fakes, zero ContentProvider auto-init, binary backward compatibility (ABI). |
+| **7** | **Staff QA & Test Automation Architect** | Test-Driven Development (TDD), eliminates flaky tests, asynchronous Flow stream testing. | `rules/20-testing.md`<br/>`rules/22-superpowers-tdd.md`<br/>`rules/30-build-runtime-verification.md` | Red-Green-Refactor lifecycle, Flow testing with Turbine, DI graph validation (`verify()`), mandatory real terminal build gate (`BUILD SUCCESSFUL`). |
+| **8** | **Senior Android Security & Cryptography Specialist** | Protects sensitive data at rest and in transit, guards against reverse engineering and tampering. | `rules/17-security.md`<br/>Android Keystore & Crypto | Hardware Android Keystore, `FLAG_SECURE` on sensitive/vault screens, `EncryptedSharedPreferences`, absolute ban on cleartext HTTP. |
+| **9** | **Domain Modeler & Ubiquitous Language Guardian** | Unifies business vocabulary between Product and Code, eliminates boilerplate fluff, executes razor-thin vertical slices. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Living domain dictionary (`CONTEXT.md`), 1-to-1 concept-to-symbol mapping, **Tracer-Bullet Vertical Slicing**, zero-fluff direct communication. |
+| **10**| **Chief Engineering Router & Meta-Orchestrator** | Instant diagnosis of technical symptoms and precise routing to the exact specialist skills & quality gates. | `skills/ask-cto/SKILL.md`<br/>`skills/dispatching-parallel-agents` | Routes symptoms (dropped FPS, memory leak, process death, offline sync) to the exact 1-2 skills and quality gates without context bloat. |
 
 ---
 
@@ -80,7 +80,7 @@ In recent years, AI coding assistants have introduced a massive productivity par
 | **Feature Delivery** | Injects `delay(1000)` and fake dummy lists, then claims "Feature works perfectly!". | **Stub/Placeholder Ban:** Scans and forbids fake stubs. Binds real DataSources, repositories, and Room entities. |
 | **UI/UX Design** | Purple-on-dark neon glowing cards, vibrating pills, unkeyed lists that stutter at 20 FPS. | **Rule 36 & UI/UX Pro Max:** 0.5dp subtle borders, tonal surfaces, 8-pt grid, explicit `key` + `contentType` for 60/120 FPS. |
 | **Platform Defense** | App crashes on screen rotation, keyboard covers input fields, rejected on Android 15+ (16KB). | **19 Core Domains:** `SavedStateHandle` process death survival, `.imePadding()`, 16KB memory alignment flags. |
-| **Verification Gate** | "I have completed all changes!" (Zero compilation performed, project fails to build). | **Real Compiler Gate:** Bắt buộc chạy `./gradlew compileDebugKotlin` / `test` và có log `BUILD SUCCESSFUL`. |
+| **Verification Gate** | "I have completed all changes!" (Zero compilation performed, project fails to build). | **Real Compiler Gate:** Mandatory execution of `./gradlew compileDebugKotlin` / `test` with verified `BUILD SUCCESSFUL` output. |
 | **Tech Stack Policy** | Dictates "You must use library X", breaking existing code. | **Adaptive Stack HAL:** Auto-detects Hilt vs Koin, Retrofit vs Ktor, and enforces safety on *your* stack. |
 
 ---
