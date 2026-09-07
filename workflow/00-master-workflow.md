@@ -127,18 +127,23 @@ Before parsing requirements or retrieving project memory, the AI MUST profile th
    - If available, read this single compressed file to instantly ingest:
      - 100% Tech Stack & Architecture
      - 19 Core Engineering Domains & Defense Rules
-     - Drop-in Code Blueprints (ViewModel, Screen, Koin, SSOT Repository)
+     - Drop-in Code Blueprints (ViewModel, Screen, DI Driver: Koin/Hilt, SSOT Repository)
      - Anti-Patterns (DOs & DON'Ts)
-     - Quality Enforcement Gates (E1 — E21)
+     - Quality Enforcement Gates (E1 — E28)
    - *Result: Establish full context in ~2 seconds with ~5.4K tokens instead of reading 147 separate files!*
 
 2. **Working Directory & Project Root**:
    - Check `pwd` and locate the root project folder.
    - Detect project type: Android (Gradle), Kotlin Multiplatform (KMP), Flutter (`pubspec.yaml`), iOS (`Package.swift` / Xcode), or Web.
 
-3. **Stack & Configuration Profiling (If digest not present)**:
-   - Inspect build configuration (`settings.gradle.kts`, `build.gradle.kts`, `AndroidManifest.xml`).
-   - Identify active libraries: Jetpack Compose / Material 3 version, Navigation 3 / Voyager / Jetpack Navigation, Koin / Hilt, Ktor / Retrofit, Room / SQLDelight / DataStore, Coroutines.
+3. **Stack & Configuration Profiling (Adaptive Driver Binding)**:
+   - Inspect build configuration (`settings.gradle.kts`, `build.gradle.kts`, `libs.versions.toml`, `AndroidManifest.xml`).
+   - Identify active stack drivers:
+     - **DI Driver:** Koin OR Hilt / Dagger
+     - **Networking Driver:** Ktor Client OR Retrofit + OkHttp
+     - **Navigation Driver:** Navigation 3 OR Jetpack Navigation Compose OR Voyager/Decompose
+     - **Storage Driver:** Room Database OR SQLDelight OR DataStore
+   - Bind the active drivers into the current Session Context so all subsequent workflows generate code aligned with the project's existing architecture.
    - Detect module structure (`:app`, `:core`, `:feature`, `:domain`, `:data`, `:di`).
 
 4. **Active Context Alignment**:

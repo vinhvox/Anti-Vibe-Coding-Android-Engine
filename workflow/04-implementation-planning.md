@@ -147,72 +147,38 @@ Preferred order:
 
 Infrastructure
 
-↓
+# Step 3 — Define Implementation Order (Tracer-Bullet Vertical Slicing)
 
-Data
+Avoid horizontal layering (e.g. implementing all DAOs, then all Repositories, then all UI). Horizontal slicing leaves the system untested and unintegrated until the very end.
 
-↓
-
-Domain
-
-↓
-
-Presentation
-
-↓
-
-Navigation
-
-↓
-
-Testing
-
-Avoid building UI before business logic exists.
+Instead, enforce **Tracer-Bullet Vertical Slicing**:
+- **Slice 1 (Core Tracer Bullet):** End-to-end path for a single primary user action:
+  `UI Component ➔ ViewModel ➔ UseCase ➔ Repository ➔ Local/Remote DataSource`. Verify it works immediately.
+- **Slice 2 (Network & Resilience):** Add remote synchronization, offline caching, and error boundary handling.
+- **Slice 3 (UX Polish & Edge Cases):** Add 5-State UI Matrix (Empty, Loading Skeleton, Error with Retry, Offline badge).
 
 ---
 
 # Step 4 — Split into Tasks
 
-Break implementation into small independent tasks.
+Break implementation into bite-sized, independently verifiable tasks.
 
-Each task should:
-
-- Have one responsibility.
-- Be independently testable.
-- Be independently reviewable.
-- Be reversible.
-
-Prefer many small tasks over one large task.
+Each task MUST:
+- Specify the active stack driver (e.g. Koin or Hilt, Ktor or Retrofit).
+- Touch specific files across layers rather than an entire horizontal tier.
+- Be independently testable and reviewable.
+- End with a clear verification step (automated test or compile check).
 
 ---
 
-# Step 5 — Define Milestones
+# Step 5 — Define Milestones & Quality Gates
 
-Group related tasks into milestones.
+Group tasks into functional vertical milestones.
 
-Example:
-
-Milestone 1
-
-Data Layer
-
-Milestone 2
-
-Domain Layer
-
-Milestone 3
-
-Presentation
-
-Milestone 4
-
-Navigation
-
-Milestone 5
-
-Testing
-
-Each milestone should produce a working state.
+Each milestone must satisfy:
+1. **Working State:** Delivers a functional, runnable slice of the product.
+2. **Quality Gates Verification:** Passes relevant gates from `rules/21-enforcement-engine.md` (Gates E1 to E28).
+3. **Compiler Evidence:** Real Gradle build verification (`./gradlew compileDebugKotlin` / `test`).
 
 ---
 

@@ -83,16 +83,18 @@ Ready
 
 ---
 
-# Step 1 — Build Validation
+# Step 1 — Build Validation (Mandatory Real Compiler Execution)
 
-Verify:
+The AI MUST execute real compilation and testing commands in the terminal:
+- `./gradlew compileDebugKotlin` (Verify 0 compilation errors)
+- `./gradlew testDebugUnitTest` (Verify unit tests pass)
+- In KMP projects: `./gradlew compileCommonMainKotlinMetadata`
 
-- Project builds successfully
-- No compilation errors
-- No missing dependencies
-- No generated code issues
+**ABSOLUTE INVARIANT:**
+NEVER declare validation complete based solely on editing files.
+A task is only validated when terminal output explicitly confirms `BUILD SUCCESSFUL`.
 
-Build success is the minimum requirement.
+Build success with ZERO errors is the non-negotiable baseline.
 
 ---
 

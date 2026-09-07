@@ -264,31 +264,45 @@ Only introduce technical debt with explicit justification.
 
 ---
 
+# Step 7 — Enforcement Engine Audit (Gates E1 to E28)
+
+The reviewer MUST audit all modified files against the 28 Quality Gates defined in `rules/21-enforcement-engine.md`:
+
+- **Gates E1 — E5 (Architecture):** Layer boundaries respected, BaseViewModel used, MVI Intent purity.
+- **Gates E6 — E10 (State & Navigation):** Navigation 3 or type-safe routes used, 400ms debounce, SSOT state flow.
+- **Gates E11 — E15 (Compose & Design System):** 100% semantic `AppTheme` tokens (zero hardcoded colors or dp), explicit `key` and `contentType` on Lazy Layouts, stable parameters.
+- **Gates E16 — E20 (Async & Concurrency):** Main-thread purity, structured `safeLaunch` scopes, non-blocking I/O.
+- **Gate E21 (Enforcement Audit):** Comprehensive audit confirmation.
+- **Gate E27 (World-Class Aesthetic):** Zero purple-on-dark neon clichés, 0.5dp subtle borders, tonal surfaces, 8-pt grid.
+- **Gate E28 (Ubiquitous Language):** Domain precision, zero fluff.
+
+---
+
 # Review Checklist
 
 Before approving implementation:
 
-□ Architecture preserved
+□ Architecture preserved and layer boundaries respected
 
-□ Rules followed
+□ Active Stack Drivers (Koin/Hilt, Ktor/Retrofit) properly implemented
 
-□ No duplicate code
+□ Quality Gates E1 — E28 verified with ZERO violations
 
-□ Clear naming
+□ No duplicate code or lazy try-catch sprawl
 
-□ Correct state management
+□ Clear, self-documenting naming
 
-□ Error handling complete
+□ Correct state management (StateFlow immutable read-only exposure)
 
-□ Performance acceptable
+□ Compose recomposition stability verified (explicit `key` on LazyColumn/Row)
 
-□ Security verified
+□ UI/UX Pro Max verified (0.5dp subtle borders, 8-pt grid, anti-AI-slop)
 
-□ DI correct
+□ Error handling complete at I/O Boundary (`AppResult<T>`)
 
-□ Tests updated
+□ Real build verification succeeded (`./gradlew compileDebugKotlin` / `test`)
 
-□ Documentation updated
+□ Documentation and Living Plans updated
 
 ---
 
