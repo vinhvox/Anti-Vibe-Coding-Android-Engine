@@ -1,13 +1,58 @@
 # 🚀 Anti-Vibe-Coding-Android-Engine
-### The Pragmatic CTO & Android Principal Architect AI Cognitive Operating System
-*Zero-Crash. Zero-ANR. Zero-Leak. Zero-AI-Slop. 60/120 FPS by Default.*
+### The Multi-Role AI Engineering Syndicate & Cognitive Operating System for Android
+*Zero-Crash. Zero-ANR. Zero-Leak. Zero-AI-Slop. 60/120 FPS by Default.*  
+**CTO • Product Owner • UI/UX Director • Vitals Principal • Memory Specialist • Security Architect • Modular Architect • Staff QA**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Modern_Android_2026_%7C_KMP-green.svg)](https://developer.android.com)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose_M3-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![Adaptive HAL](https://img.shields.io/badge/Stack-Hilt_%7C_Koin_%7C_Retrofit_%7C_Ktor-orange.svg)](#-adaptive-stack-architecture-hardware-abstraction-layer)
+[![Multi-Role Council](https://img.shields.io/badge/Council-10_Specialized_Roles-9C27B0.svg)](#-the-multi-role-engineering-syndicate-hội-đồng-kỹ-sư-cấp-cao-đa-vai-trò)
 [![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E28-EA4335.svg)](#-the-28-quality-gates-e1--e28-deep-dive)
 [![Vitals](https://img.shields.io/badge/Android_Vitals-Zero--Crash_%7C_16KB_Safe-34A853.svg)](rules/27-app-quality-vitals.md)
+
+---
+
+## 👥 THE MULTI-ROLE ENGINEERING SYNDICATE (HỘI ĐỒNG KỸ SƯ CẤP CAO ĐA VAI TRÒ)
+
+Anti-Vibe-Coding-Android-Engine **is not a single monolithic AI persona**. It is an **Executive Engineering Syndicate** composed of **10 specialized virtual engineering roles**.
+
+Depending on the prompt, task, symptom, or project lifecycle phase, the AI dynamically switches its cognitive lens, active skills, and enforcement gates to collaborate like an entire senior engineering department:
+
+```mermaid
+flowchart TD
+    Project(["📱 Your Android Project Codebase"])
+    
+    subgraph Syndicate ["👥 The Multi-Role Engineering Syndicate"]
+        CTO["1. Chief Technology Officer (CTO)<br/>Architecture & Tech Stack Governance"]
+        PO["2. Product Owner (PO)<br/>5-State UI, Defensiveness & User Empathy"]
+        UIUX["3. Lead UI/UX Architect<br/>Rule 36 & UI/UX Pro Max: Anti-AI-Slop"]
+        Vitals["4. Android Vitals Principal<br/>Zero-Crash, TTID < 500ms, Baseline Profiles"]
+        Memory["5. Low-Level Memory Specialist<br/>Stack vs Heap, 16KB Alignment, Value Classes"]
+        SDK["6. Modular Core & SDK Architect<br/>Minimal Surface, :testing Fakes, ABI Defense"]
+        QA["7. Staff QA & Test Architect<br/>TDD Red-Green, Turbine, Real Gradle Gate"]
+        Security["8. Security & Cryptography Specialist<br/>Keystore, FLAG_SECURE, Vault Encryption"]
+        Domain["9. Ubiquitous Language Guardian<br/>Rule 37, CONTEXT.md, 1-to-1 Domain Mapping"]
+        Router["10. Chief Meta-Router (ask-cto)<br/>Instant Technical Symptom Routing"]
+    end
+    
+    Syndicate <--> Project
+```
+
+### 📋 Bảng Phân Nhiệm 10 Vai Trò Chuyên Trách
+
+| # | Chuyên Gia / Vai Trò | Lăng Kính & Trách Nhiệm Cốt Lõi | Quy Tắc & Kỹ Năng Phụ Trách | Bất Biến & Tiêu Chuẩn Nghiệm Thu |
+|:---|:---|:---|:---|:---|
+| **1** | **Chief Technology Officer (CTO) & Principal Architect** | Kiến trúc tổng thể, ranh giới Clean Architecture, kiểm soát nợ kỹ thuật (tech debt), cố vấn và phản biện chủ động (constructive pushback). | `rules/00-system-mandate.md`<br/>`rules/01-architecture.md`<br/>`rules/01-tech-stack.md` | Single Source of Truth (SSOT), cấm rò rỉ Presentation sang Data, tự động xuất Living ADR vào `docs/adr/`. |
+| **2** | **Product Owner (PO) & Product Strategist** | Tính khả thi sản phẩm (product viability), trải nghiệm người dùng liền mạch không góc chết, tối ưu tỷ lệ chuyển đổi. | `memory/06-user-preference-memory.md`<br/>`skills/spec-driven-development` | **5-State UI Matrix** (Empty, Loading, Error, Content, Offline), vùng chạm tối thiểu 48x48dp, phóng to chữ 200% không vỡ layout. |
+| **3** | **Lead UI/UX Architect & Product Design Director** | Xóa sổ hoàn toàn giao diện AI thô cứng; thiết lập chuẩn mực thẩm mỹ cao cấp, chiều sâu quang học sang trọng. | `rules/36-ui-ux-design-standard.md`<br/>`skills/ui-ux-pro-max`<br/>**Gate E27** | Viền mỏng 0.5dp bán trong suốt, phối lớp Tonal Surface, nhịp lưới 8-pt, typography 3 tầng, cấm 100% nền tím neon và biscuit pills. |
+| **4** | **Google Play Vitals & Zero-Crash Principal Engineer** | Tối ưu hóa chỉ số Vitals trên Google Play Console, triệt tiêu crash và ANR ngầm, tăng tốc khởi động ứng dụng. | `rules/27-app-quality-vitals.md`<br/>`rules/19-build.md`<br/>`skills/app-quality-vitals` | Cold start TTID < 500ms, TTFD < 800ms, 2-Tier Hybrid Splash, Baseline Profiles, Zero-Crash & Zero-ANR Invariants. |
+| **5** | **Low-Level Memory & ART Runtime Specialist** | Kỷ luật bộ nhớ Stack vs Heap, triệt tiêu Garbage Collection (GC) churn trong vòng lặp Composable, tối ưu 60/120 FPS. | `rules/26-stack-heap-memory.md`<br/>`skills/stack-heap-memory` | Cấm cấp phát Object trong render loop, bắt buộc `@JvmInline value class` cho IDs, Primitive State, căn chỉnh trang nhớ 16KB. |
+| **6** | **Principal Modular Core & SDK Architect** | Thiết kế module hóa cao cấp, cô lập thư viện dùng chung, bảo vệ app chủ khỏi rủi ro crash từ SDK bên thứ 3. | `rules/34-sdk-modular-architecture.md`<br/>`skills/sdk-modular-engineering`<br/>**Gate E25** | Mọi API là `internal` theo mặc định, cung cấp sẵn `:testing` fakes, zero ContentProvider auto-init, tương thích ngược nhị phân (ABI). |
+| **7** | **Staff QA & Test Automation Architect** | Phát triển hướng kiểm thử (TDD), loại bỏ hoàn toàn hiện tượng test chập chờn (flaky tests), kiểm thử luồng bất đồng bộ. | `rules/20-testing.md`<br/>`rules/22-superpowers-tdd.md`<br/>`rules/30-build-runtime-verification.md` | Chu trình Red-Green-Refactor, kiểm thử Flow bằng Turbine, kiểm tra Koin graph (`verify()`), bắt buộc build terminal thật trước khi bàn giao. |
+| **8** | **Senior Android Security & Cryptography Specialist** | Bảo vệ dữ liệu nhạy cảm ở trạng thái lưu trữ (at rest) và truyền tải (in transit), chống tấn công dịch ngược. | `rules/17-security.md`<br/>Android Keystore & Crypto | Kho khóa phần cứng Android Keystore, `FLAG_SECURE` trên màn hình tài chính/vault, `EncryptedSharedPreferences`, cấm cleartext HTTP. |
+| **9** | **Domain Modeler & Ubiquitous Language Guardian** | Thống nhất ngôn ngữ nghiệp vụ giữa Product và Code, triệt tiêu văn mẫu sáo rỗng, triển khai lát cắt dọc mỏng. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Từ điển nghiệp vụ sống (`CONTEXT.md`), ánh xạ 1-1 khái niệm sang code symbols, **Tracer-Bullet Vertical Slicing**, giao tiếp súc tích. |
+| **10**| **Chief Engineering Router & Meta-Orchestrator** | Chẩn đoán tức thời các triệu chứng kỹ thuật và định tuyến chính xác đến chuyên gia & cổng kiểm soát tương ứng. | `skills/ask-cto/SKILL.md`<br/>`skills/dispatching-parallel-agents` | Định tuyến triệu chứng (drop FPS, memory leak, process death, offline sync) sang đúng 1-2 skills và quality gates phù hợp mà không gây ngợp context. |
 
 ---
 
@@ -22,7 +67,7 @@ In recent years, AI coding assistants have introduced a massive productivity par
 - ❌ **False "Done" Claims:** Declaring tasks "completely finished" without ever executing a real terminal compilation command or verifying Gradle test logs.
 - ❌ **Dogmatic Library Imposition:** Forcing arbitrary frameworks onto existing legacy codebases, breaking project architecture.
 
-**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a seasoned **Chief Technology Officer (CTO) & Android Principal Architect**. It provides a deterministic, **8-layer cognitive operating system** governed by **28 automated Quality Gates (E1 to E28)**, adapting seamlessly to your existing project without dictating your tech stack.
+**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a **Multi-Role Executive Engineering Syndicate**. It provides a deterministic, **8-layer cognitive operating system** governed by **28 automated Quality Gates (E1 to E28)**, adapting seamlessly to your existing project without dictating your tech stack.
 
 ---
 
