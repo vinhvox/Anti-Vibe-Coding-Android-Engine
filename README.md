@@ -8,7 +8,7 @@
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose_M3-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![Adaptive HAL](https://img.shields.io/badge/Stack-Hilt_%7C_Koin_%7C_Retrofit_%7C_Ktor-orange.svg)](#-adaptive-stack-architecture-hardware-abstraction-layer)
 [![Multi-Role Council](https://img.shields.io/badge/Council-10_Specialized_Roles-9C27B0.svg)](#-the-multi-role-engineering-syndicate)
-[![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E28-EA4335.svg)](#-the-28-quality-gates-e1--e28-deep-dive)
+[![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E29-EA4335.svg)](#-the-29-quality-gates-e1--e29-deep-dive)
 [![Vitals](https://img.shields.io/badge/Android_Vitals-Zero--Crash_%7C_16KB_Safe-34A853.svg)](rules/27-app-quality-vitals.md)
 
 ---
@@ -50,7 +50,7 @@ flowchart TD
 | **5** | **Low-Level Memory & ART Runtime Specialist** | Stack vs Heap memory discipline, eliminates Garbage Collection (GC) churn in Composable render loops, optimizes 60/120 FPS. | `rules/26-stack-heap-memory.md`<br/>`skills/stack-heap-memory` | Zero object allocations in render loops, mandatory `@JvmInline value class` for IDs, primitive State, 16KB memory page alignment. |
 | **6** | **Principal Modular Core & SDK Architect** | Advanced modular design, shared library isolation, host app protection from 3rd-party SDK crashes. | `rules/34-sdk-modular-architecture.md`<br/>`skills/sdk-modular-engineering`<br/>**Gate E25** | All APIs `internal` by default, bundled `:testing` fakes, zero ContentProvider auto-init, binary backward compatibility (ABI). |
 | **7** | **Staff QA & Test Automation Architect** | Test-Driven Development (TDD), eliminates flaky tests, asynchronous Flow stream testing. | `rules/20-testing.md`<br/>`rules/22-superpowers-tdd.md`<br/>`rules/30-build-runtime-verification.md` | Red-Green-Refactor lifecycle, Flow testing with Turbine, DI graph validation (`verify()`), mandatory real terminal build gate (`BUILD SUCCESSFUL`). |
-| **8** | **Senior Android Security & Cryptography Specialist** | Protects sensitive data at rest and in transit, guards against reverse engineering and tampering. | `rules/17-security.md`<br/>Android Keystore & Crypto | Hardware Android Keystore, `FLAG_SECURE` on sensitive/vault screens, `EncryptedSharedPreferences`, absolute ban on cleartext HTTP. |
+| **8** | **Senior Android Security & Cryptography Specialist** | Protects sensitive data at rest and in transit, guards against reverse engineering, device abuse, and tampering. | `rules/17-security.md`<br/>`rules/38-device-network-abuse-policy.md`<br/>**Gate E29** | Hardware Android Keystore, `REQUIRE_SECURE_ENV` container defense, `FLAG_SECURE` compliance, Zero DCL, Android 14+ FGS types, UIDT API. |
 | **9** | **Domain Modeler & Ubiquitous Language Guardian** | Unifies business vocabulary between Product and Code, eliminates boilerplate fluff, executes razor-thin vertical slices. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Living domain dictionary (`CONTEXT.md`), 1-to-1 concept-to-symbol mapping, **Tracer-Bullet Vertical Slicing**, zero-fluff direct communication. |
 | **10**| **Chief Engineering Router & Meta-Orchestrator** | Instant diagnosis of technical symptoms and precise routing to the exact specialist skills & quality gates. | `skills/ask-cto/SKILL.md`<br/>`skills/dispatching-parallel-agents` | Routes symptoms (dropped FPS, memory leak, process death, offline sync) to the exact 1-2 skills and quality gates without context bloat. |
 
@@ -67,7 +67,7 @@ In recent years, AI coding assistants have introduced a massive productivity par
 - ❌ **False "Done" Claims:** Declaring tasks "completely finished" without ever executing a real terminal compilation command or verifying Gradle test logs.
 - ❌ **Dogmatic Library Imposition:** Forcing arbitrary frameworks onto existing legacy codebases, breaking project architecture.
 
-**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a **Multi-Role Executive Engineering Syndicate**. It provides a deterministic, **8-layer cognitive operating system** governed by **28 automated Quality Gates (E1 to E28)**, adapting seamlessly to your existing project without dictating your tech stack.
+**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a **Multi-Role Executive Engineering Syndicate**. It provides a deterministic, **8-layer cognitive operating system** governed by **29 automated Quality Gates (E1 to E29)**, adapting seamlessly to your existing project without dictating your tech stack.
 
 ---
 
@@ -97,11 +97,11 @@ flowchart TD
     Memory --> HAL[Tier 3: Adaptive Stack HAL - Koin/Hilt & Ktor/Retrofit]
     HAL --> Workflow[Tier 4: Workflow Engine - 10 Disciplined Pipelines]
     Workflow --> Skills[Tier 5: Skills Engine - Specialized Blueprints]
-    Skills --> Rules[Tier 6: Rules Engine - 37 Standards & Gates E1-E28]
+    Skills --> Rules[Tier 6: Rules Engine - 38 Standards & Gates E1-E29]
     Rules --> PlanGate{Plan Approval Gate}
     PlanGate -->|User Explicit Approval| Implementation[Native Tool Implementation: write_to_file]
     Implementation --> Verification[Tier 7: Real Verification: ./gradlew compileDebugKotlin]
-    Verification --> Reflection[Tier 8: Reflection & Gate E1-E28 Audit]
+    Verification --> Reflection[Tier 8: Reflection & Gate E1-E29 Audit]
     Reflection --> MemoryUpdate[Memory & Living ADR Auto-Update]
     MemoryUpdate --> FinalDelivery([CTO-Grade Production Delivery])
 ```
@@ -116,7 +116,7 @@ The AI thinks before acting through a sequential cognitive pipeline:
 6. **Planning Engine (`07-planning-engine.md`):** Designs Tracer-Bullet Vertical Slices before writing any code.
 7. **Execution Engine (`08-execution-engine.md`):** Coordinates disciplined, incremental coding.
 8. **Reflection Engine (`09-reflection-engine.md`):** Self-evaluates: Did we solve the real problem? Is there duplicate code?
-9. **Enforcement Engine (`21-enforcement-engine.md`):** Audits code against all 28 Quality Gates (E1 to E28).
+9. **Enforcement Engine (`21-enforcement-engine.md`):** Audits code against all 29 Quality Gates (E1 to E29).
 10. **Initiative Engine (`10-initiative-engine.md`):** Proactively highlights performance risks, memory leaks, and architectural bottlenecks.
 11. **Learning Engine (`11-learning-engine.md`):** Extracts reusable design patterns and lessons learned into long-term memory.
 
@@ -178,9 +178,9 @@ graph TD
 
 ---
 
-## 🛡️ THE 28 QUALITY GATES (E1 — E28) DEEP DIVE
+## 🛡️ THE 29 QUALITY GATES (E1 — E29) DEEP DIVE
 
-Every piece of code generated or reviewed by the AI must pass all 28 automated quality gates defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
+Every piece of code generated or reviewed by the AI must pass all 29 automated quality gates defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
 
 | Gate ID | Category | Name | Enforcement Invariant |
 |:---|:---|:---|:---|
@@ -212,6 +212,7 @@ Every piece of code generated or reviewed by the AI must pass all 28 automated q
 | **Gate E26**| Release | **DB Migration & R8 ProGuard Gate** | ProGuard `consumer-rules.pro` synthesized. Release builds verified with R8 minification. |
 | **Gate E27**| Aesthetic | **World-Class UI/UX Audit** | Zero purple neon AI clichés. Subtle 0.5dp borders, tonal depth, 8-pt grid, domain palette. |
 | **Gate E28**| Domain | **Ubiquitous Language & Precision** | 1-to-1 mapping between business domain dictionary (`CONTEXT.md`) and code symbols. Zero fluff. |
+| **Gate E29**| Policy | **Google Play Device & Network Abuse Defense** | Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance. |
 
 ---
 
@@ -300,7 +301,7 @@ Anti-Vibe-Coding-Android-Engine is designed to empower any modern AI coding tool
 | AI Tool / Environment | Integration Method | Supported Features |
 |:---|:---|:---|
 | **Google Antigravity CLI (`agy`)** | Native custom framework (`~/.antigravity`) | Full 8-tier cognitive pipeline, skills, subagents, rules, auto-hooks. |
-| **Cursor IDE** | Include as `.cursorrules` or system prompt reference | Full 28 Quality Gates, Clean Architecture enforcement, Rule 36 UI/UX. |
+| **Cursor IDE** | Include as `.cursorrules` or system prompt reference | Full 29 Quality Gates, Clean Architecture enforcement, Rule 36 UI/UX. |
 | **Claude Code (Anthropic)** | Load via `CLAUDE.md` linking to `.context-digest.md` | Invariant enforcement, Tracer-Bullet planning, compiler verification. |
 | **Gemini CLI** | Native custom configuration | Brain reasoning, adaptive HAL, zero-crash default invariant. |
 | **Windsurf / GitHub Copilot** | Workspace rules reference | Compose stability, design system token purity, 19 core mobile domains. |
@@ -321,20 +322,21 @@ Anti-Vibe-Coding-Android-Engine/
 │   ├── 00-master-cognition.md
 │   ├── ...
 │   └── 11-learning-engine.md
-├── rules/                               # 37 Standards & Gates E1 to E28
+├── rules/                               # 38 Standards & Gates E1 to E29
 │   ├── 00-system-mandate.md             # Highest system priority mandate
 │   ├── 01-tech-stack.md                 # Adaptive Stack Hardware Abstraction Layer (HAL)
 │   ├── 09-networking.md                 # Ktor Client & Retrofit + OkHttp standards
 │   ├── 12-dependency-injection.md       # Koin 4.x & Hilt/Dagger standards
-│   ├── 21-enforcement-engine.md         # The 28 Quality Gates (E1 to E28)
+│   ├── 21-enforcement-engine.md         # The 29 Quality Gates (E1 to E29)
 │   ├── 31-mobile-engineering-core.md    # The 19 Core Mobile Engineering Domains
 │   ├── 36-ui-ux-design-standard.md      # World-Class UI/UX & Anti-AI-Slop standard
-│   └── 37-ubiquitous-language-standard.md # Domain Dictionary & Ubiquitous Language standard
+│   ├── 37-ubiquitous-language-standard.md # Domain Dictionary & Ubiquitous Language standard
+│   └── 38-device-network-abuse-policy.md # Google Play Device & Network Abuse policy
 ├── workflow/                            # 10 Specialized engineering workflows
 │   ├── 00-master-workflow.md            # Central orchestrator (Phases 0 to 8)
 │   ├── 03-architecture-design.md        # Architecture design & driver binding
 │   ├── 04-implementation-planning.md    # Tracer-Bullet Vertical Slicing planning
-│   ├── 06-code-review.md                # Gates E1-E28 code review audit
+│   ├── 06-code-review.md                # Gates E1-E29 code review audit
 │   └── 07-testing-validation.md         # Mandatory real terminal compiler execution
 ├── skills/                              # Specialized drop-in domain skills
 │   ├── ask-cto/                         # Meta-router for instant technical diagnosis

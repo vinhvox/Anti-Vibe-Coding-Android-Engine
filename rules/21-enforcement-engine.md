@@ -839,6 +839,40 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 
 ---
 
+# CATEGORY E29: GOOGLE PLAY DEVICE & NETWORK ABUSE POLICY GATES (Rule 38)
+
+### E29.1: Zero Dynamic Code Loading (Zero DCL) Gate
+- **Scan:** Dependencies, reflection calls, ClassLoader usages (`DexClassLoader`, `PathClassLoader`), and remote binary downloads
+- **Reject if:** App or any integrated SDK downloads executable binaries (`.dex`, `.jar`, `.so`) from remote servers at runtime or attempts self-updating outside Google Play
+- **Fix:** Package all executable code inside the Android App Bundle (AAB); use Google Play Core In-App Updates API exclusively
+
+### E29.2: Android 14+ Foreground Service (FGS) Eligibility & Declaration Gate
+- **Scan:** `AndroidManifest.xml` `<service>` declarations and background task dispatchers
+- **Reject if:** A Foreground Service lacks a valid `android:foregroundServiceType`; or uses FGS for deferrable work (e.g. background syncing without active user interaction); or lacks an eligible user-initiated trigger
+- **Fix:** Specify explicit `foregroundServiceType` and declare corresponding `FOREGROUND_SERVICE_*` permission; migrate non-urgent or deferrable tasks to `WorkManager`
+
+### E29.3: On-Device Android Container Defense Gate (`REQUIRE_SECURE_ENV`)
+- **Scan:** `AndroidManifest.xml` `<application>` block
+- **Reject if:** App processes sensitive user credentials, auth tokens, financial data, or enterprise storage but fails to declare `<meta-data android:name="android.os.REQUIRE_SECURE_ENV" android:value="true" />`
+- **Fix:** Add `REQUIRE_SECURE_ENV` meta-data to block untrusted container, app-cloner, and dual-space hooking environments
+
+### E29.4: FLAG_SECURE Anti-Bypass & Surface Protection Gate
+- **Scan:** Window management, screenshot handlers, and sensitive Compose screens
+- **Reject if:** App attempts to bypass or intercept `FLAG_SECURE` in third-party applications; or payment/auth/vault screens fail to apply `FLAG_SECURE`
+- **Fix:** Enforce `SecureScreenEffect` on sensitive screens; ensure accessibility tools do not cache or transmit `FLAG_SECURE` content outside the device
+
+### E29.5: WebView Untrusted JavaScript Interface Gate
+- **Scan:** `WebView` implementations and `addJavascriptInterface` declarations
+- **Reject if:** `addJavascriptInterface` is attached to a WebView that loads unverified or cleartext (`http://`) web content
+- **Fix:** Restrict JS interfaces strictly to verified first-party `https://` URLs loaded from local assets or trusted domain whitelists
+
+### E29.6: User-Initiated Data Transfer (UIDT) & Anti-Proxy Gate
+- **Scan:** Network transfer workers and proxy services
+- **Reject if:** UIDT API / large transfer jobs are triggered autonomously without direct user action; or app runs proxy/VPN services that are not the primary, user-facing core purpose of the application
+- **Fix:** Restrict UIDT to direct user-prompted commands; enforce core-purpose requirement for proxy/VPN features
+
+---
+
 # EXECUTION PROTOCOL
 
 
@@ -851,8 +885,9 @@ When completing a task, the AI MUST:
    - Data & Networking → E3 + E21.4 (SSOT Outbox) + E21.5 (Zero Data Loss Migration) + E21.15 (Keystore Security) + E22.5 (Zero Dependency Bloat) + E24.2 (Fakes) + E26.1 (No Destructive Migration) + E26.2 (Schema Test)
    - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard)
    - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify)
-   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors)
-   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX Audit)
+   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29 (Device & Network Abuse Policy)
+   - Security & Storage → E17 + E21.15 (Keystore Security) + E29.3 (Container Defense) + E29.4 (FLAG_SECURE)
+   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Abuse Policy Audit)
    - Any code change → E9 + E20.1 (Full Assemble Build & Test verification)
 
 2. Run applicable scans on ALL modified files

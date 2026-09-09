@@ -93,4 +93,4 @@ Unless maintaining untouchable legacy modules, the AI MUST NEVER introduce:
 When working on any codebase:
 1. **Existing Codebase Stack:** Match what the project already uses (e.g. if Hilt is used, write Hilt; do not migrate to Koin unprompted).
 2. **Official Android Modern Standards:** Compose, Coroutines, Flow, Version Catalog.
-3. **Simplicity & Performance:** The simplest solution that satisfies all 28 Quality Gates (E1–E28).
+3. **Simplicity & Performance:** The simplest solution that satisfies all 29 Quality Gates (E1–E29).

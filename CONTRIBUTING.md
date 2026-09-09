@@ -15,7 +15,7 @@ By participating in this project, you agree to abide by our standards of profess
 Before contributing rules, workflows, or skills, make sure your contribution adheres to our core pillars:
 1. **Structural Safety Over Patchwork:** We do not accept PRs that introduce lazy try-catch sprawl or defensive paranoia. Safety must be enforced structurally through Kotlin's type system, Flow immutability, and lifecycle awareness.
 2. **Human-Grade UI/UX:** UI contributions must adhere to [Rule 36 (UI/UX Design Standard)](rules/36-ui-ux-design-standard.md): subtle 0.5dp borders, tonal surfaces, 8-pt grid, and an absolute ban on cliché AI aesthetics (purple-on-dark neon glows, vibrating pill badges).
-3. **Evidence-Based Engineering:** Every proposed rule or architectural guideline must be verifiable through automated tests, compiler checks, or the 28 Quality Gates (E1–E28).
+3. **Evidence-Based Engineering:** Every proposed rule or architectural guideline must be verifiable through automated tests, compiler checks, or the 29 Quality Gates (E1–E29).
 
 ---
 

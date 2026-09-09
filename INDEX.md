@@ -137,6 +137,7 @@ Deliver Result
 | `35-database-migration-r8-defense` | E26 (DB Migration & R8 ProGuard Release Gates) | Zero destructive migration, schema export & migration tests, consumer proguard rules, serialization keep guard, real release minify build |
 | `36-ui-ux-design-standard` | E27 (UI/UX & Aesthetic Polish Gates) | Anti-AI-Design-Cliché, visual depth & 0.5dp subtle borders, 3-tier typography, 8-point grid, domain aesthetics |
 | `37-ubiquitous-language-standard` | E28 (Ubiquitous Language & Domain Precision Gates) | CONTEXT.md compliance, 1-to-1 domain-to-code mapping, anti-fluff concise jargon, living ADR extraction |
+| `38-device-network-abuse-policy` | E29 (Google Play Device & Network Abuse Gates) | Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance |
 
 
 ---

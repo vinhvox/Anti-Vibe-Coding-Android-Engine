@@ -264,9 +264,9 @@ Only introduce technical debt with explicit justification.
 
 ---
 
-# Step 7 — Enforcement Engine Audit (Gates E1 to E28)
+# Step 7 — Enforcement Engine Audit (Gates E1 to E29)
 
-The reviewer MUST audit all modified files against the 28 Quality Gates defined in `rules/21-enforcement-engine.md`:
+The reviewer MUST audit all modified files against the 29 Quality Gates defined in `rules/21-enforcement-engine.md`:
 
 - **Gates E1 — E5 (Architecture):** Layer boundaries respected, BaseViewModel used, MVI Intent purity.
 - **Gates E6 — E10 (State & Navigation):** Navigation 3 or type-safe routes used, 400ms debounce, SSOT state flow.
@@ -275,6 +275,7 @@ The reviewer MUST audit all modified files against the 28 Quality Gates defined 
 - **Gate E21 (Enforcement Audit):** Comprehensive audit confirmation.
 - **Gate E27 (World-Class Aesthetic):** Zero purple-on-dark neon clichés, 0.5dp subtle borders, tonal surfaces, 8-pt grid.
 - **Gate E28 (Ubiquitous Language):** Domain precision, zero fluff.
+- **Gate E29 (Device & Network Abuse):** Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance.
 
 ---
 
