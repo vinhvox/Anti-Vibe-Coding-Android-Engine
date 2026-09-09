@@ -24,3 +24,6 @@ scratch/
 .gradle/
 build/
 bin/tmp/
+
+# Plans & local planning artifacts
+plan/

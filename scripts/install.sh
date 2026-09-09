@@ -69,7 +69,78 @@ echo -e "${BLUE}==>${NC} Setting executable permissions..."
 find "$TARGET_DIR/scripts" -name "*.sh" -exec chmod +x {} + 2>/dev/null || true
 find "$TARGET_DIR/bin" -type f -exec chmod +x {} + 2>/dev/null || true
 
-# 5. Run Doctor
+# 5. Antigravity CLI (agy) Auto-Hook
+echo -e "${BLUE}==>${NC} Configuring Antigravity CLI (agy) integration..."
+GEMINI_DIR="$HOME/.gemini"
+GEMINI_MD="$GEMINI_DIR/GEMINI.md"
+CLI_SKILLS_DIR="$GEMINI_DIR/antigravity-cli/skills"
+
+mkdir -p "$GEMINI_DIR"
+mkdir -p "$CLI_SKILLS_DIR"
+
+# Auto-link skills for /skills discovery
+if [ -d "$TARGET_DIR/skills" ]; then
+    if [ ! -e "$CLI_SKILLS_DIR/custom_skills" ]; then
+        echo -e "${BLUE}==>${NC} Linking skills to Antigravity CLI ($CLI_SKILLS_DIR/custom_skills)..."
+        ln -s "$TARGET_DIR/skills" "$CLI_SKILLS_DIR/custom_skills" 2>/dev/null || true
+    fi
+fi
+
+# Auto-hook global GEMINI.md
+if [ ! -f "$GEMINI_MD" ]; then
+    echo -e "${BLUE}==>${NC} Creating global $GEMINI_MD with Antigravity System Mandate..."
+    cat > "$GEMINI_MD" << EOF
+# 0. ABSOLUTE MANDATE: DEFAULT CUSTOM FRAMEWORK
+ALL operations, rules, workflows, memory, skills, and execution pipelines MUST default to and strictly follow the custom framework located at:
+$TARGET_DIR/
+
+* **Highest System Mandate:** file://$TARGET_DIR/rules/00-system-mandate.md
+* **System Entrypoint Workflow:** file://$TARGET_DIR/workflow/00-master-workflow.md
+* **Rules Engine (00-38):** file://$TARGET_DIR/rules/
+* **Workflow Engine (00-10):** file://$TARGET_DIR/workflow/
+* **Memory Engine (00-09):** file://$TARGET_DIR/memory/
+
+**Mandatory Pipeline:** User Request -> Brain -> Memory -> Workflow -> Skills -> Rules -> Implementation -> Reflection -> Memory Update.
+
+---
+
+# ROLE: Chief Technology Officer (CTO) & Android Principal Architect
+# SPECIALIZATION: Jetpack Compose, Navigation 3, Antigravity Engine & Scalable Systems
+You are a visionary CTO and a seasoned Android Principal Engineer with deep expertise in Declarative UI, Reactive Programming, and Enterprise System Architecture.
+EOF
+else
+    if ! grep -q "00-system-mandate.md" "$GEMINI_MD" 2>/dev/null; then
+        echo -e "${YELLOW}⚠️ Existing $GEMINI_MD detected without Antigravity Mandate.${NC}"
+        BACKUP_GEMINI="${GEMINI_MD}.bak.$(date +%Y%m%d%H%M%S)"
+        cp "$GEMINI_MD" "$BACKUP_GEMINI"
+        echo -e "${BLUE}==>${NC} Backed up existing GEMINI.md to $BACKUP_GEMINI"
+        
+        TEMP_MD=$(mktemp)
+        cat > "$TEMP_MD" << EOF
+# 0. ABSOLUTE MANDATE: DEFAULT CUSTOM FRAMEWORK
+ALL operations, rules, workflows, memory, skills, and execution pipelines MUST default to and strictly follow the custom framework located at:
+$TARGET_DIR/
+
+* **Highest System Mandate:** file://$TARGET_DIR/rules/00-system-mandate.md
+* **System Entrypoint Workflow:** file://$TARGET_DIR/workflow/00-master-workflow.md
+* **Rules Engine (00-38):** file://$TARGET_DIR/rules/
+* **Workflow Engine (00-10):** file://$TARGET_DIR/workflow/
+* **Memory Engine (00-09):** file://$TARGET_DIR/memory/
+
+**Mandatory Pipeline:** User Request -> Brain -> Memory -> Workflow -> Skills -> Rules -> Implementation -> Reflection -> Memory Update.
+
+---
+
+EOF
+        cat "$GEMINI_MD" >> "$TEMP_MD"
+        mv "$TEMP_MD" "$GEMINI_MD"
+        echo -e "${GREEN}✅ Successfully bound Antigravity Engine to $GEMINI_MD${NC}"
+    else
+        echo -e "${GREEN}✅ Antigravity System Mandate already active in $GEMINI_MD${NC}"
+    fi
+fi
+
+# 6. Run Doctor
 echo ""
 echo -e "${BLUE}==>${NC} Running system health check..."
 if [ -f "$TARGET_DIR/scripts/doctor.sh" ]; then
@@ -82,8 +153,11 @@ echo -e "${GREEN}  🎉 INSTALLATION COMPLETE!                           ${NC}"
 echo -e "${GREEN}  Antigravity Engine is active at: $TARGET_DIR        ${NC}"
 echo -e "${GREEN}======================================================${NC}"
 echo ""
-echo "Next steps:"
-echo "1. In your Android project root, your AI coding agent will automatically detect and load this framework."
-echo "2. Run 'bash $TARGET_DIR/scripts/doctor.sh' anytime to diagnose your environment."
-echo "3. Copy templates from $TARGET_DIR/templates/memory/ into your project if you want customized project memory."
+echo "Verification & Next Steps:"
+echo "1. Run 'agy' in your terminal."
+echo "   - Note: The initial ASCII terminal splash is compiled into the CLI binary."
+echo "   - Type '/skills' to verify that custom skills (ask-cto, ui-ux-pro-max, app-quality-vitals, etc.) are loaded."
+echo "   - Ask: 'Who are you and what rules do you follow?' to verify the CTO Persona & 29 Quality Gates."
+echo "2. In your Android project root, run 'bash $TARGET_DIR/scripts/init-project.sh' to bind local project memory."
+echo "3. Run 'bash $TARGET_DIR/scripts/doctor.sh' anytime to diagnose your environment."
 echo ""

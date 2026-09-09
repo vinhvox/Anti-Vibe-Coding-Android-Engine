@@ -263,7 +263,8 @@ curl -fsSL https://raw.githubusercontent.com/vinhvox/Anti-Vibe-Coding-Android-En
 The installer automatically:
 1. Detects your operating system and shell environment.
 2. Installs or updates the engine into `~/.antigravity`.
-3. Grants execution permissions and runs an automated environment diagnostic.
+3. Auto-configures **Antigravity CLI (`agy`)** by binding the System Mandate in `~/.gemini/GEMINI.md` and symlinking skills into `~/.gemini/antigravity-cli/skills/`.
+4. Grants execution permissions and runs an automated environment diagnostic.
 
 ### Option 2: Clone and Install Locally
 ```bash
@@ -272,11 +273,30 @@ cd Anti-Vibe-Coding-Android-Engine
 bash scripts/install.sh
 ```
 
-### Option 3: Run Diagnostic Health Check
+### Option 3: Initialize in an Existing Android Project
+To bind the engine and project memory directly to any Android / KMP project repository:
+```bash
+cd /path/to/your/android-project
+bash ~/.antigravity/scripts/init-project.sh
+```
+
+### Option 4: Run Diagnostic Health Check
 Verify that your development environment (JDK 17+, Android SDK, Git) is fully configured:
 ```bash
-bash scripts/doctor.sh
+bash ~/.antigravity/scripts/doctor.sh
 ```
+
+---
+
+## ❓ ANTIGRAVITY CLI FAQ & TROUBLESHOOTING
+
+### Q: Why does the initial Antigravity CLI terminal screen look default?
+> **Answer:** The initial startup ASCII header (*"Welcome to Antigravity CLI"*) is compiled statically into the `agy` binary. The engine's **CTO Persona, 38 Standards, and 29 Quality Gates** live inside the AI's cognitive pipeline and are activated upon your very first message or tool call.
+
+### Q: How do I verify that the engine is active in Antigravity CLI?
+> **Answer:** Run `agy` in your terminal and test either of these:
+> 1. Type `/skills` — You will see custom skills listed (`ask-cto`, `ui-ux-pro-max`, `app-quality-vitals`, etc.).
+> 2. Ask: *"Who are you and what rules do you follow?"* — The assistant will immediately identify as the **CTO & Android Principal Architect** enforcing the 38 Standards and 29 Quality Gates (E1–E29).
 
 ---
 
@@ -284,13 +304,17 @@ bash scripts/doctor.sh
 
 The engine is 100% plug-and-play. To customize it for a specific project repository:
 
-1. Copy the project memory template into your project's root:
+1. Run the project initializer inside your project's root:
+   ```bash
+   bash ~/.antigravity/scripts/init-project.sh
+   ```
+2. Or copy the project memory template manually:
    ```bash
    mkdir -p .antigravity/memory
    cp templates/memory/project-memory.template.md .antigravity/memory/01-project-memory.md
    ```
-2. Fill in your application's details (Package name, active DI framework, database, and repository boundaries).
-3. Any AI coding assistant (Antigravity CLI, Cursor, Claude Code, Gemini CLI) will automatically discover your project's profile and enforce CTO-grade engineering.
+3. Fill in your application's details (Package name, active DI framework, database, and repository boundaries).
+4. Any AI coding assistant (Antigravity CLI, Cursor, Claude Code, Gemini CLI) will automatically discover your project's profile and enforce CTO-grade engineering.
 
 ---
 
