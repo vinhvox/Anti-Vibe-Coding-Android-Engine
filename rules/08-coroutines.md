@@ -559,7 +559,57 @@ withContext(Main) {
 
 Database.query()
 
+---
+
+# Lifecycle-Aware Flow Collection (Compose & Views)
+
+Flow emissions MUST be collected in a lifecycle-aware manner to avoid wasting battery and memory when UI is invisible:
+
+- **In Jetpack Compose:**
+  - ALWAYS use `collectAsStateWithLifecycle()` (from `androidx.lifecycle.compose`).
+  - **FORBIDDEN:** Using raw `collectAsState()` on long-lived flows or network streams, which keeps collecting in the background.
+
+```kotlin
+// ✅ MANDATORY: Lifecycle-aware state collection in Compose
+val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+```
+
+- **In Android Views / Fragments:**
+  - ALWAYS collect inside `viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { ... } }`.
+
+---
+
+# Preserved CancellationException (Zero Zombie Coroutines)
+
+Coroutines rely on `CancellationException` for structured cancellation. Swallowing this exception breaks structured concurrency:
+
+- **MANDATORY RULE:** Never catch `CancellationException` silently without re-throwing it.
+- In every `try-catch` block capturing `Exception` or `Throwable`:
+
+```kotlin
+// ❌ FORBIDDEN: Swallows coroutine cancellation, leaking zombie coroutines
+try {
+    apiClient.fetchData()
+} catch (e: Exception) {
+    logger.error("Failed", e)
 }
+
+// ✅ MANDATORY: Re-throw CancellationException immediately
+try {
+    apiClient.fetchData()
+} catch (e: Exception) {
+    if (e is CancellationException) throw e
+    logger.error("Business failure", e)
+}
+```
+
+---
+
+# Single-Flight Mutex & Concurrency Guard
+
+For critical asynchronous operations that must not execute concurrently (such as token refresh 401 or database writes):
+- Guard execution with a `kotlinx.coroutines.sync.Mutex`.
+- Suspend concurrent callers until the ongoing operation completes, then reuse the result.
 
 ---
 

@@ -127,23 +127,18 @@ Before parsing requirements or retrieving project memory, the AI MUST profile th
    - If available, read this single compressed file to instantly ingest:
      - 100% Tech Stack & Architecture
      - 19 Core Engineering Domains & Defense Rules
-     - Drop-in Code Blueprints (ViewModel, Screen, DI Driver: Koin/Hilt, SSOT Repository)
+     - Drop-in Code Blueprints (ViewModel, Screen, Koin, SSOT Repository)
      - Anti-Patterns (DOs & DON'Ts)
-     - Quality Enforcement Gates (E1 — E28)
+     - Quality Enforcement Gates (E1 — E21)
    - *Result: Establish full context in ~2 seconds with ~5.4K tokens instead of reading 147 separate files!*
 
 2. **Working Directory & Project Root**:
    - Check `pwd` and locate the root project folder.
    - Detect project type: Android (Gradle), Kotlin Multiplatform (KMP), Flutter (`pubspec.yaml`), iOS (`Package.swift` / Xcode), or Web.
 
-3. **Stack & Configuration Profiling (Adaptive Driver Binding)**:
-   - Inspect build configuration (`settings.gradle.kts`, `build.gradle.kts`, `libs.versions.toml`, `AndroidManifest.xml`).
-   - Identify active stack drivers:
-     - **DI Driver:** Koin OR Hilt / Dagger
-     - **Networking Driver:** Ktor Client OR Retrofit + OkHttp
-     - **Navigation Driver:** Navigation 3 OR Jetpack Navigation Compose OR Voyager/Decompose
-     - **Storage Driver:** Room Database OR SQLDelight OR DataStore
-   - Bind the active drivers into the current Session Context so all subsequent workflows generate code aligned with the project's existing architecture.
+3. **Stack & Configuration Profiling (If digest not present)**:
+   - Inspect build configuration (`settings.gradle.kts`, `build.gradle.kts`, `AndroidManifest.xml`).
+   - Identify active libraries: Jetpack Compose / Material 3 version, Navigation 3 / Voyager / Jetpack Navigation, Koin / Hilt, Ktor / Retrofit, Room / SQLDelight / DataStore, Coroutines.
    - Detect module structure (`:app`, `:core`, `:feature`, `:domain`, `:data`, `:di`).
 
 4. **Active Context Alignment**:
@@ -256,6 +251,8 @@ Implementation Planning
 
 Implementation
 
+Refactoring (Mandatory Rule 40 Characterization Safety Net First)
+
 Code Review
 
 Testing
@@ -286,6 +283,23 @@ Reuse existing implementations whenever appropriate.
 
 Never bypass project architecture.
 
+**Mandatory Refactoring Safety Net (Rule 40 & Gate E32):**
+For any task involving Refactoring, Cleanup, Modularization, or Migration:
+1. Write Characterization / Pinning Tests FIRST capturing existing observable behavior.
+2. Run tests to confirm Green Baseline (100% pass) on untouched production code.
+3. Perform refactoring in single atomic micro-steps.
+4. Verify tests pass after every micro-step (Instant Revert on Red).
+5. Provide test execution proof of zero regression.
+Zero production code changes are allowed before Characterization tests are written and verified green.
+
+**Mandatory Scientific Closed-Loop Debugging Protocol (Rule 41 & Gate E33.1/E33.2):**
+For any task involving Bug Fixes, Test Failures, or Regressions:
+1. Formulate exactly ONE falsifiable Root-Cause Hypothesis based on stacktrace and system invariants.
+2. Write a Minimal Failing Isolation Test proving reproduction before editing any production code.
+3. Apply a Single-Variable Atomic Fix targeting only the isolated invariant (Zero Vibe Debugging).
+4. Execute full regression test sweep (`./gradlew testDebugUnitTest`) to prove zero side-effects.
+Zero production code changes are allowed before reproduction test is written and confirmed RED.
+
 ---
 
 # Phase 7 — Reflection
@@ -315,6 +329,15 @@ Potential Risks
 Run all applicable checks from `rules/21-enforcement-engine.md` on modified files.
 
 ZERO violations must remain before proceeding to Memory Update.
+
+**Living Executable Traceability Audit (Rule 28, Rule 33 & Gate E33.3):**
+Verify that 100% of Gherkin Scenarios in `spec.md` have direct 1-to-1 mapped tests in code.
+
+**Adversarial Red-Team Audit (Rule 42 & Gate E33.4):**
+For major features, core module refactors, or release candidates:
+1. Package Handoff Contract (Diff, Living Traceability 1:1, Clean Baseline).
+2. Execute 4 Chaos Vectors (chaotic inputs, concurrency stress, hostile runtime, gate compliance).
+3. Obtain "Adversarial Pass" certificate prior to user delivery.
 
 If critical issues are found:
 

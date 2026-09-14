@@ -3,8 +3,8 @@ name: architecture-design
 description: Phase 3 workflow to transform analyzed requirements and codebase inspection into a maintainable, scalable, and testable architecture blueprint.
 triggers:
   - "architecture design"
-  - "design architecture"
-  - "solution design"
+  - "thiết kế kiến trúc"
+  - "thiết kế giải pháp"
 prerequisites:
   - ".antigravity/workflow/01-requirement-analysis.md"
   - ".antigravity/workflow/02-codebase-analysis.md"
@@ -66,13 +66,10 @@ Codebase Analysis
 Identify Affected Layers
         │
         ▼
-Bind Active Stack Drivers (DI, Network, Navigation, Storage)
-        │
-        ▼
 Design Solution
         │
         ▼
-Validate Against Rules & Quality Gates (E1 - E28)
+Validate Against Rules
         │
         ▼
 Review Dependencies
@@ -121,20 +118,7 @@ Design only the layers that require changes.
 
 ---
 
-# Step 3 — Bind Active Stack Drivers
-
-Before designing class interfaces or component signatures, the AI MUST verify the project's active stack drivers bound in Phase 0:
-
-- **DI Driver:** If Koin is active, design constructor modules (`viewModelOf`, `singleOf`). If Hilt is active, design `@HiltViewModel` and `@Inject constructor`.
-- **Network Driver:** If Ktor is active, design Ktor serialization and plugins. If Retrofit is active, design interface suspend functions and converters.
-- **Navigation Driver:** If Navigation 3 is active, design `@Serializable` destinations with reactive state backstack. If Jetpack Navigation Compose is active, design `@Serializable` route destinations.
-- **Storage Driver:** If Room is active, design DAOs and entities with WAL mode. If SQLDelight is active, design `.sq` queries.
-
-NEVER attempt to force-migrate the project's chosen stack without explicit user instruction.
-
----
-
-# Step 4 — Define Responsibilities
+# Step 3 — Define Responsibilities
 
 Every class should have one responsibility.
 

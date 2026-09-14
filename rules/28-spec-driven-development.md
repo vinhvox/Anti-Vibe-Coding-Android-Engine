@@ -42,6 +42,7 @@ Every feature or major architectural change MUST produce and maintain the **Tri-
 * **Goal & Problem Statement**: Clear definition of user problem and business objective.
 * **User Stories & Actors**: Who uses this feature and what outcome is expected.
 * **Domain Model & Data Boundaries**: Entities, value classes, immutable attributes, and constraints.
+* **The 6-Dimension Test Boundary Matrix**: Explicit enumeration of test scenarios across all 6 boundary dimensions (Data, State, Timing/Concurrency, Hostile OS, User Chaos, Invariants/Security) BEFORE writing code.
 * **UI/UX State Matrix**: Comprehensive mapping of all 5 UI states (see Section 3).
 * **Acceptance Criteria (Gherkin Format)**: Testable `Given-When-Then` criteria for every interaction and use case.
 * **Non-Functional Constraints**: Android Vitals budgets (Crash $< 0.05\%$, ANR $< 0.02\%$, Cold Start $< 500\text{ms}$), 16KB memory page alignment, Stack/Heap memory allocation budgets.
@@ -83,13 +84,42 @@ In declarative Jetpack Compose applications, every screen and interactive organi
 All business logic, Use Cases, and ViewModel Intents MUST specify acceptance criteria using standard Gherkin syntax:
 
 ```gherkin
-Scenario: [Behavioral test scenario name]
-  Given [Precondition / Initial system state]
-  And [Prepared test fixture or mock data]
-  When [User performs an action / ViewModel receives Intent]
-  Then [UiState updates accordingly]
-  And [Side-effect Effect / Navigation is triggered]
+Scenario: [Tên kịch bản kiểm thử hành vi]
+  Given [Tiền điều kiện / Trạng thái ban đầu của hệ thống]
+  And [Dữ liệu hoặc Mocking đã được chuẩn bị]
+  When [Người dùng thực hiện hành động / ViewModel nhận Intent]
+  Then [Trạng thái UiState cập nhật tương ứng]
+  And [Tác vụ phụ Effect / Navigation được kích hoạt]
 ```
+
+---
+
+# 4.1 THE 6-DIMENSION ADVERSARIAL TEST BOUNDARY MATRIX STANDARD
+
+Every feature specification MUST enumerate and define concrete test scenarios across all 6 boundary dimensions before writing code:
+
+1. **Data Boundaries**: Empty, Blank, Whitespace, 0, 1, Boundary N, Max Int/Long, Overflow, 500-1000 char unbroken strings, complex Unicode, Emojis (ZWJ), Bidi RTL/LTR, malformed JSON.
+2. **State Machine & Transitions**: Re-entrancy, illegal state transitions (e.g. Retry while Loading), abrupt cancellation, and stale state overwrites.
+3. **Timing & Concurrency**: Rapid multi-taps (< 400ms double click), parallel request race conditions, out-of-order async responses, network timeouts, and concurrent 401 token refresh races.
+4. **Hostile OS & Environment**: Process death (LMK), offline, captive portals returning HTML on 200 OK, disk full (`ENOSPC`), and runtime permission revocations.
+5. **Adversarial User Behavior**: Spamming buttons, rapid screen rotation / fold-unfold during load, pasting 10,000 chars, navigating back during active transactions.
+6. **Business Invariants & Security**: Zero-sum balances, non-negative totals, idempotency on repeated requests, zero sensitive data leaks in logs/screenshots, and injection defense.
+
+---
+
+# 4.2 LIVING EXECUTABLE TRACEABILITY STANDARD (LEVEL 5 AGENTIC ENGINEERING)
+
+To eliminate "Spec Drift" and guarantee that specifications are executable living contracts:
+
+1. **Unique Scenario Identification**: Every Gherkin scenario in `spec.md` MUST be labeled with a unique, globally traceable Scenario ID (e.g., `@Scenario("AUTH-ERR-001")`, `@Scenario("PAY-IDEMP-002")`).
+2. **1-to-1 Test Mapping**: Every Scenario ID defined in `spec.md` MUST map directly to at least one test method in the test suite (JUnit 5 + Turbine) using a matching annotation or explicit name tag:
+   ```kotlin
+   @Test
+   @Scenario("AUTH-ERR-001")
+   fun login_withCaptivePortalReturningHtml_emitsNetworkErrorState() = runTest { ... }
+   ```
+3. **Zero Orphaned Scenarios**: An implementation is incomplete and rejected if any Scenario ID in `spec.md` lacks an executable test in code.
+4. **Traceability Compliance**: Enforced strictly via **Gate E33.3**.
 
 ---
 
@@ -106,5 +136,5 @@ Scenario: [Behavioral test scenario name]
 
 # 6. ENFORCEMENT & COMPLIANCE
 
-* This rule is strictly guarded by **CATEGORY E18** in `rules/21-enforcement-engine.md`.
-* No code may be marked complete without passing all 4 gates of SDD Compliance.
+* This rule is strictly guarded by **CATEGORY E18**, **GATE E31**, and **GATE E33.3** in `rules/21-enforcement-engine.md`.
+* No code may be marked complete without passing all 4 gates of SDD Compliance, the 6-Dimension Test Boundary Matrix, and 100% Living Traceability mapping.

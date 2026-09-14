@@ -22,7 +22,7 @@ def main():
     except Exception:
         pass
 
-    base_dir = "${ANTIGRAVITY_HOME:-$HOME/.antigravity}"
+    base_dir = "/Users/vio/.antigravity"
     
     mandate = read_file_safe(os.path.join(base_dir, "rules", "00-system-mandate.md"))
     workflow = read_file_safe(os.path.join(base_dir, "workflow", "00-master-workflow.md"))

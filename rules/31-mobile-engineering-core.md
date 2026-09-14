@@ -114,21 +114,19 @@ mindmap
 ### 18. Testing & Real Verification Mandate
 - **Rule 31.18 (Turbine & Real Assemble Gate)**: Test Flow emissions with Turbine. Verify Koin DI graphs with `appModule.verify()`. Run real `./gradlew assembleDebug testDebugUnitTest` before completing tasks.
 
-### 19. Failure Modeling & Recovery Mandate
-- **Rule 31.19 (The 10 Ultimate Failure Defenses)**: Every feature must have explicit defense strategies for:
-  1. Process Death
-  2. Background Freezing
-  3. Permission Revocation
-  4. Network Outage
-  5. Disk Saturation (Catch `IOException`)
-  6. Migration Mismatch
-  7. Stale Async Results (`collectLatest`)
-  8. Duplicate Multi-Taps (Debounce)
-  9. Unsupported Hardware APIs
-  10. Low-RAM & Thermal Throttling
+### 19. Failure Modeling & Hostile Runtime Mandate
+- **Rule 31.19 (The 8-Vector Hostile Runtime Matrix)**: Every feature must strictly comply with **Rule 39 (`rules/39-android-runtime-edge-cases.md`)** and pass **Enforcement Gate E30**, defending against all 8 hostile vectors:
+  1. Process, Memory & Lifecycle Hostility (Process Death, LMK, `TransactionTooLargeException`, `SavedStateHandle` primitive rehydration, `TRIM_MEMORY_RUNNING_CRITICAL`)
+  2. Network Chaos & Transport (Hard offline Room SSOT, Captive Portal HTML trap, 401 Mutex Token Refresh race, 429 Retry-After full jitter backoff)
+  3. Concurrency, Coroutines & Races (Swallowed `CancellationException` zombie leaks, Multi-Tap debounce < 400ms, Out-of-order `collectLatest`, atomic `_state.update`, SQLite WAL)
+  4. Storage, Disk I/O & File Integrity (Disk saturation `IOException: ENOSPC`, Corrupted partial writes via `AtomicFile`, Scoped Storage URI expiration)
+  5. Dynamic Display Metamorphosis (Non-linear 200% accessibility font scale defense, Foldables & Split-screen resize, IME virtual keyboard `BringIntoViewRequester`)
+  6. Permissions, Sensors & Hardware Degradation (JIT runtime permission verification, Permanent denial rationale deep-link, Hardware in-use conflicts `CAMERA_IN_USE`)
+  7. OEM Fragmentation & Battery Throttling (Doze Mode, aggressive OEM killers, Android 14+ FGS 3-min limits, Android 12+ exact alarms)
+  8. UI & Boundary Pathologies (Pathological 500-char unbroken strings/URLs, RTL/LTR mixed Bidi text, Multi-codepoint Emojis/ZWJ, 5-State UI completeness)
 
 ---
 
 # Enforcement & Auditing
 
-Every task must pass **Enforcement Gate E21** in `rules/21-enforcement-engine.md` verifying compliance across all 19 core domains before completion.
+Every task must pass **Enforcement Gate E21** and **Enforcement Gate E30** in `rules/21-enforcement-engine.md` verifying compliance across all 19 core domains and the 8-Vector Hostile Runtime Matrix before completion.

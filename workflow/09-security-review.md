@@ -3,7 +3,7 @@ name: security-review
 description: Phase 9 workflow to conduct threat modeling, input validation, secure storage, network security, Android component exposure, and privacy checks prior to release.
 triggers:
   - "security review"
-  - "security review"
+  - "kiểm tra bảo mật"
   - "audit security"
 prerequisites:
   - ".antigravity/workflow/08-performance-review.md"

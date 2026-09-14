@@ -14,12 +14,12 @@ It serves as an expert UI/UX Principal Architect when creating, refactoring, or 
 
 ## Mandate: Function-Driven Design & Anti-Cliché Rules
 
-### 1. Function-Driven Design
+### 1. Function-Driven Design (Tư duy thiết kế theo chức năng)
 - Analyze the primary utility of the product before choosing any visual style.
 - Prioritize frictionless interaction, information hierarchy, and visual scannability.
 - Every pixel, container, padding, and micro-interaction must earn its place.
 
-### 2. Forbidden Cliché Design Tropes (Strictly Banned)
+### 2. Forbidden Cliché Design Tropes (Tuyệt đối cấm)
 UNLESS explicitly requested by the user, DO NOT produce:
 - ❌ **No Purple on Dark:** Purple fonts or violet accents on dark theme backgrounds.
 - ❌ **No Colored Border Accents:** Glowing colored outlines or high-contrast border accents around dark containers.
@@ -96,8 +96,8 @@ Before finalizing code output, run the 5-point self-audit:
 ## Reference Data Catalog
 
 This skill provides the following reference catalogs in the `references/` directory:
-- [`references/styles.md`](~/.antigravity/skills/ui-ux-pro-max/references/styles.md): Detailed catalog of 240+ UI styles and layout patterns.
-- [`references/palettes.md`](~/.antigravity/skills/ui-ux-pro-max/references/palettes.md): 170+ domain-tailored color palettes (Fintech, SaaS, E-commerce, Media, Health, Tools).
-- [`references/fonts.md`](~/.antigravity/skills/ui-ux-pro-max/references/fonts.md): 150+ Font pairings and typographic specs.
-- [`references/product-reasoning.md`](~/.antigravity/skills/ui-ux-pro-max/references/product-reasoning.md): Matrix mapping 160+ product types to visual rules.
-- [`references/jetpack-compose-mapping.md`](~/.antigravity/skills/ui-ux-pro-max/references/jetpack-compose-mapping.md): Jetpack Compose Material 3 implementation mapping guide.
+- [`references/styles.md`](file:///Users/vio/.antigravity/skills/ui-ux-pro-max/references/styles.md): Detailed catalog of 240+ UI styles and layout patterns.
+- [`references/palettes.md`](file:///Users/vio/.antigravity/skills/ui-ux-pro-max/references/palettes.md): 170+ domain-tailored color palettes (Fintech, SaaS, E-commerce, Media, Health, Tools).
+- [`references/fonts.md`](file:///Users/vio/.antigravity/skills/ui-ux-pro-max/references/fonts.md): 150+ Font pairings and typographic specs.
+- [`references/product-reasoning.md`](file:///Users/vio/.antigravity/skills/ui-ux-pro-max/references/product-reasoning.md): Matrix mapping 160+ product types to visual rules.
+- [`references/jetpack-compose-mapping.md`](file:///Users/vio/.antigravity/skills/ui-ux-pro-max/references/jetpack-compose-mapping.md): Jetpack Compose Material 3 implementation mapping guide.

@@ -111,6 +111,30 @@ fun ServerList(
    Classes from external libraries or non-Compose modules are treated as Unstable unless annotated with `@Immutable` or `@Stable`.
    - Annotate all UI State models and UI DTOs with `@Immutable` or `@Stable`.
 
+3. **Lazy Layout Optimization (Mandatory `key` & `contentType`):**
+   In all `LazyColumn`, `LazyRow`, or `LazyVerticalGrid` implementations:
+   - **MANDATORY `key`:** Every item MUST supply a stable, unique key (e.g., `key = { it.id }`). Using list indices or omitting the key is strictly FORBIDDEN.
+   - **MANDATORY `contentType`:** When a lazy list renders items (especially mixed or polymorphic items), each item MUST declare `contentType = { it.type }` to enable Compose to reuse item compositions across scroll recycling without re-measuring from scratch.
+
+```kotlin
+// ✅ MANDATORY: Proper key and contentType in Lazy Layouts
+LazyColumn(modifier = modifier.fillMaxSize()) {
+    items(
+        items = serverList,
+        key = { it.id },
+        contentType = { it.itemType }
+    ) { server ->
+        ServerCard(server = server, onClick = { onSelect(server.id) })
+    }
+}
+```
+
+4. **Kotlin 2.0+ Strong Skipping Mode:**
+   Strong Skipping Mode is enabled by default in the Compose Compiler under Kotlin 2.0+:
+   - Composables with unstable parameters become skippable (evaluated via structural equality).
+   - Lambdas with unstable captures are automatically memoized by compiler plugins.
+   - **BEST PRACTICE:** Even with Strong Skipping active, domain/external models crossing module boundaries MUST still be annotated with `@Immutable` or `@Stable` to eliminate equality check ambiguities and guarantee 120 FPS scrolling performance.
+
 ---
 
 # State Hoisting & Single Source of Truth (SSOT)

@@ -23,7 +23,7 @@ mkdir -p "$ABS_PROJECT_DIR/plan"
 # 2. Generate .antigravity/project.json
 cat << 'EOF' > "$ABS_PROJECT_DIR/.antigravity/project.json"
 {
-  "framework_root": "${ANTIGRAVITY_HOME:-$HOME/.antigravity}",
+  "framework_root": "/Users/vio/.antigravity",
   "mandate": "31-mobile-engineering-core.md",
   "fast_path_digest": ".context-digest.md",
   "enforcement_gates": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12", "E13", "E14", "E15", "E16", "E17", "E18", "E19", "E20", "E21"],
@@ -33,8 +33,8 @@ cat << 'EOF' > "$ABS_PROJECT_DIR/.antigravity/project.json"
 EOF
 
 # 3. Copy or link the High-Density .context-digest.md
-if [ -f "${ANTIGRAVITY_HOME:-$HOME/.antigravity}/.context-digest.md" ]; then
-  cp "${ANTIGRAVITY_HOME:-$HOME/.antigravity}/.context-digest.md" "$ABS_PROJECT_DIR/.context-digest.md"
+if [ -f "/Users/vio/.antigravity/.context-digest.md" ]; then
+  cp "/Users/vio/.antigravity/.context-digest.md" "$ABS_PROJECT_DIR/.context-digest.md"
   echo "   - Generated $ABS_PROJECT_DIR/.context-digest.md (Fast-Path Digest)"
 fi
 
@@ -43,16 +43,16 @@ cat << 'EOF' > "$ABS_PROJECT_DIR/AGY.md"
 # Antigravity Project Anchor & Mandatory Compliance
 
 This repository is governed by the **Antigravity Custom Framework** located at:
-`${ANTIGRAVITY_HOME:-$HOME/.antigravity}/`
+`/Users/vio/.antigravity/`
 
 ## Fast-Path Execution
 - **Context Digest:** `./.context-digest.md` (Read this single file for 100% architecture, templates, and constraints in ~5.4K tokens).
 
 ## Mandatory Rules & Protocols
-- **System Mandate:** `${ANTIGRAVITY_HOME:-$HOME/.antigravity}/rules/00-system-mandate.md`
-- **Master Workflow:** `${ANTIGRAVITY_HOME:-$HOME/.antigravity}/workflow/00-master-workflow.md`
-- **Mobile Engineering Core:** `${ANTIGRAVITY_HOME:-$HOME/.antigravity}/rules/31-mobile-engineering-core.md`
-- **Enforcement Engine:** `${ANTIGRAVITY_HOME:-$HOME/.antigravity}/rules/21-enforcement-engine.md` (Gates E1 - E21)
+- **System Mandate:** `/Users/vio/.antigravity/rules/00-system-mandate.md`
+- **Master Workflow:** `/Users/vio/.antigravity/workflow/00-master-workflow.md`
+- **Mobile Engineering Core:** `/Users/vio/.antigravity/rules/31-mobile-engineering-core.md`
+- **Enforcement Engine:** `/Users/vio/.antigravity/rules/21-enforcement-engine.md` (Gates E1 - E21)
 
 Every engineering request in this project MUST execute:
 `Phase 0 (Project Discovery via .context-digest.md)` -> `Intent Detection` -> `Brain` -> `Memory` -> `Workflow` -> `Enforcement Gate E21`.

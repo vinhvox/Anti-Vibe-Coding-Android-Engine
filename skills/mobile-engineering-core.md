@@ -53,4 +53,4 @@ This skill provides a deep, production-grade architectural defense reference acr
 
 ## Full Master Playbook Reference
 The complete living playbook with comprehensive code patterns is maintained at:
-`~/plan/mobile_engineering_master_playbook.md`
+`file:///Users/vio/plan/mobile_engineering_master_playbook.md`

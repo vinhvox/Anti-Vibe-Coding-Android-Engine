@@ -112,9 +112,9 @@ Deliver Result
 
 | Rule File | Enforcement Category | Scan Pattern |
 |----------|---------------------|-------------|
-| `02-architecture` | E3 (Clean Architecture) | Import direction, fake data |
+| `02-architecture` | E3 (Clean Architecture & SSOT) | Import direction, fake data, Offline-First Room SSOT |
 | `05-design-system` | E1 (Design System) | `Color(0x`, hardcoded `.dp`, `Text("` |
-| `06-compose` | E4 (Compose) | `Scaffold(`, stability, lambda memo |
+| `06-compose` | E4 (Compose & Recomposition) | `Scaffold(`, stability, lambda memo, Phase Deferral, Lazy keys & contentType |
 | `07-viewmodel` | E2 (ViewModel) | `BaseViewModel`, `viewModelScope.launch`, dead code |
 | `08-coroutines` | E5 (Coroutines) | Unscoped `CoroutineScope(`, dispatcher |
 | `09-networking` | E7 (Error Handling) | Raw exception propagation |
@@ -135,10 +135,16 @@ Deliver Result
 | `33-modern-testing-standard` | E24 (Modern Testing & QA Gates) | Turbine StateFlow testing, Fakes > Mocks, zero-flakiness runTest, Koin appModule.verify, 5-State UI Matrix coverage |
 | `34-sdk-modular-architecture` | E25 (SDK & Modular Quality Gates) | Public API surface isolation, mandatory :testing fakes, zero auto-init, Gradle isolation, host app protection |
 | `35-database-migration-r8-defense` | E26 (DB Migration & R8 ProGuard Release Gates) | Zero destructive migration, schema export & migration tests, consumer proguard rules, serialization keep guard, real release minify build |
-| `36-ui-ux-design-standard` | E27 (UI/UX & Aesthetic Polish Gates) | Anti-AI-Design-Cliché, visual depth & 0.5dp subtle borders, 3-tier typography, 8-point grid, domain aesthetics |
-| `37-ubiquitous-language-standard` | E28 (Ubiquitous Language & Domain Precision Gates) | CONTEXT.md compliance, 1-to-1 domain-to-code mapping, anti-fluff concise jargon, living ADR extraction |
-| `38-device-network-abuse-policy` | E29 (Google Play Device & Network Abuse Gates) | Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance |
-
+| `36-ui-ux-design-standard` | E27 (UI/UX & Haute Couture Design Gates) | Anti-AI-Slop Cliché Filter, Optical Depth & 0.5dp Specular Hairline, Editorial Negative Tracking, Chromatic Restraint 90/10, Tactile Spring Physics |
+| `38-device-network-abuse-policy` | E29 (Google Play Developer Program Policies Gates E29.1–E29.10) | Zero DCL, Android 14+ FGS/UIDT, REQUIRE_SECURE_ENV, FLAG_SECURE, WebView JS guard, Mandatory Account Deletion Web Link, Better Ads 15s limit, GenAI In-App Flagging, Minimum Functionality, Families Certified Ad SDKs |
+| `28-spec-driven-development` | E31 (Problem Deconstruction & 6-Dimension Test Coverage Gates) | Happy-Path Rejection, 6-Dimension Boundary Coverage, Concurrency & Re-Entrancy Tests, Invariant Assertions |
+| `40-refactoring-safety-net` | E32 (Senior Refactoring Safety Net & Characterization Gates) | Pre-Emptive Edit Block, Green Baseline Verification, Micro-Step Discipline, Zero Observable Regression |
+| `41-scientific-closed-loop-debugging` | E33.1, E33.2 (Scientific Closed-Loop Debugging Gates) | Root-Cause Hypothesis, Minimal Failing Test before fix, Single-variable isolation, Zero Vibe Debugging |
+| `28-spec-driven-development` / `33-modern-testing-standard` | E33.3 (Living Executable Traceability Gate) | 1-to-1 mapping between Gherkin Scenario IDs and test methods, zero orphaned scenarios |
+| `42-adversarial-red-team-verification` | E33.4 (Dual-Agent Adversarial Red-Team Gates) | Handoff Contract, 4 Chaos Vectors injection, Red-Team audit pass, anti-confirmation bias |
+| `27-app-quality-vitals` | E34 (Android 15/16 App Quality & Vitals Gates) | Google Play Core Vitals (<0.05% Crash, <0.02% ANR, <600ms TTID), 16KB Page Alignment, Enforced Edge-to-Edge, Baseline Profiles, System Photo Picker |
+| `43-xml-compose-interoperability` | E35 (XML & Compose Hybrid Interoperability Gates) | DisposeOnViewTreeLifecycleDestroyed in Fragments, ViewBinding nullification in onDestroyView(), AndroidView onRelease cleanup, Shared UDF repeatOnLifecycle |
+| `44-pure-xml-modern-architecture` | E36 (100% Pure XML Modern Architecture Gates) | ViewBinding nullification in onDestroyView(), ListAdapter with background DiffUtil, Android 15 WindowInsetsCompat Edge-to-Edge, SafeArgs Type-Safety |
 
 ---
 
@@ -215,12 +221,14 @@ Deliver Result
 3. `rules/07-viewmodel.md`
 4. `skills/mvi.md`
 5. `skills/compose-essentials.md`
-6. `rules/21-enforcement-engine.md`
+6. `rules/39-android-runtime-edge-cases.md`
+7. `rules/21-enforcement-engine.md`
 
 ## "I'm fixing a bug" → Read these files:
 1. `rules/13-error-handling.md`
 2. `rules/15-debugging.md`
-3. `rules/21-enforcement-engine.md`
+3. `rules/39-android-runtime-edge-cases.md`
+4. `rules/21-enforcement-engine.md`
 
 ## "I'm reviewing code" → Read these files:
 1. `rules/21-enforcement-engine.md`
@@ -228,6 +236,12 @@ Deliver Result
 3. `rules/07-viewmodel.md`
 4. `skills/anti-patterns.md`
 5. `skills/clean-code.md`
+
+## "I'm refactoring code" → Read these files:
+1. `rules/40-refactoring-safety-net.md`
+2. `rules/21-enforcement-engine.md`
+3. `rules/33-modern-testing-standard.md`
+4. `skills/clean-code.md`
 
 ## "I'm adding navigation" → Read these files:
 1. `rules/11-navigation.md`

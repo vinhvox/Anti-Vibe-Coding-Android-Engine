@@ -42,6 +42,18 @@ Its mission is to eliminate brittle, over-mocked tests, eliminate flaky asynchro
 
 5. [EVIDENCE BEFORE ASSERTION]
    ➔ Never claim tests pass without executing real terminal commands and capturing BUILD SUCCESSFUL and PASSED test reports.
+
+6. [THE 6-DIMENSION ADVERSARIAL BOUNDARY COVERAGE]
+   ➔ Strictly forbid "Happy-Path Only" tests. Every test suite MUST systematically cover:
+      - Data Boundaries (Empty, Blank, Whitespace, 0, 1, Max, Overflow, Unicode/Emoji, Malformed).
+      - State Machine & Transitions (Re-entrancy, Illegal transitions, Abrupt cancellation).
+      - Timing & Concurrency (Rapid multi-taps < 400ms, Parallel races, Out-of-order async, 401 races).
+      - Hostile OS & Environment (Process death rehydration, Offline, Captive portal, Full disk).
+      - Adversarial User Behavior (Button spamming, Rotation mid-flight, Massive clipboard paste).
+      - Business Invariants & Security (Non-negative balances, Idempotency, Zero leaks, Injection).
+
+7. [LIVING EXECUTABLE TRACEABILITY]
+   ➔ Every Gherkin scenario in `spec.md` MUST have an explicit Scenario ID (`@Scenario("ID")`) mapped 1-to-1 to a test method in code. An implementation is incomplete if any scenario in spec lacks an executable test in code.
 ```
 
 ---
@@ -149,11 +161,15 @@ class RoomDatabaseMigrationTest {
 
 ---
 
-# 4. REVIEW & ENFORCEMENT (GATE E24)
+# 4. REVIEW & ENFORCEMENT (GATE E24 & GATE E33)
 
-Every task involving tests must pass **GATE E24** in `rules/21-enforcement-engine.md`:
+Every task involving tests must pass **GATE E24** and **GATE E33** in `rules/21-enforcement-engine.md`:
 - `E24.1`: Turbine Flow Emission Gate
 - `E24.2`: Fakes Over Mocks Gate
 - `E24.3`: Zero-Flakiness Coroutine Gate
 - `E24.4`: Koin DI Graph Verification Gate
 - `E24.5`: 5-State UI Matrix Test Coverage Gate
+- `E33.1`: Scientific Debugging Gate (Minimal failing test before bugfix)
+- `E33.2`: Single-Variable Isolation Gate
+- `E33.3`: Living Executable Traceability Gate (1:1 Gherkin Scenario mapping)
+- `E33.4`: Adversarial Red-Team Gate (Independent chaos audit)

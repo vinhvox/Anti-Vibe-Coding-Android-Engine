@@ -4,7 +4,7 @@ description: Phase 7 workflow to perform end-to-end functional, architectural, i
 triggers:
   - "testing validation"
   - "test and validate"
-  - "test and validate"
+  - "kiểm thử và xác minh"
 prerequisites:
   - ".antigravity/workflow/06-code-review.md"
 next_step: ".antigravity/workflow/08-performance-review.md"
@@ -83,18 +83,16 @@ Ready
 
 ---
 
-# Step 1 — Build Validation (Mandatory Real Compiler Execution)
+# Step 1 — Build Validation
 
-The AI MUST execute real compilation and testing commands in the terminal:
-- `./gradlew compileDebugKotlin` (Verify 0 compilation errors)
-- `./gradlew testDebugUnitTest` (Verify unit tests pass)
-- In KMP projects: `./gradlew compileCommonMainKotlinMetadata`
+Verify:
 
-**ABSOLUTE INVARIANT:**
-NEVER declare validation complete based solely on editing files.
-A task is only validated when terminal output explicitly confirms `BUILD SUCCESSFUL`.
+- Project builds successfully
+- No compilation errors
+- No missing dependencies
+- No generated code issues
 
-Build success with ZERO errors is the non-negotiable baseline.
+Build success is the minimum requirement.
 
 ---
 

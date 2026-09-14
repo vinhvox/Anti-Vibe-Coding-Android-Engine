@@ -4,7 +4,7 @@ description: Phase 6 workflow to perform structured static review, architecture 
 triggers:
   - "code review"
   - "review code"
-  - "review code quality"
+  - "kiểm tra chất lượng code"
 prerequisites:
   - ".antigravity/workflow/05-feature-development.md"
 next_step: ".antigravity/workflow/07-testing-validation.md"
@@ -264,46 +264,31 @@ Only introduce technical debt with explicit justification.
 
 ---
 
-# Step 7 — Enforcement Engine Audit (Gates E1 to E29)
-
-The reviewer MUST audit all modified files against the 29 Quality Gates defined in `rules/21-enforcement-engine.md`:
-
-- **Gates E1 — E5 (Architecture):** Layer boundaries respected, BaseViewModel used, MVI Intent purity.
-- **Gates E6 — E10 (State & Navigation):** Navigation 3 or type-safe routes used, 400ms debounce, SSOT state flow.
-- **Gates E11 — E15 (Compose & Design System):** 100% semantic `AppTheme` tokens (zero hardcoded colors or dp), explicit `key` and `contentType` on Lazy Layouts, stable parameters.
-- **Gates E16 — E20 (Async & Concurrency):** Main-thread purity, structured `safeLaunch` scopes, non-blocking I/O.
-- **Gate E21 (Enforcement Audit):** Comprehensive audit confirmation.
-- **Gate E27 (World-Class Aesthetic):** Zero purple-on-dark neon clichés, 0.5dp subtle borders, tonal surfaces, 8-pt grid.
-- **Gate E28 (Ubiquitous Language):** Domain precision, zero fluff.
-- **Gate E29 (Device & Network Abuse):** Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance.
-
----
-
 # Review Checklist
 
 Before approving implementation:
 
-□ Architecture preserved and layer boundaries respected
+□ Architecture preserved
 
-□ Active Stack Drivers (Koin/Hilt, Ktor/Retrofit) properly implemented
+□ Rules followed
 
-□ Quality Gates E1 — E28 verified with ZERO violations
+□ No duplicate code
 
-□ No duplicate code or lazy try-catch sprawl
+□ Clear naming
 
-□ Clear, self-documenting naming
+□ Correct state management
 
-□ Correct state management (StateFlow immutable read-only exposure)
+□ Error handling complete
 
-□ Compose recomposition stability verified (explicit `key` on LazyColumn/Row)
+□ Performance acceptable
 
-□ UI/UX Pro Max verified (0.5dp subtle borders, 8-pt grid, anti-AI-slop)
+□ Security verified
 
-□ Error handling complete at I/O Boundary (`AppResult<T>`)
+□ DI correct
 
-□ Real build verification succeeded (`./gradlew compileDebugKotlin` / `test`)
+□ Tests updated
 
-□ Documentation and Living Plans updated
+□ Documentation updated
 
 ---
 

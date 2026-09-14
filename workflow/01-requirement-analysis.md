@@ -2,9 +2,9 @@
 name: requirement-analysis
 description: Phase 1 workflow to analyze, define scope, constraints, and risks before architecture or code execution.
 triggers:
-- "analyze requirements"
+- "phân tích yêu cầu"
 - "requirement analysis"
-- "start new feature"
+- "bắt đầu feature mới"
 next_step: ".antigravity/workflow/02-codebase-analysis.md"
 ---
 # 01-requirement-analysis.md

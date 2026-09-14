@@ -22,11 +22,11 @@ graph TD
         J["Slow Rendering Frames (Bad: >= 50% | Mandate: < 1%)"]
     end
 
-    subgraph PENALTIES["⚠️ VITALS VIOLATION PENALTIES"]
-        P1["Demoted Search & Recommendation Ranking"]
-        P2["Loss of Store Featuring Eligibility"]
-        P3["Red Warning on Play Store: 'This app frequently crashes'"]
-        P4["Skyrocketing Uninstall Rates"]
+    subgraph PENALTIES["⚠️ HẬU QUẢ VI PHẠM VITALS"]
+        P1["Bị bóp hiển thị tìm kiếm & gợi ý (Demoted Ranking)"]
+        P2["Bị tước quyền xuất hiện trên mục Thịnh hành (Featuring)"]
+        P3["Cảnh báo đỏ trên Play Store: 'App này thường xuyên bị lỗi'"]
+        P4["Tỷ lệ gỡ cài đặt (Uninstall Rate) tăng vọt"]
     end
 
     C --> PENALTIES
@@ -135,37 +135,37 @@ sequenceDiagram
     participant AdEngine as SplashAdManager
     participant Nav as Router (Navigation 3)
 
-    User->>AndroidOS: Open App (Cold Start)
+    User->>AndroidOS: Mở App (Cold Start)
     AndroidOS->>MainAct: onCreate() -> installSplashScreen()
-    MainAct->>MainAct: Load Core DI & Theme (< 150ms)
-    MainAct->>AndroidOS: setKeepOnScreenCondition(false) [DISMISS SYSTEM SPLASH]
-    AndroidOS-->>User: Render first frame immediately (TTID < 300ms Vitals compliant)
+    MainAct->>MainAct: Nạp Core DI & Theme (< 150ms)
+    MainAct->>AndroidOS: setKeepOnScreenCondition(false) [TẮT SYSTEM SPLASH]
+    AndroidOS-->>User: Hiển thị ngay frame đầu tiên (TTID < 300ms đạt chuẩn Vitals)
 
     MainAct->>ComposeUI: Render SplashRoute (Logo + Brand Animation + Status)
     ComposeUI->>VM: Intent(InitializeApp)
 
-    par Stream 1: Sync Remote Config (Timeout: 2.5s)
+    par Luồng 1: Đồng bộ Remote Config (Timeout: 2.5s)
         VM->>Config: fetchAndActivate(timeout = 2500ms)
-        Config-->>VM: Config Synced (or Default Fallback)
-    and Stream 2: Preload Database / Local Preferences
+        Config-->>VM: Config Synced (hoặc Default Fallback)
+    and Luồng 2: Tải trước Database / Local Preferences
         VM->>VM: Warm up caches
     end
 
-    alt Ad Disabled or New User (First Launch)
+    alt Ad Bị Tắt hoặc User Mới (First Launch)
         VM->>Nav: Effect(NavigateToHome / NavigateToOnboarding)
-    else Ad Enabled & Returning User
+    else Ad Được Bật & User Cũ (Returning User)
         VM->>AdEngine: loadSplashAd(timeout = 3500ms)
-        alt Load Succeeded
+        alt Load Thành Công
             AdEngine-->>VM: AdReady
             VM->>ComposeUI: Effect(ShowAd)
             ComposeUI->>AdEngine: show(Activity)
-            AdEngine-->>User: Display Fullscreen Ad
-            User->>AdEngine: Dismiss Ad
+            AdEngine-->>User: Hiển thị Quảng cáo Toàn màn hình
+            User->>AdEngine: Đóng Quảng cáo (Dismiss)
             AdEngine->>VM: onAdDismissed()
-            VM->>Nav: Effect(NavigateToHome) [Pop Splash from Backstack]
-        else Timeout or Load Error
+            VM->>Nav: Effect(NavigateToHome) [Pop Splash khỏi Backstack]
+        else Hết Timeout hoặc Load Lỗi
             AdEngine-->>VM: Timeout / Error
-            VM->>Nav: Effect(NavigateToHome) [Proceed to Home immediately, zero user stall]
+            VM->>Nav: Effect(NavigateToHome) [Vào Home ngay, không để user chờ]
         end
     end
 ```
@@ -230,7 +230,7 @@ class SplashViewModel(
             }
 
             // 3. Load Ad with 3.5s Timeout
-            setState { copy(statusText = "Loading application resources...", isAdLoading = true) }
+            setState { copy(statusText = "Đang tải dữ liệu...", isAdLoading = true) }
             val adResult = withTimeoutOrNull(3500L) {
                 adManager.loadSplashAd()
             }
@@ -292,14 +292,70 @@ class StartupBaselineProfileGenerator {
 
 ---
 
-## 7. App Quality Checklist
+## 7. Android 15 & 16 Platform Mandates (Drop-in Blueprints)
+
+### A. 16KB Page Alignment Audit Script (`check16kb.sh`)
+```bash
+#!/usr/bin/env bash
+# Audit all native .so libraries for 16KB alignment
+find . -name "*.so" -exec sh -c '
+  for so; do
+    if objdump -p "$so" 2>/dev/null | grep -q "LOAD" && ! objdump -p "$so" 2>/dev/null | grep "LOAD" | grep -q "0x4000"; then
+      echo "❌ 16KB VIOLATION: $so is not 16KB aligned!"
+      exit 1
+    fi
+  done
+' sh {} +
+echo "✅ 16KB CHECK PASSED: All native binaries align with 16KB page size."
+```
+
+### B. Enforced Edge-to-Edge Blueprint
+```kotlin
+// In MainActivity.kt
+enableEdgeToEdge()
+
+// In Root Composable
+Scaffold(
+    contentWindowInsets = WindowInsets.safeDrawing,
+    modifier = Modifier.fillMaxSize()
+) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .imePadding() // Keyboard never covers input fields
+    ) {
+        // Screen Content
+    }
+}
+```
+
+### C. Zero-Permission System Photo Picker Contract
+```kotlin
+val photoPickerLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.PickVisualMedia()
+) { uri ->
+    uri?.let { viewModel.onIntent(UserIntent.OnAvatarSelected(it)) }
+}
+
+// Trigger without requesting ANY runtime permission:
+photoPickerLauncher.launch(
+    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+)
+```
+
+---
+
+## 8. App Quality & Gate E34 Checklist
 
 | Area | Checkpoint | Standard |
 | :--- | :--- | :--- |
-| **Crash Rate** | `safeLaunch` & DTO mapping | $< 0.05\%$ uncaught exceptions |
-| **ANR Rate** | No I/O / DB / JSON on Main | $< 0.02\%$ Main Thread blocking |
+| **Crash Rate** | `safeLaunch` & DTO mapping | $< 0.05\%$ uncaught exceptions (Gate E34.1) |
+| **ANR Rate** | No I/O / DB / JSON on Main | $< 0.02\%$ Main Thread blocking (Gate E34.1) |
+| **16KB Memory** | Native `.so` alignment | 100% compiled with `-Wl,-z,max-page-size=16384` (Gate E34.2) |
+| **Edge-to-Edge** | `safeDrawing` & `imePadding` | Zero overlapping navigation pills or hidden input fields (Gate E34.3) |
 | **System Splash**| AndroidX `SplashScreen` API | Dismisses in $< 200\text{ms}$ |
 | **Splash Timeout**| `withTimeoutOrNull` | Config $\le 2.5\text{s}$, Ads $\le 3.5\text{s}$ |
-| **Ad Safety** | Unmounted ad suppression | Zero ads shown after leaving Splash |
+| **Profiles** | Baseline Profiles | `baseline-prof.txt` bundled in release AAB (Gate E34.4) |
+| **Photo Picker** | `PickVisualMedia` | Zero storage permissions requested for media picking (Gate E34.5) |
 | **Backstack** | Clean-up | Splash popped cleanly upon entering Home |
-| **Profiles** | Baseline Profiles | `baseline-prof.txt` generated for release builds |

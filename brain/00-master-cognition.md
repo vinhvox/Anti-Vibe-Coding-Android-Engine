@@ -82,6 +82,12 @@ Understand Intent
 Collect Context
         │
         ▼
+Problem Deconstruction (First Principles)
+        │
+        ▼
+Adversarial Edge-Case Discovery (6-Dimension Boundary Matrix)
+        │
+        ▼
 Identify Missing Information
         │
         ▼
@@ -91,13 +97,13 @@ Generate Assumptions
 Evaluate Confidence
         │
         ▼
-Choose Strategy
+Choose Strategy & Test-Case Blueprint
         │
         ▼
 Execute Workflow
         │
         ▼
-Self Review
+Self Review & Enforcement Audit
         │
         ▼
 Validation
@@ -107,6 +113,57 @@ Deliver Result
 ```
 
 Skipping steps is prohibited.
+
+---
+
+# Problem Deconstruction & 6-Dimension Adversarial Boundary Engine
+
+The AI must NEVER implement code based solely on the "happy path" or the surface-level literal prompt.
+Before writing any code or architecture plan, the AI MUST actively deconstruct the problem and brainstorm edge cases across **The 6-Dimension Test Boundary Matrix**:
+
+```mermaid
+mindmap
+  root((6-Dimension Test Boundary Matrix))
+    1. Data Boundaries
+      Empty, Blank, Whitespace
+      0, 1, Boundary N, Max Int/Long, Overflow
+      Pathological strings (500-1000 unbroken chars)
+      Complex Unicode, Emojis (ZWJ), RTL/LTR Bidi
+      Malformed or missing fields in JSON/payloads
+    2. State Machine & Transitions
+      Re-entrancy / Calling while active
+      Illegal state transitions (e.g. Retry while Loading)
+      Abrupt cancellation mid-execution
+      Stale state overwrites
+    3. Timing & Concurrency
+      Rapid multi-taps (< 400ms double click)
+      Parallel concurrent requests race condition
+      Out-of-order async responses (stale overwrites fresh)
+      Network latency (15s-30s delay or socket timeout)
+      Concurrent 401 token expiration races
+    4. Hostile OS & Environment
+      Process termination by LMK (Process Death)
+      Network flapping / Offline / Captive portal (HTML on 200 OK)
+      Disk saturation (IOException: ENOSPC)
+      Runtime permission revoked in Android Settings mid-session
+    5. Adversarial User Behavior
+      Spamming action buttons repeatedly
+      Continuous screen rotation / fold-unfold during async load
+      Pasting massive 10,000-char strings into inputs
+      Navigating back or killing app during active transaction
+    6. Business Invariants & Security
+      Zero sum / non-negative balances
+      Idempotency on repeated transaction submissions
+      Zero sensitive data leaks in logs/screenshots
+      Injection defense (SQL, scripts, malformed paths)
+```
+
+### Mandatory Cognitive Protocol:
+1. **First-Principles Problem Deconstruction**: Identify the true user objective, operational context, and core system invariants.
+2. **Adversarial Boundary Brainstorming**: Interrogate the feature against all 6 dimensions above.
+3. **Test-Case Enumeration Before Code**: Derive explicit test scenarios (Given-When-Then or Unit Test signatures) covering these boundary dimensions BEFORE writing implementation code.
+4. **Autonomous Scientific Closed-Loop Debugging (Rule 41 & Gate E33.1/E33.2)**: When diagnosing failures or bugs, never guess. Formulate 1 single Root-Cause Hypothesis, write a Minimal Failing Isolation Test (RED state proof), apply a Single-Variable Atomic Fix, and execute full regression sweep.
+5. **Dual-Agent Adversarial Verification (Rule 42 & Gate E33.4)**: Never rely on author self-audit. Major deliverables must pass an independent Red-Team audit executing the 4 Chaos Vectors (chaotic inputs, concurrency stress, hostile runtime, gate compliance).
 
 ---
 
@@ -303,6 +360,16 @@ Possible strategies:
 - Optimize
 - Validate
 - Release
+
+### Senior Refactoring Decision Protocol (Rule 40):
+When the chosen strategy is `Refactor`, `Clean up`, `Optimize`, or `Migrate`:
+- The AI MUST lock into **Safety Net Mode (Gate E32)**:
+  1. **Characterization Tests First**: Write tests capturing existing observable behavior BEFORE modifying production code.
+  2. **Green Baseline**: Run tests against untouched code, ensuring 100% pass.
+  3. **Micro-Step Refactoring**: Apply single atomic structural transformations.
+  4. **Continuous Regression Check**: Run tests after each micro-step; instant revert on red.
+  5. **Zero-Regression Proof**: Provide test execution evidence confirming no behavior was altered.
+- NEVER modify production code before characterization tests exist and pass.
 
 Do not generate a plan unless planning is explicitly useful.
 

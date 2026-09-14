@@ -29,27 +29,61 @@ This skill provides a deep, production-grade architectural defense reference acr
 16. **Build & 16KB Release**: 16KB memory page alignment linker flags (`-Wl,-z,max-page-size=16384`). R8 mapping upload. Google Play In-App Updates.
 17. **Observability & Vitals**: Structured Crashlytics breadcrumbs. AndroidX Tracing (`trace("...") {}`). `reportFullyDrawn()` measurement.
 18. **Testing Strategy**: Turbine for StateFlow/SharedFlow. Koin DI graph verification (`appModule.verify()`). Mandatory real assemble build (`./gradlew assembleDebug testDebugUnitTest`).
-19. **Failure Modeling**: The 10 Ultimate Failure Modes (App Kill, Backgrounding, Permission Revoke, Network Loss, Disk Full, Migration Fail, Stale Async Race, Duplicate Click, Missing Hardware, Thermal Throttling).
+19. **Hostile Runtime & Edge Cases Defense**: The 8-Vector Hostile Runtime Matrix (**Rule 39 & Gate E30**): Process Death, Network Chaos & Captive Portals, Concurrency & Cancellation Leaks, Storage Saturation, Display Metamorphosis, Permissions JIT, OEM Battery Throttling, UI String & Inset Pathologies.
 
 ---
 
-## The 10 Failure Mode Defenses Quick Reference
+## The 8-Vector Hostile Runtime Defense Quick Reference (Rule 39)
 
-| Failure Mode | Root Cause | Defense & Recovery Pattern |
+| Runtime Vector | Hostile Threat / Edge Case | Mandatory Engineering Defense & Pattern |
 | :--- | :--- | :--- |
-| **App Kill (Process Death)** | OS kills background process due to low RAM | Save minimal keys in `SavedStateHandle`; re-hydrate from Room on revive. |
-| **Backgrounding** | OS suspends CPU / throttling | Suspend sensors & live camera streams in `onPause`/`onDispose`. |
-| **Permission Revoke** | User revokes in Settings while backgrounded | Catch `SecurityException` at DataSource; check permissions JIT. |
-| **Network Loss** | Offline or packet loss | Display Offline Banner; read SSOT Room DB; enqueue writes to Outbox. |
-| **Storage Full** | Disk exhaustion (`IOException`) | Catch disk exceptions; auto-evict temporary image/HTTP caches. |
-| **Migration Fail** | Schema mismatch | Verify migrations with `MigrationTestHelper` before release. |
-| **Stale Async Result** | Rapid user switches / out-of-order responses | Use `collectLatest` or `restartableOrLatest` coroutine scoping. |
-| **Duplicate Callback** | Fast multi-taps | Apply 400ms debounce at UI layer + UUID idempotency keys at Data layer. |
-| **Unsupported API** | Running on older Android or missing sensor | Guard with `Build.VERSION.SDK_INT` and `hasSystemFeature` checks. |
-| **Device Throttling** | RAM < 3GB or thermal severe | Disable glassmorphism blur and downsample image decode size. |
+| **1. Process & Memory** | Process Death (LMK), `TransactionTooLargeException` (>500KB) | Save minimal primitive keys in `SavedStateHandle`; re-hydrate from Room SSOT; evict bitmaps on `TRIM_MEMORY_RUNNING_CRITICAL`. |
+| **2. Network Chaos** | Hard offline, Captive Portal HTML trap, 401 Concurrency Race, 429 Jitter | Validate `NET_CAPABILITY_VALIDATED` + `Content-Type: application/json`; serialize 401 refresh with single `Mutex`; parse `Retry-After`. |
+| **3. Concurrency & Races** | Swallowed `CancellationException` zombie jobs, Multi-tap races (<400ms), Out-of-order overwrite | Use `safeCatching` (rethrow `CancellationException`); `Modifier.singleClick`; lock ViewModel `isLoading`; use `collectLatest`. |
+| **4. Storage & Integrity** | Disk full (`IOException: ENOSPC`), Corrupted partial writes, Scoped Storage URI expiration | Use `AtomicFile` or `.tmp` rename; catch `IOException`; call `takePersistableUriPermission`. |
+| **5. Display Metamorphosis**| 200% Accessibility Font Scaling text clipping, Virtual Keyboard IME overlap | Container with `verticalScroll` + `defaultMinSize()`; `Modifier.imePadding()` + `BringIntoViewRequester`. |
+| **6. Permissions & Hardware**| JIT runtime permission revocation, Permanent denial loop, Camera in use (`CAMERA_IN_USE`) | Always check `ContextCompat.checkSelfPermission` JIT; handle denial with App Settings deep-link; fallback states. |
+| **7. OEM & Background** | Aggressive OEM background killers (MIUI/OneUI), Doze mode, Android 14+ FGS 3-min limits | Use `WorkManager` with `NetworkType.CONNECTED`; declare `foregroundServiceType` in manifest; handle `Service.onTimeout`. |
+| **8. UI & Boundary** | 500-char unbroken words, RTL/LTR Bidi mixed text, Multi-codepoint Emojis / ZWJ, Missing states | `Text(overflow = TextOverflow.Ellipsis, softWrap = true)`; RTL Start/End anchoring; 100% 5-State UI coverage. |
+
+---
+
+## Minimalist Drop-In Defenses (Rule 32 Compliant)
+
+```kotlin
+// 1. Safe Cancellation Runner (Preserves Structured Concurrency)
+inline fun <T> safeCatching(block: () -> T): Result<T> =
+    runCatching(block).onFailure { if (it is CancellationException) throw it }
+
+// 2. Single-Click Pointer Debounce Modifier (Filters Double-Taps < 400ms)
+fun Modifier.singleClick(debounceMs: Long = 400L, onClick: () -> Unit): Modifier = composed {
+    val lastClickTime = remember { longArrayOf(0L) }
+    clickable {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastClickTime[0] >= debounceMs) {
+            lastClickTime[0] = now
+            onClick()
+        }
+    }
+}
+
+// 3. Atomic File Writer (Prevents Corrupted Partial Files on OS Kill)
+fun File.writeAtomic(data: ByteArray) {
+    val atomicFile = AtomicFile(this)
+    var stream: FileOutputStream? = null
+    try {
+        stream = atomicFile.startWrite()
+        stream.write(data)
+        atomicFile.finishWrite(stream)
+    } catch (e: IOException) {
+        if (stream != null) atomicFile.failWrite(stream)
+        throw e
+    }
+}
+```
 
 ---
 
 ## Full Master Playbook Reference
 The complete living playbook with comprehensive code patterns is maintained at:
-`~/plan/mobile_engineering_master_playbook.md`
+`file:///Users/vio/plan/mobile_engineering_master_playbook.md`

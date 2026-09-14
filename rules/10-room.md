@@ -47,6 +47,23 @@ Never bypass Repository.
 
 ---
 
+# Offline-First Single Source of Truth (SSOT) Standard
+
+1. **DAO Reactive Observability:**
+   - All read queries supplying continuous data to the UI MUST return `Flow<List<Entity>>` or `Flow<Entity?>`.
+   - The UI/ViewModel collects this reactive stream via Repository.
+   - Any insertion, deletion, or remote synchronization updates Room tables, which automatically triggers a new emission to all active Flow collectors.
+
+2. **Zero Direct Network Bypass:**
+   - The Presentation layer MUST NEVER read network DTOs directly when local caching is supported.
+   - The Repository writes remote network responses into Room, and the UI reacts solely to Room's reactive Flow.
+
+3. **Destructive Migration Ban on Production:**
+   - `fallbackToDestructiveMigration()` is STRICTLY FORBIDDEN in production/release builds.
+   - Always set `exportSchema = true` and provide explicit `Migration` steps with automated migration test verification (`MigrationTestHelper`).
+
+---
+
 # Layer Responsibilities
 
 Presentation

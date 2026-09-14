@@ -21,8 +21,8 @@ This skill guides the creation, maintenance, and verification of software featur
 
 ## References
 
-- Comprehensive Guide & Templates: [spec-driven-development.md](~/.antigravity/skills/spec-driven-development.md)
-- Ubiquitous Language Standard: [37-ubiquitous-language-standard.md](~/.antigravity/rules/37-ubiquitous-language-standard.md)
-- System Rule: [28-spec-driven-development.md](~/.antigravity/rules/28-spec-driven-development.md)
-- Enforcement Gate: [21-enforcement-engine.md#CATEGORY-E18](~/.antigravity/rules/21-enforcement-engine.md)
+- Comprehensive Guide & Templates: [spec-driven-development.md](file:///Users/vio/.antigravity/skills/spec-driven-development.md)
+- Ubiquitous Language Standard: [37-ubiquitous-language-standard.md](file:///Users/vio/.antigravity/rules/37-ubiquitous-language-standard.md)
+- System Rule: [28-spec-driven-development.md](file:///Users/vio/.antigravity/rules/28-spec-driven-development.md)
+- Enforcement Gate: [21-enforcement-engine.md#CATEGORY-E18](file:///Users/vio/.antigravity/rules/21-enforcement-engine.md)
 

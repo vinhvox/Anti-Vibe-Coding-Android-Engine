@@ -4,7 +4,7 @@ description: Phase 10 workflow acting as the final quality gate to verify all ar
 triggers:
   - "release"
   - "release readiness"
-  - "release verification"
+  - "nghiệm thu bản phát hành"
 prerequisites:
   - ".antigravity/workflow/06-code-review.md"
   - ".antigravity/workflow/07-testing-validation.md"

@@ -4,20 +4,20 @@
 
 ## Purpose
 
-This rule mandates the use of **RTK (Rust Token Killer)** at `~/.local/bin/rtk` to proxy and compress shell command execution logs, reducing LLM token consumption by 60–90% while preserving 100% of essential technical context.
+This rule mandates the use of **RTK (Rust Token Killer)** at `/Users/vio/.local/bin/rtk` to proxy and compress shell command execution logs, reducing LLM token consumption by 60–90% while preserving 100% of essential technical context.
 
 ---
 
 ## 1. Primary Binary Location
 
-- **Binary Path**: `~/.local/bin/rtk`
+- **Binary Path**: `/Users/vio/.local/bin/rtk`
 - **Version**: `0.45.0` (or higher)
 
 ---
 
 ## 2. Command Execution Guidelines
 
-Whenever executing shell commands, prefix supported terminal commands with `rtk` (or `~/.local/bin/rtk`):
+Whenever executing shell commands, prefix supported terminal commands with `rtk` (or `/Users/vio/.local/bin/rtk`):
 
 | Raw Terminal Command | RTK Proxy Command | Savings Optimization |
 | :--- | :--- | :--- |

@@ -121,6 +121,13 @@ Data layer must NOT contain:
 - Compose code
 - Android Views
 
+### Offline-First Single Source of Truth (SSOT) Standard
+In modern data-driven features:
+- **UI Data Flow:** The Presentation layer ONLY observes local database flows (`Flow<List<Entity>>` via Repository). The UI NEVER reads volatile network DTOs directly when offline caching is supported.
+- **Network Synchronization:** Network calls (Ktor Client) write newly fetched data directly into the Local Database (Room).
+- **Reactive Notification:** Once Room DB updates, its reactive `Flow` automatically emits the new state to Domain and Presentation layers.
+- **Result Pattern:** All I/O operations (network, disk, database) across Data boundaries MUST be wrapped in `AppResult<T>`. Never throw raw exceptions to outer layers.
+
 ---
 
 # Feature Structure

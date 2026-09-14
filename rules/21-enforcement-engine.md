@@ -106,6 +106,11 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** ViewModel imports `dao`, `HttpClient`, `File`, `java.io`
 - **Fix:** Route through UseCase → Repository
 
+### E3.4: Offline-First Single Source of Truth (SSOT) Observability Gate
+- **Scan:** Repositories, DAOs, and ViewModel data streams
+- **Reject if:** UI/ViewModel consumes raw network responses directly without persisting to local Room DB when caching is expected; or DAO queries supplying continuous data to UI return static `List<T>` instead of reactive `Flow<List<T>>`
+- **Fix:** Route network data into Room DB and expose reactive `Flow<List<T>>` from DAO/Repository to UI
+
 ---
 
 ## E4: Compose (refs: `rules/06-compose.md`)
@@ -124,6 +129,16 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Scan:** Lambdas passed to child Composables
 - **Warn if:** Inline lambda definitions not wrapped in `remember` or using method references
 - **Fix:** Memoize with `remember { }` or use method references
+
+### E4.4: Deferred State Reads (Phase Deferral) Gate
+- **Scan:** Reading high-frequency state (scroll offsets, timers, drag positions, animations) inside the body of a Composable function
+- **Reject if:** State read occurs in Composition Phase, triggering expensive full recompositions on every frame tick
+- **Fix:** Defer state reads into Layout/Draw phase modifier lambdas (`Modifier.offset { ... }`, `Modifier.graphicsLayer { ... }`, `Modifier.drawBehind { ... }`)
+
+### E4.5: Lazy Layout Mandatory Key & ContentType Gate
+- **Scan:** `LazyColumn`, `LazyRow`, `LazyVerticalGrid` `items(...)` blocks
+- **Reject if:** `items()` call lacks `key = { ... }` or uses list index as key; or fails to declare `contentType` when handling polymorphic items
+- **Fix:** Specify stable unique identifier `key = { it.id }` and define `contentType = { it.type }`
 
 ---
 
@@ -776,37 +791,37 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 
 ---
 
-# CATEGORY E27: UI/UX & AESTHETIC POLISH GATES (Rule 36)
+# CATEGORY E27: UI/UX & HAUTE COUTURE DESIGN GATES (Rule 36)
 
 ### E27.1: Anti-AI-Design-Cliché Gate
 - **Scan:** Composable colors, brush gradients, and card nesting
 - **Reject if:** Code contains forbidden AI tropes: purple/violet on dark backgrounds, glowing neon border outlines, biscuit pill badges with pulsing dots, gradient text fills on single keywords, or 3+ layers of nested cards
-- **Fix:** Remove cliché tropes; apply clean, function-driven Material 3 styling
+- **Fix:** Remove cliché tropes; apply clean, function-driven Material 3 styling with sophisticated neutrals
 
-### E27.2: Visual Depth & Subtle Border Gate
+### E27.2: Optical Depth & 0.5dp Hairline Gate
 - **Scan:** Surface and Card composable definitions
-- **Reject if:** Cards/containers lack visual depth or use flat harsh gray sheets without subtle borders
-- **Fix:** Apply a 0.5dp semi-transparent border (`AppTheme.colors.outlineVariant.copy(alpha = 0.5f)`) and layered tonal surfaces (`surfaceContainerLowest` to `surfaceContainerHigh`)
+- **Reject if:** Cards/containers lack visual depth, use harsh flat gray sheets, use thick borders (>= 2dp), or lack the subtle 0.5dp specular hairline border
+- **Fix:** Apply a 0.5dp semi-transparent border (`AppTheme.colors.outlineVariant.copy(alpha = 0.35f)`) and layered tonal surfaces (`surfaceContainerLowest` to `surfaceContainerHigh`)
 
-### E27.3: Typography Hierarchy & Contrast Gate
-- **Scan:** Typography styling and colors across all text composables
-- **Reject if:** Headings, section titles, and body texts have flat indistinguishable styling or fail WCAG AA contrast (4.5:1 for body)
-- **Fix:** Enforce 3-tier hierarchy: Hero Display (28-34sp Bold with -0.5sp tracking) > Title (18-22sp SemiBold) > Body (14-16sp Regular with 1.4x line-height) > Meta (11-12sp onSurfaceVariant)
+### E27.3: Editorial Typography & Negative Tracking Gate
+- **Scan:** Typography styling, letter-spacing, and numerical text composables
+- **Reject if:** Headlines lack tight negative tracking (-0.5sp to -1sp), or all-caps overlines lack positive tracking, or financial/statistical numbers fail to enable tabular figures (`fontFeatureSettings = "tnum"`)
+- **Fix:** Enforce editorial typography: Negative tracking for large display headers, positive tracking for labels/overlines, and tabular `tnum` for numbers
 
-### E27.4: 8-Point Grid Visual Rhythm Gate
-- **Scan:** Padding, spacer sizes, and component dimensions
-- **Reject if:** Arbitrary non-grid values (e.g. 7dp, 13dp, 19dp) are used for layout spacing
-- **Fix:** Snap all dimensions to strict 8-point geometric tokens (`4dp`, `8dp`, `16dp`, `24dp`, `32dp`)
+### E27.4: Chromatic Restraint & 90/10 Ratio Gate
+- **Scan:** Color distribution across screens and components
+- **Reject if:** Screen uses multi-color clown-car aesthetics (> 1 primary brand accent or conflicting saturated tags); or fails WCAG AA contrast (4.5:1)
+- **Fix:** Enforce the 90/10 rule: 90% sophisticated neutrals (Obsidian, Slate, Graphite, Off-white) and 10% intentional brand accent
 
-### E27.5: Domain-Tailored Aesthetics Gate
-- **Scan:** Color palettes and component styling against application vertical
-- **Reject if:** Generic cookie-cutter gray templates are applied indiscriminately to specialized domains (e.g., Fintech missing tabular numbers and high-trust palettes; E-commerce missing high-contrast CTAs)
-- **Fix:** Adopt domain-tailored color palettes and component aesthetics from `skills/ui-ux-pro-max`
+### E27.5: Asymmetric Spatial Breathing Room Gate
+- **Scan:** Padding, spacer sizes, and Gestalt grouping across components
+- **Reject if:** Uniform padding (e.g. 16dp on everything) is applied blindly without contrast; or distinct semantic sections lack generous negative space (28-40dp)
+- **Fix:** Group tightly related elements with 4-8dp gaps and separate distinct sections with 28-40dp breathing room
 
-### E27.6: Micro-Interactions & State Polish Gate
+### E27.6: Tactile Physics & Spring Feedback Gate
 - **Scan:** Interactive surfaces, buttons, and loading screens
-- **Reject if:** Interactive elements lack ripple indication, or loading screens show abrupt spinners instead of fluid shimmer skeletons
-- **Fix:** Implement fluid ripple feedback and shimmer skeleton placeholders
+- **Reject if:** Interactive elements feel static/rigid without tactile press scaling (0.97f with spring physics); or loading states show abrupt spinners instead of fluid shimmer skeletons
+- **Fix:** Implement tactile press scaling (`animateFloatAsState` with spring) and fluid tonal shimmer skeletons
 
 ---
 
@@ -839,17 +854,17 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 
 ---
 
-# CATEGORY E29: GOOGLE PLAY DEVICE & NETWORK ABUSE POLICY GATES (Rule 38)
+# CATEGORY E29: GOOGLE PLAY DEVELOPER PROGRAM POLICIES GATES (Rule 38)
 
 ### E29.1: Zero Dynamic Code Loading (Zero DCL) Gate
 - **Scan:** Dependencies, reflection calls, ClassLoader usages (`DexClassLoader`, `PathClassLoader`), and remote binary downloads
 - **Reject if:** App or any integrated SDK downloads executable binaries (`.dex`, `.jar`, `.so`) from remote servers at runtime or attempts self-updating outside Google Play
 - **Fix:** Package all executable code inside the Android App Bundle (AAB); use Google Play Core In-App Updates API exclusively
 
-### E29.2: Android 14+ Foreground Service (FGS) Eligibility & Declaration Gate
-- **Scan:** `AndroidManifest.xml` `<service>` declarations and background task dispatchers
-- **Reject if:** A Foreground Service lacks a valid `android:foregroundServiceType`; or uses FGS for deferrable work (e.g. background syncing without active user interaction); or lacks an eligible user-initiated trigger
-- **Fix:** Specify explicit `foregroundServiceType` and declare corresponding `FOREGROUND_SERVICE_*` permission; migrate non-urgent or deferrable tasks to `WorkManager`
+### E29.2: Android 14+ Foreground Service (FGS) & UIDT Eligibility Gate
+- **Scan:** `AndroidManifest.xml` `<service>` declarations, network transfer jobs, and background task dispatchers
+- **Reject if:** A Foreground Service lacks a valid `android:foregroundServiceType`; uses FGS for deferrable work; lacks user-initiated trigger; triggers UIDT / large transfers autonomously without direct user intent; or runs unapproved proxy/VPN tunnels
+- **Fix:** Specify explicit `foregroundServiceType` and declare corresponding `FOREGROUND_SERVICE_*` permission; migrate non-urgent or deferrable tasks to `WorkManager`; restrict UIDT to direct user-prompted commands
 
 ### E29.3: On-Device Android Container Defense Gate (`REQUIRE_SECURE_ENV`)
 - **Scan:** `AndroidManifest.xml` `<application>` block
@@ -861,15 +876,228 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** App attempts to bypass or intercept `FLAG_SECURE` in third-party applications; or payment/auth/vault screens fail to apply `FLAG_SECURE`
 - **Fix:** Enforce `SecureScreenEffect` on sensitive screens; ensure accessibility tools do not cache or transmit `FLAG_SECURE` content outside the device
 
-### E29.5: WebView Untrusted JavaScript Interface Gate
-- **Scan:** `WebView` implementations and `addJavascriptInterface` declarations
-- **Reject if:** `addJavascriptInterface` is attached to a WebView that loads unverified or cleartext (`http://`) web content
-- **Fix:** Restrict JS interfaces strictly to verified first-party `https://` URLs loaded from local assets or trusted domain whitelists
+### E29.5: WebView Untrusted JavaScript Interface & Anti-Phishing Gate
+- **Scan:** `WebView` implementations, URL loaders, and `addJavascriptInterface` declarations
+- **Reject if:** `addJavascriptInterface` is attached to a WebView that loads unverified or cleartext (`http://`) web content; or app embeds third-party web login flows without Chrome Custom Tabs / Credential Manager
+- **Fix:** Restrict JS interfaces strictly to verified first-party `https://` URLs loaded from local assets or trusted domain whitelists; use Chrome Custom Tabs for external web navigation
 
-### E29.6: User-Initiated Data Transfer (UIDT) & Anti-Proxy Gate
-- **Scan:** Network transfer workers and proxy services
-- **Reject if:** UIDT API / large transfer jobs are triggered autonomously without direct user action; or app runs proxy/VPN services that are not the primary, user-facing core purpose of the application
-- **Fix:** Restrict UIDT to direct user-prompted commands; enforce core-purpose requirement for proxy/VPN features
+### E29.6: Mandatory Account Deletion Web Link Gate
+- **Scan:** Auth flows, account registration, user profile settings, and remote configuration
+- **Reject if:** The app allows account creation but lacks both an in-app deletion flow AND a permanent, publicly accessible web URL (`AccountPolicyManager.ACCOUNT_DELETION_WEB_URL`) for users to request complete account and data deletion without reinstalling the app
+- **Fix:** Expose in-app Account Deletion entry in Settings (`SettingsScreen`) and declare verified public web deletion URL in Google Play Console Data Safety & App Content sections
+
+### E29.7: Better Ads Standards & Non-Intrusive Ads Gate
+- **Scan:** Ad display managers, interstitial triggers, reward handlers, and activity lifecycle events
+- **Reject if:** Full-screen interstitial ads trigger unexpectedly during active gameplay or user workflow (e.g. immediately upon tapping an action or launching screen); interstitial ads lack a close/dismiss button after 15 seconds; or ads render outside app context (on lock-screen, launcher, or over system dialogs)
+- **Fix:** Only show interstitial ads at natural transition breaks (e.g. level complete, after explicit task completion); enforce maximum 15s dismiss button visibility; strictly forbid background/lock-screen ad surfaces
+
+### E29.8: Generative AI Moderation & In-App Flagging Gate
+- **Scan:** Generative AI prompts, LLM response renderers, image generation interfaces, and user feedback dialogs
+- **Reject if:** App features Generative AI (chat, text, or image generation) without an accessible in-app content reporting/flagging mechanism (`GenAiReportContentDialog`) or lacks automated input/output safety guardrails against offensive, hateful, CSAM, or non-consensual content
+- **Fix:** Attach reporting action to every GenAI output bubble/card; enforce safety filtering on both user prompts and model responses
+
+### E29.9: Minimum Functionality & Anti-Spam Gate
+- **Scan:** Project structure, Compose screens, WebView wrappers, and launch activities
+- **Reject if:** App is merely an empty shell or direct wrapper of an existing website without native Android value-add; exhibits launch crashes / dead-ends; or duplicates existing published apps with trivial reskinning (spam/copycat)
+- **Fix:** Provide rich native UI components, offline capabilities, local hardware integrations (camera, sensors), and ensure crash-free launch (< 600ms TTID)
+
+### E29.10: Families Policy & Certified Ad SDK Gate
+- **Scan:** Target age group declarations, analytics tracking, advertising SDK dependencies, and age gates
+- **Reject if:** App target audience includes children (under 13) but includes non-certified Ad SDKs; collects Android Advertising ID (AAID); tracks persistent device identifiers; or lacks a neutral age screen (`NeutralAgeVerificationScreen`)
+- **Fix:** Integrate only Google Play Certified Ad SDKs for Families; zero out AAID collection for child accounts; enforce neutral age verification before collecting any personal data
+
+---
+
+# CATEGORY E30: ANDROID HOSTILE RUNTIME & EDGE-CASES DEFENSE GATES (Rule 39)
+
+### E30.1: Process Death & IPC Bundle Size Gate
+- **Scan:** `SavedStateHandle`, `Intent` extras, and Navigation 3 destination arguments
+- **Reject if:** Storing complex models, bitmaps, or collections in bundles without disk caching; or total IPC bundle exceeds 500KB (`TransactionTooLargeException`)
+- **Fix:** Retain only minimal primitive identifiers (`orderId: String`, `pageIndex: Int`) in bundles and rehydrate domain state reactively from Room SSOT
+
+### E30.2: Network Captive Portal & Content-Type Guard Gate
+- **Scan:** Ktor / OkHttp response parsing, deserializers, and network status monitors
+- **Reject if:** Deserializing JSON without validating `Content-Type: application/json`; or relying solely on `isConnected` without checking `NetworkCapabilities.NET_CAPABILITY_VALIDATED`
+- **Fix:** Check `NET_CAPABILITY_VALIDATED` for real internet access; guard deserializer against HTML payloads from captive portals, mapping to `NetworkError.CaptivePortalDetected`
+
+### E30.3: 401 Concurrent Token Refresh Mutex Gate
+- **Scan:** Auth interceptors and refresh token handlers
+- **Reject if:** Concurrent 401 responses trigger multiple independent token refresh requests; or lack of single-flight mutex synchronization
+- **Fix:** Serialize token refresh through a singleton `kotlinx.coroutines.sync.Mutex`; suspend concurrent callers and retry with the new token
+
+### E30.4: Preserved CancellationException Gate
+- **Scan:** Coroutine blocks, `try-catch` clauses, and async worker pipelines
+- **Reject if:** Catching `Exception` or `Throwable` without explicitly rethrowing `CancellationException` (breaking structured concurrency and leaking zombie jobs)
+- **Fix:** Use `safeCatching { ... }` or add `if (e is CancellationException) throw e` in all catch blocks
+
+### E30.5: Multi-Tap & Re-Entrancy Defense Gate
+- **Scan:** Compose click handlers, navigation triggers, and transactional action buttons
+- **Reject if:** Interactive clickable elements lack pointer-level debounce (< 400ms); or ViewModel operations lack loading locks against duplicate invocations
+- **Fix:** Apply `Modifier.singleClick { ... }` on UI actions and guard ViewModel actions with `if (state.value.isLoading) return@launch`
+
+### E30.6: Atomic Disk I/O & File Integrity Gate
+- **Scan:** File persistence, cache writes, and media export operations
+- **Reject if:** Writing critical files directly via raw `FileOutputStream` without atomic transaction (leaving corrupted partial files on crash/power cut)
+- **Fix:** Use `androidx.core.util.AtomicFile` or write to a `.tmp` file followed by an atomic POSIX rename
+
+### E30.7: 200% Accessibility Font Scaling & IME Inset Gate
+- **Scan:** Text containers, form screens, and input fields
+- **Reject if:** Containers holding text have fixed heights (`Modifier.height(...)`) that clip under 200% font scale; or input fields lack keyboard auto-scroll
+- **Fix:** Use `defaultMinSize()`, wrap in scrollable layouts (`verticalScroll`), and bind inputs with `Modifier.imePadding()` and `BringIntoViewRequester`
+
+### E30.8: JIT Permissions & Hardware Degradation Gate
+- **Scan:** CameraX, Audio, Location, and Biometric API invocations
+- **Reject if:** Caching permission states in static variables; or calling hardware APIs without checking `ContextCompat.checkSelfPermission` JIT; or ignoring `CAMERA_IN_USE` / `KeyPermanentlyInvalidatedException`
+- **Fix:** Check permissions JIT before invocation; handle permanent denial with rationale deep-link; provide fallback states for unavailable hardware
+
+---
+
+# CATEGORY E31: PROBLEM DECONSTRUCTION & 6-DIMENSION TEST COVERAGE GATES (Rule 28 & Rule 33)
+
+### E31.1: Happy-Path Only Test Rejection Gate
+- **Scan:** Unit tests, Compose UI tests, and Gherkin specifications
+- **Reject if:** Test suite only asserts successful happy-path and trivial error states without testing boundary conditions across The 6-Dimension Test Boundary Matrix
+- **Fix:** Add explicit test scenarios for: empty/blank/whitespace, 0/1/max values, string overflow, and malformed inputs
+
+### E31.2: Concurrency & Re-Entrancy Test Gate
+- **Scan:** ViewModel tests, UseCase tests, and Coroutine pipelines
+- **Reject if:** Asynchronous user actions lack tests asserting behavior under rapid multi-taps (< 400ms), concurrent race conditions, or out-of-order async responses
+- **Fix:** Use Turbine to test concurrent intents, asserting that re-entrancy locks drop duplicate submissions and `collectLatest` cancels stale async jobs
+
+### E31.3: Hostile OS & Process Death State Rehydration Test Gate
+- **Scan:** ViewModel and Navigation backstack tests
+- **Reject if:** State survival and rehydration from `SavedStateHandle` after OS process death is unverified in tests
+- **Fix:** Write tests instantiating ViewModel with mocked `SavedStateHandle` containing primitive keys, asserting that state rehydrates cleanly without crash
+
+### E31.4: System Invariants & Transaction Idempotency Gate
+- **Scan:** Payment, checkout, mutation flows, and database transactions
+- **Reject if:** Business invariants (e.g. non-negative totals, non-duplicate transaction IDs) lack assertions; or repeated identical submissions trigger duplicate side-effects
+- **Fix:** Add explicit assertions for invariants and verify UUID idempotency keys on write operations
+
+---
+
+# CATEGORY E32: SENIOR REFACTORING SAFETY NET & CHARACTERIZATION GATES (Rule 40)
+
+### E32.1: Pre-Emptive Edit Rejection Gate
+- **Scan:** Production code files touched during tasks categorized as Refactoring, Cleanup, Modularization, or Migration
+- **Reject if:** Production code was edited before Characterization / Pinning tests were created and verified green
+- **Fix:** Revert production changes immediately; write Characterization tests first, establish Green Baseline on untouched code, then refactor in micro-steps
+
+### E32.2: Green Baseline Verification Gate
+- **Scan:** Test execution history and test logs prior to code refactoring
+- **Reject if:** Refactoring commenced while existing tests were failing, or without executing `./gradlew test` on the untouched code
+- **Fix:** Execute test suite against untouched code, verify 100% pass (Green Baseline), fix any broken test assertions before touching production code
+
+### E32.3: Micro-Step Discipline & Instant Revert Gate
+- **Scan:** Git diffs and refactoring changesets
+- **Reject if:** Multiple unrelated structural changes were combined into a single unverified commit/edit; or if code edits continued while tests were red
+- **Fix:** Split refactorings into single atomic transformations (extract, rename, hoist); immediately revert to last green state on red tests
+
+### E32.4: Zero Observable Regression Gate
+- **Scan:** Public API signatures, state emissions, rendered UI, and regression test suites
+- **Reject if:** Refactoring altered public behavior, dropped existing edge-case handling, or reduced test coverage
+- **Fix:** Restore missing edge-case handling and verify full test suite passes with zero regressions
+
+---
+
+# CATEGORY E33: AUTONOMOUS AGENTIC ENGINEERING & SCIENTIFIC CLOSED-LOOP GATES (Rules 41 & 42)
+
+### E33.1: Scientific Debugging Gate (Minimal Failing Test)
+- **Scan:** Bug fix diffs, issue repairs, and test failure resolutions
+- **Reject if:** Production code was modified to resolve a bug or test failure before a Minimal Failing Test reproducing the failure was committed or executed in RED state; or if symptoms were suppressed using broad `try-catch` / null coalescing hacks
+- **Fix:** Formulate a single Root-Cause Hypothesis, write a minimal reproduction test that fails deterministically (RED), then fix production code to turn it GREEN
+
+### E33.2: Single-Variable Isolation Gate
+- **Scan:** Production code diffs for bug fixes and targeted patches
+- **Reject if:** The fix changed multiple unrelated variables, refactored surrounding code, or applied "shotgun edits" instead of surgically modifying the isolated invariant
+- **Fix:** Revert extraneous changes; restrict the diff strictly to the single variable or logic branch identified in the hypothesis
+
+### E33.3: Living Executable Traceability Gate
+- **Scan:** Feature specifications (`spec.md`), Gherkin acceptance criteria, and unit test suites
+- **Reject if:** Any Scenario in `spec.md` lacks an explicit `@Scenario("ID")` tag, or if any Scenario ID in the specification lacks an executable test in code (Orphaned Scenario); or if tests are not linked 1-to-1 with specification rules
+- **Fix:** Assign unique Scenario IDs to all Gherkin scenarios in `spec.md` and map them 1-to-1 to executable test methods in Kotlin test suites
+
+### E33.4: Dual-Agent Adversarial Red-Team Gate
+- **Scan:** Completion claims for major features, core module refactors, or release candidates
+- **Reject if:** Completion is declared solely based on author self-audit without executing the 4 Chaos Vectors (chaotic inputs, concurrency stress, hostile runtime, gate compliance) or without an independent Adversarial Red-Team audit report
+- **Fix:** Submit handoff contract to Red Team auditor, execute the 4 Chaos Vectors, resolve all detected cracks via Rule 41, and obtain the "Adversarial Pass" certificate
+
+---
+
+# CATEGORY E34: ANDROID 15/16 CORE APP QUALITY & VITALS COMPLIANCE GATES (Rule 27)
+
+### E34.1: Google Play Core Vitals Threshold Gate
+- **Scan:** Performance profiling, Crashlytics reports, and thread execution
+- **Reject if:** Crash rate exceeds 0.05%, ANR rate exceeds 0.02%, cold start exceeds 600ms, or dropped frames exceed 1.0% (violating Google Play Bad Behavior Thresholds)
+- **Fix:** Eliminate uncaught exceptions with `safeLaunch`, offload all disk/network I/O to background dispatchers, and optimize startup pipeline
+
+### E34.2: 16KB Memory Page Alignment Gate
+- **Scan:** Integrated Native C/C++ `.so` binaries in `jniLibs` and dependencies
+- **Reject if:** Any `.so` library fails 16KB page alignment (`-Wl,-z,max-page-size=16384`), causing SIGSEGV crashes on Android 15+ devices
+- **Fix:** Upgrade NDK to r27+ and recompile or upgrade native dependencies with 16KB alignment flags
+
+### E34.3: Enforced Edge-to-Edge Insets Gate
+- **Scan:** Root composable scaffolds, top app bars, and bottom sheets
+- **Reject if:** Screens fail to consume `WindowInsets.safeDrawing`, or input fields lack `Modifier.imePadding()`, causing system bars or keyboard to overlap UI components
+- **Fix:** Apply `enableEdgeToEdge()` in Activity and consume `safeDrawing` and `imePadding()` in Compose layouts
+
+### E34.4: Baseline Profile Integration Gate
+- **Scan:** Release packaging configuration and Gradle build tasks
+- **Reject if:** Release APK/AAB lacks a generated `baseline-prof.txt` profile
+- **Fix:** Configure `:baselineprofile` generator module with Macrobenchmark to bundle AOT startup profile
+
+### E34.5: Zero-Permission Media Picker Gate
+- **Scan:** Image/video selection implementations and permission requests
+- **Reject if:** App requests `READ_MEDIA_IMAGES` or `READ_EXTERNAL_STORAGE` for user media picking instead of using the system Photo Picker
+- **Fix:** Migrate to `ActivityResultContracts.PickVisualMedia` with zero runtime permission requirements
+
+---
+
+# CATEGORY E35: XML & COMPOSE HYBRID INTEROPERABILITY GATES (Rule 43)
+
+### E35.1: ComposeView Lifecycle Disposal Gate
+- **Scan:** `ComposeView` usage inside Fragment classes (`class *Fragment`)
+- **Reject if:** `ComposeView` inside a Fragment fails to call `setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)` prior to `setContent {}`
+- **Fix:** Add `setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)` inside `onCreateView()` or `onViewCreated()`
+
+### E35.2: ViewBinding Nullification Gate
+- **Scan:** Fragments utilizing ViewBinding (`Fragment*Binding`)
+- **Reject if:** ViewBinding is held as an immutable non-nullable `val`, or `_binding = null` is omitted inside `onDestroyView()`, leaking the Fragment's view hierarchy
+- **Fix:** Declare `private var _binding: FragmentXxxBinding? = null` and clear it via `_binding = null` in `onDestroyView()`
+
+### E35.3: AndroidView Lifecycle & onRelease Resource Cleanup Gate
+- **Scan:** `AndroidView` implementations inside `@Composable` functions
+- **Reject if:** Dynamic state manipulation occurs inside `factory` instead of `update`; or embedded hardware/streaming views (such as AdMob `AdView`, Media3 `PlayerView`, Google Maps `MapView`, CameraX `PreviewView`, or `WebView`) omit the `onRelease` block
+- **Fix:** Retain only view construction in `factory`; pass state mutations to `update`; and implement `onRelease = { view -> view.destroy() / view.release() }`
+
+### E35.4: Shared UDF repeatOnLifecycle XML Gate
+- **Scan:** Coroutine Flow collections inside Fragment/Activity classes
+- **Reject if:** `StateFlow` or `Flow` is collected using raw `lifecycleScope.launch` without `repeatOnLifecycle(Lifecycle.State.STARTED)`
+- **Fix:** Wrap flow collection inside `viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { ... } }`
+
+---
+
+# CATEGORY E36: 100% PURE XML MODERN ARCHITECTURE GATES (Rule 44)
+
+### E36.1: XML ViewBinding Nullification & Lifecycle Gate
+- **Scan:** `class *Fragment` files in XML-based modules
+- **Reject if:** ViewBinding is declared as an immutable `val` in Fragment class scope, or `_binding = null` is omitted in `onDestroyView()`
+- **Fix:** Declare `private var _binding: FragmentXxxBinding? = null` and clear it via `_binding = null` in `onDestroyView()`
+
+### E36.2: RecyclerView ListAdapter & DiffUtil Gate
+- **Scan:** `RecyclerView.Adapter` subclasses in XML presentations
+- **Reject if:** Adapters extend raw `RecyclerView.Adapter` instead of `androidx.recyclerview.widget.ListAdapter`, or invoke `notifyDataSetChanged()`
+- **Fix:** Migrate to `ListAdapter<T, VH>` with a dedicated background `DiffUtil.ItemCallback`
+
+### E36.3: XML Android 15 Enforced Edge-to-Edge WindowInsetsCompat Gate
+- **Scan:** `Activity` and `Fragment` root view layout configurations
+- **Reject if:** Activities lack `enableEdgeToEdge()`, or root views fail to apply `ViewCompat.setOnApplyWindowInsetsListener` consuming `systemBars()` or `ime()`
+- **Fix:** Call `enableEdgeToEdge()` in Activity and attach `ViewCompat.setOnApplyWindowInsetsListener` to consume system bars and IME insets
+
+### E36.4: Navigation Component SafeArgs Type-Safe Gate
+- **Scan:** Inter-destination navigation and argument passing in XML Navigation Graphs
+- **Reject if:** Passing arguments via raw String bundle keys (`bundle.putString("KEY", ...)`), or extracting args manually instead of using `by navArgs()`
+- **Fix:** Use Gradle SafeArgs generated Directions (`XxxDirections.action...()`) and `by navArgs()` delegate
 
 ---
 
@@ -880,15 +1108,17 @@ When completing a task, the AI MUST:
 
 ```text
 1. Identify which enforcement categories apply:
-   - UI changes → E1 (Design System) + E4 (Compose) + E18.2 (5-State Matrix) + E19 (Layout Defense) + E21.7 (Adaptive UI/IME) + E21.8 (a11y 48dp) + E22 (Anti-Overengineering) + E23 (Blind Spots Defense) + E24.5 (UI Test Coverage) + E27 (UI/UX Polish & Anti-Cliché)
-   - ViewModel changes → E2 (Architecture-VM) + E18.3 (Gherkin Verification) + E20.2 (Koin Integrity) + E20.3 (Data Trigger) + E21.1 (Process Death) + E21.10 (Atomic StateFlow) + E22.2 (No Redundant UseCases) + E22.3 (Single Expression) + E23.2 (Re-entrancy Lock) + E24.1 (Turbine) + E24.2 (Fakes) + E24.3 (Zero Flakiness)
-   - Data & Networking → E3 + E21.4 (SSOT Outbox) + E21.5 (Zero Data Loss Migration) + E21.15 (Keystore Security) + E22.5 (Zero Dependency Bloat) + E24.2 (Fakes) + E26.1 (No Destructive Migration) + E26.2 (Schema Test)
-   - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard)
-   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify)
-   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29 (Device & Network Abuse Policy)
-   - Security & Storage → E17 + E21.15 (Keystore Security) + E29.3 (Container Defense) + E29.4 (FLAG_SECURE)
-   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Abuse Policy Audit)
+   - UI changes → E1 (Design System) + E4 (Compose) + E18.2 (5-State Matrix) + E19 (Layout Defense) + E21.7 (Adaptive UI/IME) + E21.8 (a11y 48dp) + E22 (Anti-Overengineering) + E23 (Blind Spots Defense) + E24.5 (UI Test Coverage) + E27 (UI/UX Polish & Anti-Cliché) + E29.4 (FLAG_SECURE) + E29.6 (Account Deletion UI) + E29.7 (Better Ads 15s Limit) + E29.8 (GenAI In-App Flagging) + E29.10 (Neutral Age Gate) + E30.5 (Multi-Tap Debounce) + E30.7 (200% Font & IME Insets) + E31.1 (6-Dimension Boundaries) + E34.3 (Enforced Edge-to-Edge Insets) + E34.5 (Zero-Permission Photo Picker) + E35 (Hybrid XML/Compose: DisposeOnViewTreeLifecycleDestroyed, ViewBinding Nullification, AndroidView onRelease) + E36 (100% Pure XML: ListAdapter DiffUtil, WindowInsetsCompat Edge-to-Edge, SafeArgs Type-Safety)
+   - ViewModel changes → E2 (Architecture-VM) + E18.3 (Gherkin Verification) + E20.2 (Koin Integrity) + E20.3 (Data Trigger) + E21.1 (Process Death) + E21.10 (Atomic StateFlow) + E22.2 (No Redundant UseCases) + E22.3 (Single Expression) + E23.2 (Re-entrancy Lock) + E24.1 (Turbine) + E24.2 (Fakes) + E24.3 (Zero Flakiness) + E29.6 (Account Deletion Logic) + E29.8 (GenAI Moderation) + E30.1 (Process Death) + E30.3 (401 Mutex) + E30.4 (Preserved Cancellation) + E30.5 (Re-entrancy Lock) + E31.1 (Boundary Test) + E31.2 (Concurrency Test) + E31.3 (Process Death Rehydration Test) + E33.3 (Living Traceability) + E34.1 (Core Vitals Budget)
+   - Data & Networking → E3 + E21.4 (SSOT Outbox) + E21.5 (Zero Data Loss Migration) + E21.15 (Keystore Security) + E22.5 (Zero Dependency Bloat) + E24.2 (Fakes) + E26.1 (No Destructive Migration) + E26.2 (Schema Test) + E29.1 (Zero DCL) + E29.6 (Account Deletion Web Link) + E30.2 (Captive Portal Guard) + E30.3 (401 Refresh Mutex) + E30.4 (Preserved Cancellation) + E30.6 (Atomic File Writes) + E31.4 (Invariants & Idempotency) + E33.3 (Living Traceability)
+   - Bug Fix & Debugging → E33.1 (Scientific Debugging Minimal Failing Test) + E33.2 (Single-Variable Isolation) + E20.1 (Full Test Verification)
+   - Refactoring & Migration → E32 (Senior Refactoring Safety Net: Pre-emptive Edit Block, Green Baseline, Micro-Steps, Zero Regression) + E22 (Minimalism) + E24 (Modern Testing) + E33.2 (Single-Variable Isolation) + E33.4 (Red-Team Audit)
+   - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard) + E29.1 (Zero DCL) + E30 (Runtime Hostility Defense) + E31 (Adversarial Coverage) + E33.3 (Living Traceability) + E33.4 (Red-Team Audit) + E34.2 (16KB Page Alignment)
+   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify) + E29 (Google Play 7-Pillar Policy Compliance E29.1-E29.10) + E33.4 (Adversarial Audit) + E34.1 (Core Vitals) + E34.2 (16KB Compatibility) + E34.4 (Baseline Profile)
+   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29.2 (FGS & UIDT Policy) + E30.8 (JIT Permissions & Hardware In-Use)
+   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 + E30 + E31 + E33 + E34 + E35 + E36 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Google Play Policy 7 Pillars + Hostile Runtime Defense + 6-Dimension Adversarial Audit + Living Traceability + Red-Team Audit + Android 15/16 Core Vitals + Hybrid Interoperability + 100% Pure XML Modern Architecture)
    - Any code change → E9 + E20.1 (Full Assemble Build & Test verification)
+```
 
 2. Run applicable scans on ALL modified files
 
