@@ -39,6 +39,8 @@ flowchart LR
 | **Warm / Hot Start** | $\ge 2,000\text{ms}$ / $\ge 1,500\text{ms}$ | **$< 300\text{ms}$ (Warm) / $< 150\text{ms}$ (Hot)** | System Trace / Profiler |
 | **Slow Rendering Frames** | $\ge 50\%$ Frames $> 16.6\text{ms}$ | **$< 1.0\%$ Dropped Frames (120/60 FPS)** | Jetpack JankStats & FrameMetrics |
 | **Frozen Frames** | $\ge 0.1\%$ Frames $> 700\text{ms}$ | **$0.0\%$ Frozen Frames** | Android Vitals |
+| **DEX Code Optimization Score** | Play Console Alert / Low Optimization | **$\ge 75\%$ Optimized ($\ge 80\%$ Obfuscated)** | `./gradlew :app:analyzeReleaseR8Config` & Play Vitals |
+
 
 ---
 
@@ -145,11 +147,24 @@ The Main Thread (`Dispatchers.Main`) is reserved exclusively for Compose layout,
 
 ---
 
+### Rule 27.9: DEX Code Optimization & Uncompressed Size Budget
+* **The Law:** All production AAB releases MUST undergo R8 DEX Code Optimization compliance verification per Google Play Vitals standards:
+  1. **Full Mode Enforced:** `android.enableR8.fullMode=true` (Zero disablement).
+  2. **Uncompressed DEX Size Measurement:**
+     ```bash
+     unzip -l <yourapp>.aab | grep -E '\.dex$' | awk '{sum+=$1} END {print sum}'
+     ```
+  3. **R8 Configuration Analyzer Audit:** Run `./gradlew :app:analyzeReleaseR8Config` to ensure Optimization score $\ge 75\%$ and Obfuscation score $\ge 80\%$.
+  4. **Play Console Vitals Clean:** Zero "DEX code optimization" warning banners in Google Play Console App Quality / Vitals dashboard.
+
+---
+
 # 5. ARCHITECTURE COMPLIANCE CHECKLIST (GATE E34)
 
 Before declaring any release candidate, feature, or refactor complete, verify:
 
 - [ ] **Google Play Vitals Budget:** Crash Rate $< 0.05\%$, ANR Rate $< 0.02\%$, Cold Start $< 600\text{ms}$, Slow Frames $< 1\%$.
+- [ ] **DEX Code Optimization Budget:** Full Mode active, Optimization $\ge 75\%$, Obfuscation $\ge 80\%$, zero broad package keeps, zero Play Console DEX warnings.
 - [ ] **16KB Page Alignment:** Verified all `.so` binaries align with `-Wl,-z,max-page-size=16384` (Zero SIGSEGV crashes on 16KB devices).
 - [ ] **Edge-to-Edge Insets:** Verified `enableEdgeToEdge()`, `WindowInsets.safeDrawing`, and `imePadding()` (No overlapping navigation pills or hidden input fields).
 - [ ] **Foreground Service Restrictions:** No undeclared FGS types; deferrable background jobs routed to WorkManager.
@@ -157,3 +172,4 @@ Before declaring any release candidate, feature, or refactor complete, verify:
 - [ ] **StrictMode Clean:** Zero StrictMode disk/network violations on the Main Thread.
 - [ ] **Baseline Profile Included:** `baseline-prof.txt` bundled in release AAB.
 - [ ] **100% Compliant with Enforcement Gate E34.**
+

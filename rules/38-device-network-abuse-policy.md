@@ -1,4 +1,4 @@
-# 38 - GOOGLE PLAY DEVELOPER PROGRAM POLICIES MASTER STANDARD (2025–2026)
+# 38 - GOOGLE PLAY DEVELOPER PROGRAM POLICIES & DEVICE/NETWORK ABUSE STANDARD [Quick Tag: `#policy`]
 
 ## 1. PURPOSE & HIGHEST MANDATE
 This document establishes the mandatory architectural and engineering compliance standard for the complete **Google Play Developer Program Policies** (2025–2026).

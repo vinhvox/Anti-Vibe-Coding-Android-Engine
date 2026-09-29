@@ -789,6 +789,26 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** Release preparation tasks skip minified compilation verification (`./gradlew assembleRelease testReleaseUnitTest`)
 - **Fix:** Execute real minified release build to prove zero R8/ProGuard runtime crashes
 
+### E26.6: R8 Full Mode Enforced Gate
+- **Scan:** `gradle.properties` and build configuration files
+- **Reject if:** `android.enableR8.fullMode=false` is declared or if Full Mode is disabled
+- **Fix:** Remove `android.enableR8.fullMode=false` or explicitly set `android.enableR8.fullMode=true` to enable maximum shrinking, inlining, and class merging
+
+### E26.7: Ban Wildcard Package Keep Rules Gate
+- **Scan:** `proguard-rules.pro` and module consumer rules
+- **Reject if:** Rule declares unbounded package-wide wildcards such as `-keep class com.mycompany.** { *; }` or broad `-keep class *` that prevent R8 from inlining, tree-shaking, and devirtualizing
+- **Fix:** Refine keep rules to target only specific classes or exact members requiring reflection/JNI
+
+### E26.8: Zero Redundant Consumer Rules Gate
+- **Scan:** Application `proguard-rules.pro` file
+- **Reject if:** Rules manually duplicate keep declarations for libraries that bundle embedded `consumer-rules.pro` (Retrofit, OkHttp, Moshi, Kotlinx Serialization, Room, Hilt, Koin, Coil)
+- **Fix:** Delete duplicated library rules and rely on library AAR consumer proguard configurations
+
+### E26.9: DEX Code Optimization & Blast Radius Gate
+- **Scan:** Release configuration and R8 analysis reports
+- **Reject if:** Release candidate generates Play Console DEX code optimization alerts, or exhibits an Optimization score < 75% or Obfuscation score < 80% during R8 configuration analysis
+- **Fix:** Run `./gradlew :app:analyzeReleaseR8Config`, audit rule blast radius in the generated report, and prune broad keep rules until metrics meet the budget
+
 ---
 
 # CATEGORY E27: UI/UX & HAUTE COUTURE DESIGN GATES (Rule 36)
@@ -854,7 +874,7 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 
 ---
 
-# CATEGORY E29: GOOGLE PLAY DEVELOPER PROGRAM POLICIES GATES (Rule 38)
+# CATEGORY E29: GOOGLE PLAY DEVELOPER PROGRAM POLICIES & DEVICE/NETWORK ABUSE GATES (Rule 38) [Quick Tag: `#policy`]
 
 ### E29.1: Zero Dynamic Code Loading (Zero DCL) Gate
 - **Scan:** Dependencies, reflection calls, ClassLoader usages (`DexClassLoader`, `PathClassLoader`), and remote binary downloads
@@ -1114,7 +1134,7 @@ When completing a task, the AI MUST:
    - Bug Fix & Debugging → E33.1 (Scientific Debugging Minimal Failing Test) + E33.2 (Single-Variable Isolation) + E20.1 (Full Test Verification)
    - Refactoring & Migration → E32 (Senior Refactoring Safety Net: Pre-emptive Edit Block, Green Baseline, Micro-Steps, Zero Regression) + E22 (Minimalism) + E24 (Modern Testing) + E33.2 (Single-Variable Isolation) + E33.4 (Red-Team Audit)
    - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard) + E29.1 (Zero DCL) + E30 (Runtime Hostility Defense) + E31 (Adversarial Coverage) + E33.3 (Living Traceability) + E33.4 (Red-Team Audit) + E34.2 (16KB Page Alignment)
-   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify) + E29 (Google Play 7-Pillar Policy Compliance E29.1-E29.10) + E33.4 (Adversarial Audit) + E34.1 (Core Vitals) + E34.2 (16KB Compatibility) + E34.4 (Baseline Profile)
+   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify) + E26.6 (Full Mode) + E26.7 (Ban Wildcard Keeps) + E26.8 (Zero Redundant Rules) + E26.9 (DEX Optimization & Blast Radius) + E29 (Google Play 7-Pillar Policy Compliance E29.1-E29.10) + E33.4 (Adversarial Audit) + E34.1 (Core Vitals) + E34.2 (16KB Compatibility) + E34.4 (Baseline Profile)
    - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29.2 (FGS & UIDT Policy) + E30.8 (JIT Permissions & Hardware In-Use)
    - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 + E30 + E31 + E33 + E34 + E35 + E36 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Google Play Policy 7 Pillars + Hostile Runtime Defense + 6-Dimension Adversarial Audit + Living Traceability + Red-Team Audit + Android 15/16 Core Vitals + Hybrid Interoperability + 100% Pure XML Modern Architecture)
    - Any code change → E9 + E20.1 (Full Assemble Build & Test verification)

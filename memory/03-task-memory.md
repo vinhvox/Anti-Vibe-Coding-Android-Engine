@@ -470,6 +470,71 @@ Track implementation details that belong to code.
 
 # Active Tasks
 
+- [2026-09-28] **Clean Architecture-Preserving App Reskinning & Dead Code Purge Engine (`skills/app-reskinning/SKILL.md`, Quick Tag `#reskin`)** | Status: DONE
+  - Objective: Xây dựng Skill chuyên biệt chuẩn hóa quy trình Reskin ứng dụng Android hiện đại: Tôn trọng và giữ nguyên 100% tầng Domain & Data (Clean Architecture), đóng băng logic bằng Turbine tests (Rule 40), triệt tiêu mã chết và file thừa thông qua R8 `-printusage` và Android Lint `UnusedResources`, tái thiết kế toàn diện tầng Presentation (Compose UI & Design Tokens mới), đa dạng hóa bytecode AST (New Namespace, `kotlinx.serialization`), và đáp ứng 100% chính sách chống Spam / Repetitive Content của Google Play.
+  - Deliverables:
+    1. **Kỹ năng Chuyên biệt Mới (`skills/app-reskinning/SKILL.md`)**:
+       - Vòng đời 5 giai đoạn: Seam Pinning -> Dead Code & Resource Purge -> Presentation Layer Reconstruction -> Bytecode & Identity Diversification -> Play Store Compliance Audit.
+       - Cung cấp lệnh thực thi R8 compiler `-printusage` và Lint detector để bóc tách mã chết ở cấp độ bytecode.
+    2. **Định tuyến Meta-Router & Quick Tag (`skills/ask-cto/SKILL.md`, `GEMINI.md`, `INDEX.md`)**:
+       - Bổ sung Quick Tag `#reskin` kích hoạt ngay lập tức chế độ audit & hướng dẫn quy trình reskinning.
+       - Tích hợp vào Ask-CTO meta-router cho các trường hợp người dùng yêu cầu reskin app hoặc dọn dẹp code rác.
+  - Progress: Hoàn thành 100%.
+
+- [2026-09-28] **DEX Code Optimization & R8 Hygiene Architecture Integration (Rule 35, Rule 27, Gate E26.6–E26.9, Skill dex-optimization, Quick Tag #dex)** | Status: DONE
+  - Objective: Chuẩn hóa toàn diện tài liệu Android Official Vitals "DEX code optimization" (R8 Full Mode, blast radius pruning, code shrinking, inlining, obfuscation scores, analyzeReleaseR8Config) thành bộ Rules, Enforcement Gates, Skill chuyên biệt và Quick Tag trong Antigravity Engine.
+  - Deliverables:
+    1. **Quy tắc Kiến trúc Hệ thống (`rules/35-database-migration-r8-defense.md` & `rules/27-app-quality-vitals.md`)**:
+       - Bổ sung Trụ cột 6: DEX Code Optimization & R8 Configuration Hygiene.
+       - Thêm Rules 35.6 (Full Mode Enforced), 35.7 (Ban Wildcard Keeps), 35.8 (Zero Redundant Consumer Rules), 35.9 (R8 Configuration Analyzer Audit), 35.10 (Compile-Time Serialization).
+       - Thêm Rule 27.9 và định lượng chỉ số Vitals: Optimization Score $\ge 75\%$, Obfuscation Score $\ge 80\%$, uncompressed DEX budget.
+    2. **Cổng Kiểm soát Tự động (`rules/21-enforcement-engine.md`)**:
+       - `E26.6`: R8 Full Mode Enforced Gate (`android.enableR8.fullMode=true`).
+       - `E26.7`: Ban Wildcard Package Keep Rules Gate (`com.app.** { *; }`).
+       - `E26.8`: Zero Redundant Consumer Rules Gate (xóa duplicate Retrofit, Moshi, Room, Koin rules).
+       - `E26.9`: DEX Code Optimization & Blast Radius Gate (`./gradlew :app:analyzeReleaseR8Config`).
+    3. **Kỹ năng Chuyên biệt Mới (`skills/dex-optimization/SKILL.md`)**:
+       - Thiết lập quy trình 4 giai đoạn: Audit Setup -> Đo lường định lượng -> Phân loại Blast Radius (REMOVE / REFINE / KEEP) -> Kiểm toán Release.
+    4. **Định tuyến Meta-Router & Quick Tag (`skills/ask-cto/SKILL.md`, `GEMINI.md`, `INDEX.md`)**:
+       - Bổ sung Quick Tag `#dex` kích hoạt ngay lập tức chế độ audit DEX Optimization.
+       - Tích hợp vào Ask-CTO meta-router cho các trường hợp Play Console cảnh báo Vitals về DEX/App Size.
+  - Progress: Hoàn thành 100%.
+
+- [2026-09-17] **Settings & Themes Live Reactive State Binding & DataStore Actions** | Status: DONE
+  - Objective: Khắc phục triệt để vấn đề "thay đổi config ở setting không có action đúng": kết nối toàn bộ các công tắc toggle (Show Seconds, 24-Hour Format, Date Display), chọn kiểu đồng hồ (Classic, Retro, Minimal), Sound (Tick Sound / None) và Themes Screen trực tiếp vào MVI ViewModel (`FlipClockViewModel`) và tầng DataStore lưu trữ bền vững (`FlipClockPreferencesRepository`), đồng thời truyền `showDate` phản xạ tức thì lên màn hình đồng hồ chính (`HeroFlipClockDisplay`).
+  - Deliverables:
+    1. **Repository & State**: Bổ sung `showDate: Flow<Boolean>` và `setShowDate(enabled: Boolean)` vào `FlipClockPreferencesRepository` & `FlipClockPreferencesRepositoryImpl`. Bổ sung `showDate` vào `FlipClockState` và các intent cấu hình `Set24Hour`, `SetShowSeconds`, `SetShowDate`, `ToggleShowDate`, `SetSoundEnabled`.
+    2. **Presentation Binding (`SettingsScreen.kt` & `ThemesScreen.kt`)**: Kết nối StateFlow `viewModel.uiState.collectAsStateWithLifecycle()`, loại bỏ toàn bộ state `remember` cục bộ; click chọn kiểu dáng hoặc bật tắt switch lập tức phát intent và lưu bền vững vào DataStore.
+    3. **UI Reflection (`HeroFlipClockDisplay.kt` & `FlipClockScreen.kt`)**: Đồng hồ chính lập tức ẩn/hiện ngày theo `showDate`, chuyển đổi 12H/24H, giây và theme theo thời gian thực.
+    4. **Kiểm Thử Tự Động (`FlipClockViewModelTest.kt`)**: Thêm unit test xác minh toàn bộ các intent cấu hình cập nhật `UiState` và ghi xuống repository chuẩn xác. 106/106 unit tests passed, compile clean.
+  - Progress: Hoàn thành 100%. Commit `ea72420` trên branch `flip_clock`.
+
+- [2026-09-17] **Settings Screen Pixel-Perfect Alignment with `docs/setting.png`** | Status: DONE
+  - Objective: Cập nhật màn hình Settings theo chuẩn thiết kế chi tiết trong `docs/setting.png`: cấu trúc thẻ Clock Style với mini flip cards hiển thị số "14 32" và checkmark badge tròn màu cam, thẻ cụm 3 switch toggle liền mạch (Show Seconds, 24-Hour Format, Date Display), thẻ Theme độc lập với icon đồng hồ báo thức Electric Orange phát sáng, thẻ Font & Flip Animation, và thẻ Sound độc lập.
+  - Deliverables:
+    1. **Design Tokens Mới (`HomeTokens.kt`)**: `RetroParchmentBg`, `RetroParchmentText`, `ThemeIconBg`, `ClassicCardBg`, `MiniCardSplitDivider`.
+    2. **Presentation UI (`SettingsScreen.kt`)**: Cập nhật 100% khớp bố cục `docs/setting.png`, zero hardcoded colors, sử dụng `NeonToggleSwitch` và vector drawables.
+    3. **Kiểm Thử & Đóng Gói**: Biên dịch sạch, 105/105 tests passed, vượt qua pre-commit quality gate, commit `92af8ac` trên branch `flip_clock`.
+  - Progress: Hoàn thành 100%.
+
+- [2026-09-17] **Flip Clock App Redesign - Electric Orange & Obsidian Dark (8-Screen Spec & Vector Drawables)** | Status: DONE
+  - Objective: Tái cấu trúc và thiết kế lại toàn bộ ứng dụng Flip Clock theo bản thiết kế mẫu chuẩn 8 màn hình trong `docs/design_app.png` với phong cách Electric Orange & Obsidian Dark, hệ thống điều hướng Bottom Navigation Bar 4 Tab (Navigation 3), loại bỏ 100% icon emoji sang Android Vector Drawables XML, tuân thủ nghiêm ngặt Cổng kiểm soát E1.1 (Zero Hardcoded Colors in Presentation).
+  - Deliverables:
+    1. **Vector Drawables Asset Pipeline (`res/drawable/ic_*.xml`)**: Tạo trọn bộ 22 vector drawables XML chuẩn công nghiệp thay thế toàn bộ icon emoji và string symbols.
+    2. **Electric Orange & Obsidian Design System (`HomeTokens.kt`)**: Khởi tạo bảng token tập trung (`ElectricOrange`, `ObsidianBackground`, `ObsidianCardSurface`, `ScenicSkyDusk*`, `ScenicFarMountain*`, `ScenicPineGreen*`, `ScenicLakeDeep*`, swatch colors).
+    3. **Navigation 3 Architecture (`MainHostScreen.kt` + `AppBottomNavBar.kt`)**: Triển khai Bottom Navigation Bar 4 Tab (`CLOCK`, `ALARMS`, `TIMER`, `SETTINGS`) type-safe với Jetpack Navigation 3.
+    4. **8 Màn hình Chuẩn Thiết kế Mẫu**:
+       - Screen 1: `SplashScreen.kt` với biểu tượng "12" và hiệu ứng quầng sáng Electric Orange.
+       - Screen 2: `HeroFlipClockDisplay.kt` tích hợp nền Canvas hồ núi hoàng hôn, date header, split-flap cards, pill 24H.
+       - Screen 3: `ThemesScreen.kt` với filter chips (All, Minimal, Aesthetic, Scenic) và 2-column theme cards.
+       - Screen 4: `SettingsScreen.kt` nhóm cấu hình Appearance, Clock, Sound, About kèm switch & chevron icons.
+       - Screen 5: `AlarmScreen.kt` danh sách báo thức Electric Orange kèm toggle switch và nút FAB thêm mới.
+       - Screen 6: `CustomizeScreen.kt` live preview tương tác thời gian thực với Style tabs và Color swatches.
+       - Screen 7: `CircularFocusTimerScreen.kt` vòng đếm ngược neon phát sáng 25:00 và quick presets.
+       - Screen 8: `AboutScreen.kt` thông tin phiên bản, chính sách bảo mật, liên hệ và rate app.
+    5. **Kiểm Thử & Xác Nhận Chất Lượng**: 105/105 Unit Tests passed (`./gradlew testDebugUnitTest`), compilation clean (`./gradlew compileDebugKotlin`), vượt qua toàn diện pre-commit quality gate.
+  - Progress: Hoàn thành 100%. Đã commit toàn bộ lên branch `flip_clock`.
+
 - [2026-09-13] **Senior Refactoring Safety Net & Characterization Testing Standard (Rule 40 + Gate E32)** | Status: DONE
   - Objective: Thiết lập chuẩn mực Senior+ / Principal Engineer về Refactor code: Tuyệt đối cấm nhảy vào sửa code ngay (No Cowboy Refactoring). Bắt buộc phải viết Characterization (Pinning) Tests khóa 100% hành vi hiện tại của code cũ trước khi sửa dù chỉ 1 ký tự, xác lập Green Baseline, refactor trong micro-steps, và kiểm tra hồi quy liên tục.
   - Deliverables:
@@ -1396,6 +1461,20 @@ Track implementation details that belong to code.
     - `rules/21-enforcement-engine.md`: Thiết lập Category E36 (E36.1 đến E36.4) và đồng bộ vào Master Execution Protocol.
     - `INDEX.md`: Cập nhật chỉ mục hệ thống cho Rule 44 và Category E36.
     - Project Docs & Plans: Tạo `docs/pure_xml_modern_architecture_master_guide.md` và `plan/pure_xml_modern_architecture_integration_plan.md` trong `Base-Jetpack_2026` và Artifact directory.
+  - Progress: Hoàn thành 100%.
+
+- [2026-09-22] **Flip Clock Configurable Seconds Placement & Multi-Layout Architecture** | Status: DONE
+  - Objective: Hiện thực hóa tính năng tùy biến linh hoạt vị trí và kích thước của Giờ, Phút, Giây trên Flip Clock (6 số bằng nhau cùng hàng INLINE, giây nhỏ bám sát đuôi phút INLINE_TRAILING, giây góc dưới CORNER_BOTTOM_RIGHT, giây trung tâm dưới đáy BOTTOM_CENTER, và ẩn giây HIDDEN) kèm chuyển đổi Nằm ngang (HORIZONTAL) và Xếp dọc (VERTICAL_STACKED), lưu trữ DataStore và tích hợp Studio Sheet.
+  - Deliverables:
+    - Domain: Cập nhật enum `SecondsPlacement` với đầy đủ metadata (`displayName`, `subtitle`, `icon`, `ALL`, `fromId()`) trong `FlipClockModels.kt` và thêm `secondsPlacement` vào `TimeDisplayConfig` trong `FlipClockConfig.kt`.
+    - MVI & State: Bổ sung `secondsPlacement` vào `FlipClockState` và intent `SelectSecondsPlacement` trong `FlipClockContract.kt`.
+    - Repository & DataStore: Thêm flow `secondsPlacement` và hàm `setSecondsPlacement` trong `FlipClockPreferencesRepository.kt` và `FlipClockPreferencesRepositoryImpl.kt`.
+    - ViewModel: Xử lý reactive flow preferences và intent `SelectSecondsPlacement` trong `FlipClockViewModel.kt`.
+    - UI Engine: Tái cấu trúc `FlipClockDigits.kt` với thuật toán tự thích ứng tỷ lệ (Adaptive Card Geometry) hỗ trợ cả chế độ Horizontal & Vertical Stacked cho toàn bộ 5 vị trí giây.
+    - Studio Sheet: Bổ sung selector Hướng bố cục (↔️ Nằm ngang / ↕️ Xếp dọc) và Vị trí & kích thước Giây trong `DeskCompanionStudioSheet.kt`.
+    - Display & Screensaver: Đồng bộ truyền `secondsPlacement` từ state vào `HeroFlipClockDisplay.kt`, `FlipClockScreen.kt`, và `FlipClockScreensaverScreen.kt`.
+    - Testing: Thêm unit test cho `SelectSecondsPlacement` trong `FlipClockViewModelTest.kt`.
+  - Verification: `./gradlew testDebugUnitTest` -> BUILD SUCCESSFUL in 18s (100% tests passed). `./gradlew assembleDebug` -> BUILD SUCCESSFUL in 8s.
   - Progress: Hoàn thành 100%.
 
 ---

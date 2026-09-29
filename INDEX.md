@@ -134,9 +134,9 @@ Deliver Result
 | `06-user-preference-memory` | E23 (AI Blind Spots & Defensive Gates) | Lazy layout keys, duplicate click lock, form state survival, IME auto-scroll, modern imports, plurals, zero fluff |
 | `33-modern-testing-standard` | E24 (Modern Testing & QA Gates) | Turbine StateFlow testing, Fakes > Mocks, zero-flakiness runTest, Koin appModule.verify, 5-State UI Matrix coverage |
 | `34-sdk-modular-architecture` | E25 (SDK & Modular Quality Gates) | Public API surface isolation, mandatory :testing fakes, zero auto-init, Gradle isolation, host app protection |
-| `35-database-migration-r8-defense` | E26 (DB Migration & R8 ProGuard Release Gates) | Zero destructive migration, schema export & migration tests, consumer proguard rules, serialization keep guard, real release minify build |
+| `35-database-migration-r8-defense` | E26 [Quick Tag: `#dex`] (DB Migration & R8 ProGuard Release Gates E26.1–E26.9) | Zero destructive migration, schema export & migration tests, consumer proguard rules, serialization keep guard, real release minify build, R8 Full Mode, ban wildcard keeps, zero redundant rules, DEX optimization & blast radius audit |
 | `36-ui-ux-design-standard` | E27 (UI/UX & Haute Couture Design Gates) | Anti-AI-Slop Cliché Filter, Optical Depth & 0.5dp Specular Hairline, Editorial Negative Tracking, Chromatic Restraint 90/10, Tactile Spring Physics |
-| `38-device-network-abuse-policy` | E29 (Google Play Developer Program Policies Gates E29.1–E29.10) | Zero DCL, Android 14+ FGS/UIDT, REQUIRE_SECURE_ENV, FLAG_SECURE, WebView JS guard, Mandatory Account Deletion Web Link, Better Ads 15s limit, GenAI In-App Flagging, Minimum Functionality, Families Certified Ad SDKs |
+| `38-device-network-abuse-policy` | E29 [Quick Tag: `#policy`] (Google Play Device & Network Abuse Gates E29.1–E29.6) | Zero DCL, Android 14+ FGS/UIDT, REQUIRE_SECURE_ENV, FLAG_SECURE, WebView JS guard, Anti-Proxy |
 | `28-spec-driven-development` | E31 (Problem Deconstruction & 6-Dimension Test Coverage Gates) | Happy-Path Rejection, 6-Dimension Boundary Coverage, Concurrency & Re-Entrancy Tests, Invariant Assertions |
 | `40-refactoring-safety-net` | E32 (Senior Refactoring Safety Net & Characterization Gates) | Pre-Emptive Edit Block, Green Baseline Verification, Micro-Step Discipline, Zero Observable Regression |
 | `41-scientific-closed-loop-debugging` | E33.1, E33.2 (Scientific Closed-Loop Debugging Gates) | Root-Cause Hypothesis, Minimal Failing Test before fix, Single-variable isolation, Zero Vibe Debugging |
@@ -210,6 +210,9 @@ Deliver Result
 | `ci-cd-distribution.md` | ✅ Active | CI/CD pipelines |
 | `cross-platform.md` | ⚠️ Future | KMP consideration |
 | `request-processing-flow.md` | ⚠️ Unified | Refs master workflow |
+| `skills/dex-optimization/SKILL.md` | ✅ Primary | DEX code optimization, R8 Full Mode & Blast Radius [#dex] |
+| `skills/app-reskinning/SKILL.md` | ✅ Primary | Architecture-preserving reskinning & dead code purge [#reskin] |
+
 
 ---
 

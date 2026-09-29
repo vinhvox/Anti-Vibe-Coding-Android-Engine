@@ -10,7 +10,7 @@ Its mission is to eliminate the two catastrophic production failure modes:
 
 ---
 
-# 1. THE 5 PILLARS OF MIGRATION & R8 DEFENSE
+# 1. THE 6 PILLARS OF MIGRATION & R8 DEFENSE
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -23,6 +23,9 @@ Its mission is to eliminate the two catastrophic production failure modes:
 │ 4. SERIALIZATION & KEEP GUARD  │ Mandatory @Serializable / @Keep on all boundary models │
 ├────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ 5. REAL RELEASE MINIFY BUILD   │ Mandatory ./gradlew assembleRelease before shipping   │
+├────────────────────────────────┼────────────────────────────────────────────────────────┤
+│ 6. DEX CODE OPTIMIZATION & R8  │ Enforce Full Mode, prune broad keeps, audit Blast      │
+│    CONFIGURATION HYGIENE       │ Radius via ./gradlew :app:analyzeReleaseR8Config       │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -68,6 +71,42 @@ Its mission is to eliminate the two catastrophic production failure modes:
   ./gradlew assembleRelease testReleaseUnitTest --stacktrace
   ```
 - **Crash Isolation:** If R8 strips a required class or constructor, the build or unit test will fail immediately in CI rather than crashing on end-user devices.
+
+---
+
+## Rule 35.6: Mandatory R8 Full Mode Enforcement
+- **Rule:** Applications MUST operate under R8 **Full Mode**.
+- **Prohibition:** Setting `android.enableR8.fullMode=false` in `gradle.properties` is strictly banned. Full Mode enables aggressive class merging, cross-method inlining, and non-virtual method devirtualization critical for app startup and DEX size.
+
+---
+
+## Rule 35.7: Ban Broad Wildcard Keep Rules (Blast Radius Control)
+- **Rule:** Never define unbounded package wildcards in `proguard-rules.pro`, such as `-keep class com.mycompany.** { *; }` or `-keep class *`.
+- **Blast Radius Discipline:** Broad rules prevent R8 from inlining, tree-shaking dead code, and stripping unused member variables across the entire package. Every keep rule MUST be razor-narrow: target specific classes or exact interfaces only.
+
+---
+
+## Rule 35.8: Zero Redundant Library Keep Rules
+- **Rule:** Do NOT copy-paste redundant ProGuard rules into the application's `proguard-rules.pro` for libraries that already bundle their own `consumer-rules.pro` (AAR embedded rules).
+- **Audit Target:** Libraries like Retrofit, OkHttp, Moshi, Kotlinx Serialization, Room, Hilt, Koin, and Coil already supply vetted consumer rules. Duplicating them bloats the keep scope and lowers R8 optimization scores.
+
+---
+
+## Rule 35.9: R8 Configuration Analyzer Audit & DEX Optimization Health
+- **Rule:** Before release, the team MUST execute the R8 Configuration Analyzer to inspect keep rule impact:
+  ```bash
+  ./gradlew :app:analyzeReleaseR8Config
+  ```
+- **Actionable Analysis:** Examine `build/reports/r8/r8-config-analyzer-release.html` (or `BUNDLE-METADATA/com.android.tools/r8.json`). Categorize rules into:
+  1. **REMOVE:** Redundant rules already covered by library consumer rules.
+  2. **REFINE:** Wildcard rules that should be narrowed to specific classes or members.
+  3. **KEEP:** Legitimate rules protecting JNI bindings or runtime reflection.
+
+---
+
+## Rule 35.10: Compile-Time Serialization over Runtime Reflection
+- **Rule:** Data parsing MUST leverage compile-time code generation (`kotlinx.serialization` or Moshi KSP) rather than reflection-heavy parsers (e.g. Gson without TypeAdapters or raw Java reflection).
+- **Benefit:** Compile-time serialization allows R8 to safely obfuscate, inline, and prune unused DTO properties without requiring broad `-keepclassmembers` rules.
 
 ---
 
@@ -132,3 +171,8 @@ Every database and release implementation must pass **GATE E26** in `rules/21-en
 - `E26.3`: Consumer Proguard Rules Isolation Gate
 - `E26.4`: R8 Serialization & Keep Annotation Gate
 - `E26.5`: Real Release Minify Build Gate
+- `E26.6`: R8 Full Mode Enforced Gate
+- `E26.7`: Ban Wildcard Package Keep Rules Gate
+- `E26.8`: Zero Redundant Consumer Rules Gate
+- `E26.9`: DEX Code Optimization & Blast Radius Gate
+

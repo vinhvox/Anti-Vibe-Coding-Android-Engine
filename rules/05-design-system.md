@@ -29,6 +29,9 @@ NEVER hardcode string literals inside Composable function parameters (e.g. `Head
 ENGLISH STRINGS ONLY MANDATE:
 ALL string resources defined in `app/src/main/res/values/strings.xml` MUST be written in English by default. Never use Vietnamese or hardcode non-English copy in default `strings.xml`. Any secondary translations MUST be isolated in dedicated localization files (e.g., `values-vi/strings.xml`).
 
+NO INLINED EMOJI OR STRING ICONS (MANDATORY VECTOR DRAWABLES):
+NEVER embed emojis (🔥, ⭐, 🚀, 🔍, ⚠️, 🗑️) or unicode symbols into strings or UI text to act as icons. Emojis render inconsistently across OEM devices (Samsung, Xiaomi, Pixel, Oppo) and break visual parity across Android versions. ALL icons MUST be defined as dedicated XML Vector Drawables in `app/src/main/res/drawable/ic_*.xml` or standard Material Icons, rendered via `Icon(painter = painterResource(R.drawable.ic_*), contentDescription = ...)`.
+
 
 ---
 
@@ -580,6 +583,13 @@ Search for `Text(` composables with inline `fontSize`, `fontWeight`, `color` par
 
 All colors used MUST come from `AppTheme.colors` which supports both Light/Dark.
 Any `Color.White`, `Color.Black`, `Color.Red`, or direct `Color()` constructor bypasses theming and is REJECTED.
+
+## Step 6: Scan for Inlined Emojis or Unicode Icons in Strings/UI
+
+Search modified files and `strings.xml` for emojis (🔥, ⭐, 🚀, 🔍, ⚠️, 🗑️, ⚡, 🔔) or unicode glyphs used as icons.
+- If ANY emoji or unicode symbol is embedded in text/strings to represent an icon: the code is REJECTED.
+- MUST create a corresponding XML Vector Drawable (`app/src/main/res/drawable/ic_*.xml`) or use Material `ImageVector`.
+- MUST render via `Icon(painter = painterResource(R.drawable.ic_*), contentDescription = ...)` with `tint = AppTheme.colors.*`.
 
 ## Enforcement Priority
 

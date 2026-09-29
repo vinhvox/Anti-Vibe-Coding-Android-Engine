@@ -504,14 +504,15 @@ Confuse project standards with user preferences.
     2. Tầng App Mẹ: Tự động sinh `proguard-rules.pro` (cấu hình R8 FullMode, Coroutines internals, và strip log trên Release).
   - **Xác Thực Build Release Thực Tế:** Bắt buộc chạy `./gradlew assembleRelease` để chứng minh 0 lỗi missing keep rules trước khi bàn giao.
 
-- **The 7 AI Blind Spots Defense Mandate (QUY TẮC PHÒNG VỆ 7 ĐIỂM MÙ KỸ THUẬT):**
+- **The 8 AI Blind Spots Defense Mandate (QUY TẮC PHÒNG VỆ 8 ĐIỂM MÙ KỸ THUẬT):**
   1. *Lazy Layout Keys*: Bắt buộc chỉ định `key = { it.id }` và `contentType` trong `LazyColumn`/`LazyRow` để triệt tiêu recomposition toàn phần và giật lag danh sách.
   2. *Duplicate Click Lock*: Khóa ngay trạng thái ở ViewModel (`if (state.value.isLoading) return@safeLaunch`) và áp dụng debounce 400ms trên các hành động điều hướng.
   3. *Form State Survival*: Dùng `rememberSaveable` hoặc hoist vào `SavedStateHandle` cho toàn bộ input người dùng để sống sót qua xoay màn hình, đổi theme và Process Death.
   4. *Keyboard Auto-Scroll*: Kết hợp `Modifier.imePadding()` với scroll container và `BringIntoViewRequester` để bàn phím không che mất ô nhập liệu ở đáy màn hình.
   5. *Modern API & Navigation 3 Purity*: 100% dùng Material 3 API gốc và `@Serializable data class Screen` trong Navigation 3 (cấm Accompanist cũ và route chuỗi).
   6. *Localization & Plurals*: 100% dùng `pluralStringResource` và `stringResource` có placeholder, cấm nối chuỗi thủ công `$count items` hay `"$ " + price`.
-  7. *Zero-Fluff Direct Communication*: Trình bày trực tiếp, súc tích, chuẩn CTO, không mở đầu bằng văn mẫu sáo rỗng.
+  7. *Mandatory Vector Drawables (Cấm Icon Emoji / String Glyphs)*: Tuyệt đối CẤM chèn emoji (🔥, ⭐, 🚀, 🔍, ⚠️, 🗑️) hoặc ký tự unicode vào chuỗi text để làm icon. BẮT BUỘC tạo file XML Vector Drawable trong `res/drawable/` (ví dụ: `ic_fire.xml`, `ic_star.xml`) hoặc dùng Material Icons, hiển thị qua `Icon(painterResource(R.drawable.ic_*))`. Tránh hoàn toàn việc mỗi hãng máy (Samsung, Xiaomi, Pixel) hiển thị một kiểu emoji khác nhau hoặc vỡ layout.
+  8. *Zero-Fluff Direct Communication*: Trình bày trực tiếp, súc tích, chuẩn CTO, không mở đầu bằng văn mẫu sáo rỗng.
 
 - **Self-Documenting Code & Ban on Trivial Comments (QUY TẮC CODE TỰ TƯỜNG MINH & CẤM COMMENT RÁC/NHỎ LẺ):**
   - **Tên Phải Tự Nói Lên Ý Nghĩa (Self-Documenting Naming):** Tên biến, hàm, class, interface bắt buộc phải diễn đạt 100% mục đích và nghiệp vụ (`isUserSubscribed`, `fetchUserProfile`, `calculateDiscountAmount`).
@@ -545,9 +546,13 @@ Confuse project standards with user preferences.
   - Trước khi báo "xong", "hoàn thành" hay "báo task xong" cho bất kỳ yêu cầu nào, AI bắt buộc phải chạy lệnh kiểm thử thực tế (`./gradlew compileDebugKotlin`, `./gradlew test` hoặc tương đương) và thu thập kết quả `BUILD SUCCESSFUL` thành công 100%.
   - Tuyệt đối không được chỉ dựa vào sửa file code mà đã báo xong task.
 
-- **Clarification & Explicit Confirmation Flow Rule (QUY TẮC XÁC NHẬN KẾ HOẠCH BẮT BUỘC):**
-  - Khi nhận yêu cầu từ người dùng, nếu có bất kỳ điểm nào chưa rõ ràng thì AI phải chủ động đặt câu hỏi làm rõ.
-  - Khi đã hiểu rõ yêu cầu, AI phải trình bày tóm tắt ý hiểu và danh sách chi tiết các công việc cần làm, sau đó **chờ người dùng xác nhận/đồng ý rồi mới được tiến hành sửa code và thực thi**.
+- **The Mandatory Consult-Before-Code Protocol (QUY TẮC BẮT BUỘC: KHẢO SÁT ➔ ĐÁNH GIÁ ➔ GIẢI PHÁP & LỘ TRÌNH ➔ DỪNG LẠI CHỜ DUYỆT TRƯỚC KHI CODE):**
+  - CẤM TUYỆT ĐỐI việc vội vã bắt tay vào sửa/tạo code ngay trong lượt phản hồi đầu tiên (Turn 1) rồi mới báo cáo lại sau.
+  - Khi nhận bất kỳ câu hỏi, yêu cầu hoặc tính năng mới từ người dùng, AI BẮT BUỘC phải thực hiện tuần tự 4 bước sau:
+    1. 🔍 **Tìm hiểu & Khảo sát (Investigation & Codebase Context)**: Đọc và khảo sát codebase thực tế, trace callers, kiểm tra file liên quan, hiểu rõ hiện trạng và nguyên nhân gốc rễ, tuyệt đối không đoán mò.
+    2. 🎯 **Đánh giá Kỹ thuật CTO/PO (Technical Assessment & Trade-offs)**: Phân tích dưới góc nhìn CTO (hiệu năng, recomposition, memory leak, 19 Core Domains) và PO (trải nghiệm người dùng, 5-State UI Matrix, Edge Cases, luồng xử lý lỗi).
+    3. 💡 **Giải pháp & Lộ trình triển khai (Proposed Solution & Roadmap)**: Đề xuất phương án tối ưu nhất (kèm so sánh nếu có nhiều lựa chọn) và kế hoạch triển khai từng bước chi tiết (step-by-step roadmap/checklist).
+    4. 🛑 **CHỐT CHẶN CỨNG (Absolute Hard Stop - Chờ duyệt)**: Dừng lại hoàn toàn, trình bày rõ ràng 3 phần trên cho người dùng và **chờ người dùng xác nhận/đồng ý ("Proceed", "Làm đi", "OK") mới được phép bắt đầu can thiệp vào code**.
 
 - **3rd-Party Library Consent & 16KB Page Alignment Audit Rule (QUY TẮC PHÊ DUYỆT THƯ VIỆN BÊN THỨ 3 & KIỂM TRA 16KB):**
   - Tất cả các thư viện bên thứ 3 (3rd-party dependencies) muốn thêm vào dự án đều **bắt buộc phải đề xuất và xin phép người dùng trước trong bước lên Plan**.
@@ -587,9 +592,13 @@ Confuse project standards with user preferences.
     2. Đề xuất sửa vi phạm kèm theo task hiện tại.
     3. KHÔNG ĐƯỢC thêm code vi phạm mới vào file đã có vi phạm cũ mà không báo cáo.
 
-- **Mandatory No Auto-Commit Mandate (QUY TẮC TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý COMMIT):**
-  - AI tuyệt đối KHÔNG BAO GIỜ được tự ý thực thi lệnh `git commit` trong bất kỳ trường hợp nào.
-  - Mọi thao tác commit phải do người dùng tự tay thực hiện hoặc phê duyệt.
+- **Mandatory Git Discipline & Zero Permission-Spam Mandate (QUY TẮC KỶ LUẬT GIT, CẤM TỰ COMMIT & HẠN CHẾ XIN QUYỀN GIT):**
+  - **Tuyệt đối không tự ý commit (Zero Auto-Commit):** AI tuyệt đối KHÔNG BAO GIỜ được tự ý chạy lệnh `git commit` sau các bước nhỏ, task nhỏ, hoặc tự động tạo commit trong quá trình thực thi.
+  - **Hạn chế tối đa xin quyền Git (Zero Git Permission Spam):** Cấm chạy các lệnh git (`git add`, `git commit`, `git push`, `git checkout`, v.v.) làm xuất hiện popup xin quyền gây phiền nhiễu và gián đoạn luồng làm việc của người dùng.
+  - **Chỉ xin quyền / đề xuất Git khi thực sự cần thiết:**
+    1. Khi người dùng chủ động yêu cầu rõ ràng ("commit code", "tạo commit", "push code", v.v.).
+    2. Khi hoàn thành toàn bộ một tính năng lớn/cột mốc quan trọng, AI chỉ thông báo tóm tắt thay đổi và HỎI người dùng xem có muốn commit hay không, chứ KHÔNG tự tiện chạy lệnh git trước khi có sự đồng ý.
+    3. Mọi quyền quản lý version control để người dùng chủ động thực hiện trên IDE/Terminal của họ hoặc chỉ can thiệp khi được ủy quyền rõ ràng.
 
 - **Mandatory Background Task Cleanup & Non-Lingering Process Rule (QUY TẮC BẮT BUỘC DỌN DẸP TIẾN TRÌNH NGẦM & ĐÓNG TASK NGAY KHI XONG):**
   - Khi chạy bất kỳ lệnh CLI/Gradle nào trong background (background task), sau khi kiểm tra xong output hoặc xác thực build/test thành công, AI **bắt buộc phải kiểm tra `manage_task(Action="list")` và lập tức gọi `manage_task(Action="kill", TaskId=...)`** để đóng luồng I/O và giải phóng hoàn toàn tiến trình ngầm.
@@ -608,6 +617,17 @@ Confuse project standards with user preferences.
   - **Trong phạm vi Dự án (In-Project Workspace):** Sau khi Kế hoạch (Plan) đã được người dùng phê duyệt, AI được phép tự động tạo và chỉnh sửa file mã nguồn trong các thư mục của dự án (`app/src/main/`, `domain/`, `data/`, `presentation/`, `di/`, `core/`, `plan/`) thông qua các công cụ Native (`write_to_file`, `replace_file_content`) mà không cần hỏi lại từng file đơn lẻ.
   - **Chấm dứt Shell File Creation:** CẤM TUYỆT ĐỐI việc dùng `run_command` chạy các lệnh shell redirect (`cat << 'EOF' > ...`, `echo >`, `tee`) để ghi mã nguồn, nhằm triệt tiêu 100% popup xin quyền shell phiền phức.
   - **Cách ly tuyệt đối Ngoài Dự án (Strict Out-of-Project Boundary):** AI TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý tạo, sửa, ghi đè hoặc xóa bất kỳ file nào nằm NGOÀI THƯ MỤC DỰ ÁN (như file hệ thống OS, `~/.zshrc`, `~/.bash_profile`, Desktop, các thư mục cá nhân). Mọi thao tác ngoài project bắt buộc phải dừng lại và có sự đồng ý rõ ràng từ người dùng.
+
+- **Quick Tag Directive: #policy (QUY TẮC PHÍM TẮT #policy - KIỂM TOÁN CHÍNH SÁCH GOOGLE PLAY):**
+  - Khi người dùng gửi tin nhắn chứa `#policy` hoặc yêu cầu kiểm tra chính sách, AI lập tức kích hoạt bộ máy kiểm toán **Google Play Policy & Device/Network Abuse Audit Engine** (theo `rules/38-device-network-abuse-policy.md` và Gate `E29` trong `rules/21-enforcement-engine.md`).
+  - Quét toàn diện 6 Trụ cột:
+    1. *E29.1 (Zero DCL):* Cấm tuyệt đối tải mã nhị phân động (`.dex`, `.jar`, `.so`), cấm self-update ngoài Google Play.
+    2. *E29.2 (Android 14+ FGS):* Kiểm tra `android:foregroundServiceType`, hành vi do user kích hoạt, có thể dừng được, di chuyển tác vụ có thể hoãn sang `WorkManager`.
+    3. *E29.3 (REQUIRE_SECURE_ENV):* Bảo vệ chống môi trường giả lập, dual-space, app cloner độc hại bằng `<meta-data android:name="android.os.REQUIRE_SECURE_ENV" android:value="true" />`.
+    4. *E29.4 (FLAG_SECURE):* Bảo vệ màn hình nhạy cảm bằng `SecureScreenEffect`, cấm phá vỡ `FLAG_SECURE` của app khác.
+    5. *E29.5 (WebView Hardening):* Cấm `addJavascriptInterface` trên WebView load URL không an toàn / không kiểm duyệt.
+    6. *E29.6 (UIDT & Anti-Proxy):* Ràng buộc API chuyển dữ liệu người dùng khởi xướng, cấm lạm dụng Proxy/VPN ngầm hoặc gian lận ad/game.
+  - Xuất bảng báo cáo Compliance Checklist rõ ràng từng Gate và tự động cung cấp giải pháp/blueprint khắc phục.
 
 ---
 
