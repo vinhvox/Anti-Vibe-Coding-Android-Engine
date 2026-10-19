@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# CLI Entrypoint for Antigravity Fast Updater
+# Supports: agy-update [--check] [--force]
+# ==============================================================================
+
+set -euo pipefail
+
+script_source_path="${BASH_SOURCE[0]:-$0}"
+readonly SCRIPT_ROOT_DIR="$( cd "$( dirname "$script_source_path" )/.." 2>/dev/null && pwd || pwd )"
+readonly DEFAULT_INSTALL_DIR="${ANTIGRAVITY_HOME:-$HOME/.antigravity}"
+
+if [ -f "$SCRIPT_ROOT_DIR/scripts/update.sh" ]; then
+    exec bash "$SCRIPT_ROOT_DIR/scripts/update.sh" "$@"
+elif [ -f "$DEFAULT_INSTALL_DIR/scripts/update.sh" ]; then
+    exec bash "$DEFAULT_INSTALL_DIR/scripts/update.sh" "$@"
+else
+    echo "❌ update.sh not found. Please verify Antigravity installation."
+    exit 1
+fi

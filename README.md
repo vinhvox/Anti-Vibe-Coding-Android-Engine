@@ -8,7 +8,7 @@
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose_M3-4285F4.svg)](https://developer.android.com/jetpack/compose)
 [![Adaptive HAL](https://img.shields.io/badge/Stack-Hilt_%7C_Koin_%7C_Retrofit_%7C_Ktor-orange.svg)](#-adaptive-stack-architecture-hardware-abstraction-layer)
 [![Multi-Role Council](https://img.shields.io/badge/Council-10_Specialized_Roles-9C27B0.svg)](#-the-multi-role-engineering-syndicate)
-[![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E29-EA4335.svg)](#-the-29-quality-gates-e1--e29-deep-dive)
+[![Quality Gates](https://img.shields.io/badge/Quality_Gates-E1_to_E40-EA4335.svg)](#-the-40-quality-gates-e1--e40-deep-dive)
 [![Vitals](https://img.shields.io/badge/Android_Vitals-Zero--Crash_%7C_16KB_Safe-34A853.svg)](rules/27-app-quality-vitals.md)
 
 ---
@@ -49,9 +49,9 @@ flowchart TD
 | **4** | **Google Play Vitals & Zero-Crash Principal Engineer** | Optimizes Google Play Console vitals, eliminates silent crashes and background ANRs, accelerates cold startup. | `rules/27-app-quality-vitals.md`<br/>`rules/19-build.md`<br/>`skills/app-quality-vitals` | Cold start TTID < 500ms, TTFD < 800ms, 2-Tier Hybrid Splash Orchestration, Baseline Profiles, Zero-Crash & Zero-ANR invariants. |
 | **5** | **Low-Level Memory & ART Runtime Specialist** | Stack vs Heap memory discipline, eliminates Garbage Collection (GC) churn in Composable render loops, optimizes 60/120 FPS. | `rules/26-stack-heap-memory.md`<br/>`skills/stack-heap-memory` | Zero object allocations in render loops, mandatory `@JvmInline value class` for IDs, primitive State, 16KB memory page alignment. |
 | **6** | **Principal Modular Core & SDK Architect** | Advanced modular design, shared library isolation, host app protection from 3rd-party SDK crashes. | `rules/34-sdk-modular-architecture.md`<br/>`skills/sdk-modular-engineering`<br/>**Gate E25** | All APIs `internal` by default, bundled `:testing` fakes, zero ContentProvider auto-init, binary backward compatibility (ABI). |
-| **7** | **Staff QA & Test Automation Architect** | Test-Driven Development (TDD), eliminates flaky tests, asynchronous Flow stream testing. | `rules/20-testing.md`<br/>`rules/22-superpowers-tdd.md`<br/>`rules/30-build-runtime-verification.md` | Red-Green-Refactor lifecycle, Flow testing with Turbine, DI graph validation (`verify()`), mandatory real terminal build gate (`BUILD SUCCESSFUL`). |
+| **7** | **Staff QA & Test Automation Architect** | Test-Driven Development (TDD), eliminates flaky tests, asynchronous Flow stream testing, adversarial red-team audits. | `rules/20-testing.md`<br/>`rules/42-adversarial-red-team-verification.md`<br/>`skills/subagent-modes` | Red-Green-Refactor lifecycle, Flow testing with Turbine, DI graph validation (`verify()`), Gate E39 Mirror Self-Review & Gate E40 Bounded 3-Round QA. |
 | **8** | **Senior Android Security & Cryptography Specialist** | Protects sensitive data at rest and in transit, guards against reverse engineering, device abuse, and tampering. | `rules/17-security.md`<br/>`rules/38-device-network-abuse-policy.md`<br/>**Gate E29** | Hardware Android Keystore, `REQUIRE_SECURE_ENV` container defense, `FLAG_SECURE` compliance, Zero DCL, Android 14+ FGS types, UIDT API. |
-| **9** | **Domain Modeler & Ubiquitous Language Guardian** | Unifies business vocabulary between Product and Code, eliminates boilerplate fluff, executes razor-thin vertical slices. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Living domain dictionary (`CONTEXT.md`), 1-to-1 concept-to-symbol mapping, **Tracer-Bullet Vertical Slicing**, zero-fluff direct communication. |
+| **9** | **Domain Modeler & Ubiquitous Language Guardian** | Unifies business vocabulary between Product and Code, enforces self-documenting naming & zero magic literals, executes vertical slices. | `rules/37-ubiquitous-language-standard.md`<br/>`skills/writing-plans`<br/>**Gate E28** | Living domain dictionary (`CONTEXT.md`), 1-to-1 concept-to-symbol mapping, Gates E28.6–E28.10 coding conventions, **Tracer-Bullet Vertical Slicing**. |
 | **10**| **Chief Engineering Router & Meta-Orchestrator** | Instant diagnosis of technical symptoms and precise routing to the exact specialist skills & quality gates. | `skills/ask-cto/SKILL.md`<br/>`skills/dispatching-parallel-agents` | Routes symptoms (dropped FPS, memory leak, process death, offline sync) to the exact 1-2 skills and quality gates without context bloat. |
 
 ---
@@ -67,7 +67,7 @@ In recent years, AI coding assistants have introduced a massive productivity par
 - ❌ **False "Done" Claims:** Declaring tasks "completely finished" without ever executing a real terminal compilation command or verifying Gradle test logs.
 - ❌ **Dogmatic Library Imposition:** Forcing arbitrary frameworks onto existing legacy codebases, breaking project architecture.
 
-**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a **Multi-Role Executive Engineering Syndicate**. It provides a deterministic, **8-layer cognitive operating system** governed by **29 automated Quality Gates (E1 to E29)**, adapting seamlessly to your existing project without dictating your tech stack.
+**Anti-Vibe-Coding-Android-Engine** transforms your AI agent from a fragile auto-complete into a **Multi-Role Executive Engineering Syndicate**. It provides a deterministic, **8-layer cognitive operating system** governed by **46 Standards (00-45) and 40 automated Quality Gates (E1 to E40)**, adapting seamlessly to your existing project without dictating your tech stack.
 
 ---
 
@@ -80,7 +80,7 @@ In recent years, AI coding assistants have introduced a massive productivity par
 | **Feature Delivery** | Injects `delay(1000)` and fake dummy lists, then claims "Feature works perfectly!". | **Stub/Placeholder Ban:** Scans and forbids fake stubs. Binds real DataSources, repositories, and Room entities. |
 | **UI/UX Design** | Purple-on-dark neon glowing cards, vibrating pills, unkeyed lists that stutter at 20 FPS. | **Rule 36 & UI/UX Pro Max:** 0.5dp subtle borders, tonal surfaces, 8-pt grid, explicit `key` + `contentType` for 60/120 FPS. |
 | **Platform Defense** | App crashes on screen rotation, keyboard covers input fields, rejected on Android 15+ (16KB). | **19 Core Domains:** `SavedStateHandle` process death survival, `.imePadding()`, 16KB memory alignment flags. |
-| **Verification Gate** | "I have completed all changes!" (Zero compilation performed, project fails to build). | **Real Compiler Gate:** Mandatory execution of `./gradlew compileDebugKotlin` / `test` with verified `BUILD SUCCESSFUL` output. |
+| **Verification Gate** | "I have completed all changes!" (Zero compilation performed, project fails to build). | **Adversarial Dev ↔ QA + Compiler Gate:** Gate E39 Dev Mirror Self-Review, Gate E40 Blind-Context QA Audit, and real `./gradlew` verification. |
 | **Tech Stack Policy** | Dictates "You must use library X", breaking existing code. | **Adaptive Stack HAL:** Auto-detects Hilt vs Koin, Retrofit vs Ktor, and enforces safety on *your* stack. |
 
 ---
@@ -97,11 +97,11 @@ flowchart TD
     Memory --> HAL[Tier 3: Adaptive Stack HAL - Koin/Hilt & Ktor/Retrofit]
     HAL --> Workflow[Tier 4: Workflow Engine - 10 Disciplined Pipelines]
     Workflow --> Skills[Tier 5: Skills Engine - Specialized Blueprints]
-    Skills --> Rules[Tier 6: Rules Engine - 38 Standards & Gates E1-E29]
+    Skills --> Rules["Tier 6: Rules Engine - 46 Standards (00-45) & Gates E1-E40"]
     Rules --> PlanGate{Plan Approval Gate}
-    PlanGate -->|User Explicit Approval| Implementation[Native Tool Implementation: write_to_file]
-    Implementation --> Verification[Tier 7: Real Verification: ./gradlew compileDebugKotlin]
-    Verification --> Reflection[Tier 8: Reflection & Gate E1-E29 Audit]
+    PlanGate -->|User Explicit Approval| Implementation["Implementation: dev-builder + Gate E39 Mirror Self-Review"]
+    Implementation --> Verification["Tier 7: Independent QA Audit (qa-enforcer + Gate E40 Bounded 3-Round Convergence)"]
+    Verification --> Reflection["Tier 8: Reflection & Gate E1-E40 Audit"]
     Reflection --> MemoryUpdate[Memory & Living ADR Auto-Update]
     MemoryUpdate --> FinalDelivery([CTO-Grade Production Delivery])
 ```
@@ -116,7 +116,7 @@ The AI thinks before acting through a sequential cognitive pipeline:
 6. **Planning Engine (`07-planning-engine.md`):** Designs Tracer-Bullet Vertical Slices before writing any code.
 7. **Execution Engine (`08-execution-engine.md`):** Coordinates disciplined, incremental coding.
 8. **Reflection Engine (`09-reflection-engine.md`):** Self-evaluates: Did we solve the real problem? Is there duplicate code?
-9. **Enforcement Engine (`21-enforcement-engine.md`):** Audits code against all 29 Quality Gates (E1 to E29).
+9. **Enforcement Engine (`21-enforcement-engine.md`):** Audits code against all 40 Quality Gates (E1 to E40).
 10. **Initiative Engine (`10-initiative-engine.md`):** Proactively highlights performance risks, memory leaks, and architectural bottlenecks.
 11. **Learning Engine (`11-learning-engine.md`):** Extracts reusable design patterns and lessons learned into long-term memory.
 
@@ -128,6 +128,15 @@ Prevents "AI dementia" by preserving stable knowledge across sessions:
 * **Decision Memory (`04-decision-memory.md`):** Architecture Decision Records (ADRs) to never repeat past mistakes.
 * **Pattern Memory (`05-pattern-memory.md`):** Approved UI and architectural patterns verified within the codebase.
 * **User Preference Memory (`06-user-preference-memory.md`):** Developer collaboration style, Anti-AI-slop rules, no auto-commit.
+
+### 3. ⚔️ Zero-Compromise Dev (`dev-builder`) ↔ QA (`qa-enforcer`) Adversarial Architecture (Rule 42 & Gates E39–E40)
+To eliminate AI self-grading bias while preventing infinite ping-pong loops, the framework enforces a two-tier quality architecture:
+* **Tier 1 — Mandatory 4-Step Dev Mirror Self-Review (`Gate E39`):** Before handing off any implementation, `dev-builder` (`enable_write_tools = true`) must physically re-read 100% of modified files on disk (`view_file` / `git diff`), audit Draft 1 across the **5-Mirror Lenses** (Minimalism, Self-Documenting Naming & Zero Magic Literals, Vitals/Safety, Architecture/UI, 6-Dimension Edge Cases), self-refactor Draft 1 into Clean Draft 2, and emit a `🪞 Dev Mirror Self-Review` report block.
+* **Tier 2 — Uncompromising Blind-Context `qa-enforcer` (`Gate E40`):** Spawned with a hard read-only lock (`enable_write_tools = false`) in a **100% blind fresh context** (receiving only Spec + Exact Diff + Raw Test Logs). Issues strictly binary verdicts (**`VERDICT: APPROVED`** or **`VERDICT: REJECTED`**) governed by the **4 Laws of Bounded 3-Round Convergence (`Gate E40`)**:
+  1. **Bounded 3-Round Cap & Circuit Breaker (`Gate E40.1`):** `MAX_QA_ROUNDS = 3`. If Round 3 still fails, triggers **`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`** and escalates to the user.
+  2. **Delta-Only Scope in Rounds 2–3 (`Gate E40.2`):** Rounds 2 and 3 audit strictly the remediation delta and prior open clusters.
+  3. **Pattern-Clustered `[CLUSTER-XX]` Batching & Systemic Codebase Sweep (`Gate E40.3`):** Identical root causes are grouped into a single `[CLUSTER-XX]` item and swept across all modified files in one pass.
+  4. **Zero Moving Goalposts (`Gate E40.4`):** Untouched code that passed Round 1 cannot be newly flagged for subjective nitpicks in Rounds 2–3.
 
 ---
 
@@ -178,16 +187,16 @@ graph TD
 
 ---
 
-## 🛡️ THE 29 QUALITY GATES (E1 — E29) DEEP DIVE
+## 🛡️ THE 40 QUALITY GATES (E1 — E40) DEEP DIVE
 
-Every piece of code generated or reviewed by the AI must pass all 29 automated quality gates defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
+Every piece of code generated or reviewed by the AI must pass all 40 automated quality gates defined in [rules/21-enforcement-engine.md](rules/21-enforcement-engine.md):
 
 | Gate ID | Category | Name | Enforcement Invariant |
 |:---|:---|:---|:---|
 | **Gate E1** | Architecture | **Clean Architecture Boundary** | Domain has zero dependencies on Data or Presentation. |
 | **Gate E2** | Presentation | **BaseViewModel Inheritance** | Every ViewModel extends `BaseViewModel<State, Intent, Effect>`. Direct `ViewModel()` is forbidden. |
 | **Gate E3** | Concurrency | **Safe Coroutine Scope** | All ViewModel coroutines use `safeLaunch {}`. Direct `viewModelScope.launch` is banned. |
-| **Gate E4** | Presentation | **Pure MVI Intent Handling** | `when (intent)` must be exhaustive without an `else ->` wildcard. |
+| **Gate E4** | Presentation | **Pure MVI Intent & Modifier Purity** | Exhaustive `when (intent)` without `else ->`; `E4.6` enforces Root-only `modifier` and parameter order. |
 | **Gate E5** | Presentation | **StateFlow Immutability** | Presentation exposes only read-only `StateFlow<UIState>`. MutableStateFlow is strictly private. |
 | **Gate E6** | Navigation | **Type-Safe Route Definition** | Internal navigation routes MUST use `@Serializable` classes/objects. Raw string paths are banned. |
 | **Gate E7** | Architecture | **Single Source of Truth (SSOT)** | UI observes local database. Network syncs to database; network never feeds UI directly. |
@@ -211,8 +220,19 @@ Every piece of code generated or reviewed by the AI must pass all 29 automated q
 | **Gate E25**| SDK/Core | **Modular Public Surface Isolation**| Core libraries use `internal` by default. Pluggable `:testing` fakes provided. |
 | **Gate E26**| Release | **DB Migration & R8 ProGuard Gate** | ProGuard `consumer-rules.pro` synthesized. Release builds verified with R8 minification. |
 | **Gate E27**| Aesthetic | **World-Class UI/UX Audit** | Zero purple neon AI clichés. Subtle 0.5dp borders, tonal depth, 8-pt grid, domain palette. |
-| **Gate E28**| Domain | **Ubiquitous Language & Precision** | 1-to-1 mapping between business domain dictionary (`CONTEXT.md`) and code symbols. Zero fluff. |
-| **Gate E29**| Policy | **Google Play Device & Network Abuse Defense** | Zero DCL, Android 14+ FGS types, UIDT API, REQUIRE_SECURE_ENV container defense, FLAG_SECURE compliance. |
+| **Gate E28**| Domain | **Ubiquitous Language & Conventions** | 1-to-1 `CONTEXT.md` mapping; `E28.6–E28.10` Self-Documenting Naming, Zero Magic Literals, Affirmative Booleans, Named Args, `internal`/`private` Visibility. |
+| **Gate E29**| Policy | **Google Play 2026–2027 12-Pillar Policy [`#policy`]** | Zero DCL, Android 14–16 FGS & 2027 Geofencing FGS Ban, UIDT API, `REQUIRE_SECURE_ENV`, `FLAG_SECURE`, WebView Guard, Web Account Deletion, AI Disclosure, Age-Gate, `PickContact` Mandate. |
+| **Gate E30**| Resilience | **8-Vector Hostile Runtime Defense** | Process Death <500KB bundle, Captive Portal check, 401 Mutex, Preserved Cancellation, 400ms Debounce, AtomicFile, 200% Font Scale, JIT Permissions. |
+| **Gate E31**| Testing | **6-Dimension Edge-Case Torture Matrix** | Rejects happy-path-only tests; enforces Empty/Blank/Overflow, Multi-Tap <400ms, Concurrent Races, and Process Death tests. |
+| **Gate E32**| Refactoring | **Senior Refactoring Safety Net** | Characterization tests & Green Baseline required before structural edits; enforces micro-step discipline. |
+| **Gate E33**| Agentic | **Scientific Closed-Loop & Red-Team Gate** | Minimal Failing Test before bugfix, Single-Variable Isolation, 1-to-1 Living Traceability, Adversarial Audit. |
+| **Gate E34**| Vitals 2026–2027 | **Google Play 2026–2027 Core Vitals Mandate** | Crash <0.05%, ANR <0.02%, 16KB Page Alignment, Target SDK 36, Zero Excessive WakeLocks, Bitmap RAM <50MB BG P90, R8 DEX Opt >=75%, Zero-Tap `RestoreCredentials`. |
+| **Gate E35**| Interop | **Hybrid XML & Compose Interoperability** | `DisposeOnViewTreeLifecycleDestroyed`, `ViewBinding` nullification in `onDestroyView`, `AndroidView` `onRelease`. |
+| **Gate E36**| Modern XML | **100% Pure Modern XML Architecture** | `ListAdapter` + `DiffUtil`, `WindowInsetsCompat` Edge-to-Edge, SafeArgs compile-time type safety. |
+| **Gate E37**| Context | **GSD Wave Context Isolation** | Fresh-context subagent wave execution for multi-file features; automatic milestone archiving. |
+| **Gate E38**| Pre-Flight | **Zero-Tolerance Pre-Flight Vitals Audit** | Bans verbal safety claims; enforces static Zero-Crash, Zero-ANR <5ms Main Thread, and Zero-Leak audit. |
+| **Gate E39**| Self-Review | **Mandatory Dev Mirror Self-Review** | `view_file` physical read-back, 5-Mirror Lens self-refactor (Draft 1 -> Clean Draft 2), and `🪞 Dev Mirror Self-Review` block. |
+| **Gate E40**| Convergence | **Bounded 3-Round QA Convergence & Circuit Breaker** | `MAX_QA_ROUNDS = 3`, Pattern-Clustered `[CLUSTER-XX]` batching + Systemic Sweep, Delta-Only Rounds 2–3, Zero Moving Goalposts. |
 
 ---
 
@@ -266,21 +286,38 @@ The installer automatically:
 3. Auto-configures **Antigravity CLI (`agy`)** by binding the System Mandate in `~/.gemini/GEMINI.md` and symlinking skills into `~/.gemini/antigravity-cli/skills/`.
 4. Grants execution permissions and runs an automated environment diagnostic.
 
-### Option 2: Clone and Install Locally
+### ⚡ Option 2: Fast One-Line Update (For Existing Users)
+Update an existing `~/.antigravity` installation and `~/.gemini/GEMINI.md` mandate in seconds (100% non-interactive, preserves custom `01-project-memory.md`, and automatically backs up `~/.antigravity/memory` to `~/.antigravity_backups/`):
+
+- **Remote 1-Liner:**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/vinhvox/Anti-Vibe-Coding-Android-Engine/main/scripts/update.sh | bash
+  ```
+- **Local CLI Shortcut:**
+  ```bash
+  ~/.antigravity/bin/agy-update
+  # or: bash ~/.antigravity/scripts/update.sh
+  ```
+- **Check-Only Mode (Preview Incoming Updates Without Applying):**
+  ```bash
+  ~/.antigravity/bin/agy-update --check
+  ```
+
+### Option 3: Clone and Install Locally
 ```bash
 git clone https://github.com/vinhvox/Anti-Vibe-Coding-Android-Engine.git
 cd Anti-Vibe-Coding-Android-Engine
 bash scripts/install.sh
 ```
 
-### Option 3: Initialize in an Existing Android Project
+### Option 4: Initialize in an Existing Android Project
 To bind the engine and project memory directly to any Android / KMP project repository:
 ```bash
 cd /path/to/your/android-project
 bash ~/.antigravity/scripts/init-project.sh
 ```
 
-### Option 4: Run Diagnostic Health Check
+### Option 5: Run Diagnostic Health Check
 Verify that your development environment (JDK 17+, Android SDK, Git) is fully configured:
 ```bash
 bash ~/.antigravity/scripts/doctor.sh
@@ -291,12 +328,12 @@ bash ~/.antigravity/scripts/doctor.sh
 ## ❓ ANTIGRAVITY CLI FAQ & TROUBLESHOOTING
 
 ### Q: Why does the initial Antigravity CLI terminal screen look default?
-> **Answer:** The initial startup ASCII header (*"Welcome to Antigravity CLI"*) is compiled statically into the `agy` binary. The engine's **CTO Persona, 38 Standards, and 29 Quality Gates** live inside the AI's cognitive pipeline and are activated upon your very first message or tool call.
+> **Answer:** The initial startup ASCII header (*"Welcome to Antigravity CLI"*) is compiled statically into the `agy` binary. The engine's **CTO Persona, 46 Standards (00-45), and 40 Quality Gates (E1–E40)** live inside the AI's cognitive pipeline and are activated upon your very first message or tool call.
 
 ### Q: How do I verify that the engine is active in Antigravity CLI?
 > **Answer:** Run `agy` in your terminal and test either of these:
-> 1. Type `/skills` — You will see custom skills listed (`ask-cto`, `ui-ux-pro-max`, `app-quality-vitals`, etc.).
-> 2. Ask: *"Who are you and what rules do you follow?"* — The assistant will immediately identify as the **CTO & Android Principal Architect** enforcing the 38 Standards and 29 Quality Gates (E1–E29).
+> 1. Type `/skills` — You will see custom skills listed (`ask-cto`, `subagent-modes`, `ui-ux-pro-max`, `app-quality-vitals`, etc.).
+> 2. Ask: *"Who are you and what rules do you follow?"* — The assistant will immediately identify as the **CTO & Android Principal Architect** enforcing the 46 Standards (00-45) and 40 Quality Gates (E1–E40).
 
 ---
 
@@ -324,8 +361,8 @@ Anti-Vibe-Coding-Android-Engine is designed to empower any modern AI coding tool
 
 | AI Tool / Environment | Integration Method | Supported Features |
 |:---|:---|:---|
-| **Google Antigravity CLI (`agy`)** | Native custom framework (`~/.antigravity`) | Full 8-tier cognitive pipeline, skills, subagents, rules, auto-hooks. |
-| **Cursor IDE** | Include as `.cursorrules` or system prompt reference | Full 29 Quality Gates, Clean Architecture enforcement, Rule 36 UI/UX. |
+| **Google Antigravity CLI (`agy`)** | Native custom framework (`~/.antigravity`) | Full 8-tier cognitive pipeline, skills, subagents (`dev-builder` / `qa-enforcer`), 46 Standards & 40 Gates. |
+| **Cursor IDE** | Include as `.cursorrules` or system prompt reference | Full 40 Quality Gates (E1–E40), Clean Architecture enforcement, Rule 36 UI/UX. |
 | **Claude Code (Anthropic)** | Load via `CLAUDE.md` linking to `.context-digest.md` | Invariant enforcement, Tracer-Bullet planning, compiler verification. |
 | **Gemini CLI** | Native custom configuration | Brain reasoning, adaptive HAL, zero-crash default invariant. |
 | **Windsurf / GitHub Copilot** | Workspace rules reference | Compose stability, design system token purity, 19 core mobile domains. |
@@ -341,32 +378,44 @@ Anti-Vibe-Coding-Android-Engine/
 │   └── ISSUE_TEMPLATE/                  # Standardized bug reports & feature requests
 ├── bin/
 │   ├── agy-doctor                       # Fast CLI diagnostic shortcut
+│   ├── agy-update                       # Fast CLI non-interactive updater shortcut
 │   └── load-antigravity.py              # Context bootstrap utility
 ├── brain/                               # 11 Cognitive engines (Context, Clarification, Decision...)
 │   ├── 00-master-cognition.md
 │   ├── ...
 │   └── 11-learning-engine.md
-├── rules/                               # 38 Standards & Gates E1 to E29
+├── rules/                               # 46 Standards (00-45) & Gates E1 to E40
 │   ├── 00-system-mandate.md             # Highest system priority mandate
 │   ├── 01-tech-stack.md                 # Adaptive Stack Hardware Abstraction Layer (HAL)
 │   ├── 09-networking.md                 # Ktor Client & Retrofit + OkHttp standards
 │   ├── 12-dependency-injection.md       # Koin 4.x & Hilt/Dagger standards
-│   ├── 21-enforcement-engine.md         # The 29 Quality Gates (E1 to E29)
+│   ├── 21-enforcement-engine.md         # The 40 Quality Gates (E1 to E40)
+│   ├── 27-app-quality-vitals.md         # 2026-2027 Google Play Core Vitals & 16KB alignment
 │   ├── 31-mobile-engineering-core.md    # The 19 Core Mobile Engineering Domains
 │   ├── 36-ui-ux-design-standard.md      # World-Class UI/UX & Anti-AI-Slop standard
-│   ├── 37-ubiquitous-language-standard.md # Domain Dictionary & Ubiquitous Language standard
-│   └── 38-device-network-abuse-policy.md # Google Play Device & Network Abuse policy
+│   ├── 37-ubiquitous-language-standard.md # Domain Dictionary & Self-Documenting Conventions
+│   ├── 38-device-network-abuse-policy.md # Google Play 2026-2027 12-Pillar Policy Defense
+│   ├── 42-adversarial-red-team-verification.md # Dev Mirror Self-Review & Bounded 3-Round QA
+│   └── 45-apk-reverse-audit.md          # Automated APK/AAB/DEX Reverse Audit standard
 ├── workflow/                            # 10 Specialized engineering workflows
 │   ├── 00-master-workflow.md            # Central orchestrator (Phases 0 to 8)
 │   ├── 03-architecture-design.md        # Architecture design & driver binding
 │   ├── 04-implementation-planning.md    # Tracer-Bullet Vertical Slicing planning
-│   ├── 06-code-review.md                # Gates E1-E29 code review audit
+│   ├── 06-code-review.md                # Gates E1-E40 code review audit
 │   └── 07-testing-validation.md         # Mandatory real terminal compiler execution
 ├── skills/                              # Specialized drop-in domain skills
 │   ├── ask-cto/                         # Meta-router for instant technical diagnosis
+│   ├── subagent-modes/                  # Zero-Compromise Dev (dev-builder) & QA (qa-enforcer)
 │   ├── ui-ux-pro-max/                   # 240+ UI styles, 170+ palettes, 150+ font pairings
 │   ├── app-quality-vitals/              # Google Play Vitals, Zero-Crash, TTID < 500ms
 │   ├── stack-heap-memory/               # Stack vs Heap memory allocation discipline
+│   ├── dex-optimization/                # R8 fullMode, Baseline Profiles & >=75% DEX Opt
+│   ├── policy/                          # Instant #policy 12-Pillar Google Play compliance audit
+│   ├── panda-ads-integration/           # High-ROAS AdMob & Mediation lifecycle architecture
+│   ├── rea/ & reverse-engineer-anything/# Deep APK/DEX/SO binary & Smali reverse audit
+│   ├── gsd-orchestrator/                # Context-isolated wave execution & milestone archiving
+│   ├── ai-product-team/                 # Autonomous multi-role product & architecture studio
+│   ├── screenshot-to-compose/           # Pixel-accurate Compose M3 synthesis from mockups
 │   ├── ponytail-minimalist/             # Zero over-engineering & Kotlin idioms
 │   ├── spec-driven-development/         # Tri-Artifact standard (Spec -> Plan -> Tasks)
 │   └── systematic-debugging/            # 4-step scientific root cause analysis
@@ -379,7 +428,9 @@ Anti-Vibe-Coding-Android-Engine/
 │       └── user-preference.template.md  # Developer preferences template
 ├── scripts/                             # Automation scripts
 │   ├── install.sh                       # Automated curl-to-bash installer
+│   ├── update.sh                        # Fast non-interactive git delta updater & memory backup
 │   ├── doctor.sh                        # Environment diagnostic health check
+│   ├── rever_audit.py                   # Automated APK/AAB/DEX reverse security auditor
 │   └── uninstall.sh                     # Safe uninstaller with backup archiving
 ├── .context-digest.md                   # Ultra-dense 5.4K token instant boot context
 ├── INDEX.md                             # Full cross-reference index
