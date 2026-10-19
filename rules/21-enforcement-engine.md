@@ -140,6 +140,11 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** `items()` call lacks `key = { ... }` or uses list index as key; or fails to declare `contentType` when handling polymorphic items
 - **Fix:** Specify stable unique identifier `key = { it.id }` and define `contentType = { it.type }`
 
+### E4.6: Compose Modifier Root-Only Hygiene & Canonical Parameter Order Gate
+- **Scan:** All `@Composable` function signatures and `modifier` usages inside `presentation/` and UI modules
+- **Reject if:** (1) A reusable/stateless `@Composable` (`*Screen`, `*Content`, `*Card`, `*Item`, `*Component`) omits `modifier: Modifier = Modifier` or places it after optional parameters or trailing `@Composable () -> Unit` content slots; or (2) The incoming `modifier` parameter (lowercase `m`) is passed to more than one layout node or reused on any child node inside the Composable
+- **Fix:** Order parameters strictly as `(Required State/Data, Required Callbacks, modifier: Modifier = Modifier, Optional Params, Trailing Content Slot)`; pass `modifier` exclusively to the single outermost Root Layout node, and use `Modifier` (uppercase `M`) for all inner child nodes
+
 ---
 
 ## E5: Coroutines (refs: `rules/08-coroutines.md`)
@@ -872,19 +877,44 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** Significant technology choices, library replacements, or paradigm shifts lack an Architectural Decision Record in `docs/adr/`
 - **Fix:** Extract the decision into a formal ADR file (`docs/adr/00xx-<title>.md`)
 
+### E28.6: Self-Documenting Identifier & Zero-Cryptic-Naming Gate (Rule 37.5)
+- **Scan:** Local variables, function parameters, properties, loop variables, lambda parameters, and `catch` block parameters across all modified/created `.kt` files
+- **Reject if:** Any identifier uses a meaningless single-letter name (`x`, `c`, `p`, `d`, `w`, `g`, `s`, `r`, `b`, `n`, `h`, `e`, `k`, `v`, `a`, `f`, `q`, `t`) or cryptic shorthand abbreviation (`rt`, `pc`, `fc`, `st`, `bh`, `nh`, `fh`, `fs`, `t0`, `dt`, `ctx`, `req`, `cfg`, `bg`, `fb`, `cd`, `mv`, `mc`, `cb`, `cCfg`, `sCfg`, `bJob`, `rJob`, `cJob`)
+- **Fix:** Refactor to descriptive, self-documenting `camelCase` domain identifiers (`placementConfig`, `activeRuntime`, `bannerHandle`, `nativeHandle`, `startTimeMs`, `elapsedDeltaMs`, `cancellationException`, `throwable`, `adRequest`, `callback`, `viewContext`, etc.) and update all named-argument call sites
+
+### E28.7: Zero Magic Literals Gate (Logic, Timing & Configuration Constants)
+- **Scan:** Numeric and string literals inside ViewModels, UseCases, Repositories, DataSources, and Animation/UI logic
+- **Reject if:** Raw un-named numeric or string literals (e.g., `delay(3000)`, `if (retryCount > 3)`, `timeout = 15000`, `pageSize = 20`, `alpha = 0.38f`) are embedded inline outside constant declarations (excluding trivial `0`, `1`, `-1`, `0f`, `1f`, `""`)
+- **Fix:** Extract to `private const val` in `UPPER_SNAKE_CASE` with explicit unit suffixes and underscore thousands separators (e.g., `private const val RETRY_DELAY_MS = 3_000L`, `private const val MAX_RETRY_ATTEMPTS = 3`, `private const val DISABLED_ALPHA = 0.38f`)
+
+### E28.8: Affirmative Boolean Naming & Immutable Data Class Gate
+- **Scan:** All `Boolean` properties/variables/parameters/functions and all `data class` declarations (`UiState`, `Intent`, `Effect`, Domain Models, DTOs)
+- **Reject if:** (1) A `Boolean` identifier lacks an affirmative prefix (`is*`, `has*`, `can*`, `should*`, `was*`, `allows*`, `supports*`) or uses a double-negative name (`isNotDisabled`, `disableButton`); or (2) Any `data class` in Domain or Presentation contains `var` properties or mutable collection types (`MutableList`, `MutableSet`, `MutableMap`, `ArrayList`, `HashMap`)
+- **Fix:** Rename booleans to affirmative `is*`/`has*`/`can*`/`should*` form; enforce 100% `val` and read-only/immutable collections (`List`, `Set`, `Map`, `ImmutableList`) in all `data class` definitions
+
+### E28.9: Mandatory Named Arguments Gate
+- **Scan:** Function and constructor call sites across all `.kt` files
+- **Reject if:** A call site passes $\ge 2$ positional `Boolean` arguments, $\ge 2$ adjacent positional arguments of the same primitive/String type, or $\ge 4$ total positional arguments without explicit parameter names (e.g., `fetchItems(true, false, 20)`)
+- **Fix:** Add explicit named arguments at the call site (e.g., `fetchItems(forceRefresh = true, includeArchived = false, limit = 20)`)
+
+### E28.10: Strict Least-Privilege Access Modifier Gate (`internal` / `private` by Default Across App & SDK)
+- **Scan:** Class, interface, function, property, and DI module declarations across BOTH App/Feature modules (`com.android.application` / `:feature:*`) and SDK/Library modules (`com.android.library`)
+- **Reject if:** (1) Feature/module implementation classes (`*ViewModel`, `*RepositoryImpl`, `*DataSource`, `*Dao`, `*Entity`, `*Dto`, `*Mapper`, `*UseCase`, Koin `*Module`) default to `public` when not required across module boundaries; (2) File-local helper functions, sub-composables, `@Preview` functions, or constants are not marked `private`; or (3) `open class` or `protected var`/`protected val _state` leaks mutable state outside `BaseViewModel`
+- **Fix:** Mark module-scoped classes and Koin modules as `internal`; mark file-scoped helpers, sub-composables, `@Preview`s, and constants as `private`; keep `_state` `private` inside `BaseViewModel` and expose state mutations strictly via `protected fun setState { copy(...) }`
+
 ---
 
-# CATEGORY E29: GOOGLE PLAY DEVELOPER PROGRAM POLICIES & DEVICE/NETWORK ABUSE GATES (Rule 38) [Quick Tag: `#policy`]
+# CATEGORY E29: GOOGLE PLAY DEVELOPER PROGRAM POLICIES & DEVICE/NETWORK ABUSE GATES (2026–2027 — Rule 38) [Quick Tag: `#policy`]
 
 ### E29.1: Zero Dynamic Code Loading (Zero DCL) Gate
 - **Scan:** Dependencies, reflection calls, ClassLoader usages (`DexClassLoader`, `PathClassLoader`), and remote binary downloads
 - **Reject if:** App or any integrated SDK downloads executable binaries (`.dex`, `.jar`, `.so`) from remote servers at runtime or attempts self-updating outside Google Play
 - **Fix:** Package all executable code inside the Android App Bundle (AAB); use Google Play Core In-App Updates API exclusively
 
-### E29.2: Android 14+ Foreground Service (FGS) & UIDT Eligibility Gate
-- **Scan:** `AndroidManifest.xml` `<service>` declarations, network transfer jobs, and background task dispatchers
-- **Reject if:** A Foreground Service lacks a valid `android:foregroundServiceType`; uses FGS for deferrable work; lacks user-initiated trigger; triggers UIDT / large transfers autonomously without direct user intent; or runs unapproved proxy/VPN tunnels
-- **Fix:** Specify explicit `foregroundServiceType` and declare corresponding `FOREGROUND_SERVICE_*` permission; migrate non-urgent or deferrable tasks to `WorkManager`; restrict UIDT to direct user-prompted commands
+### E29.2: Android 14–16 Foreground Service (FGS), UIDT & 2027 Geofencing FGS Ban Gate
+- **Scan:** `AndroidManifest.xml` `<service>` declarations, network transfer jobs, geofencing implementations, and background task dispatchers
+- **Reject if:** A Foreground Service lacks a valid `android:foregroundServiceType`; uses FGS (`foregroundServiceType="location"`) for Geofencing (banned effective January 27, 2027); uses FGS for deferrable work; lacks user-initiated trigger; triggers UIDT / large transfers autonomously without direct user intent; or runs unapproved proxy/VPN tunnels
+- **Fix:** Specify explicit `foregroundServiceType` and declare corresponding `FOREGROUND_SERVICE_*` permission; migrate Geofencing to Google Play Services `GeofencingClient`; migrate non-urgent or deferrable tasks to `WorkManager`; restrict UIDT to direct user-prompted commands
 
 ### E29.3: On-Device Android Container Defense Gate (`REQUIRE_SECURE_ENV`)
 - **Scan:** `AndroidManifest.xml` `<application>` block
@@ -911,20 +941,30 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** Full-screen interstitial ads trigger unexpectedly during active gameplay or user workflow (e.g. immediately upon tapping an action or launching screen); interstitial ads lack a close/dismiss button after 15 seconds; or ads render outside app context (on lock-screen, launcher, or over system dialogs)
 - **Fix:** Only show interstitial ads at natural transition breaks (e.g. level complete, after explicit task completion); enforce maximum 15s dismiss button visibility; strictly forbid background/lock-screen ad surfaces
 
-### E29.8: Generative AI Moderation & In-App Flagging Gate
-- **Scan:** Generative AI prompts, LLM response renderers, image generation interfaces, and user feedback dialogs
-- **Reject if:** App features Generative AI (chat, text, or image generation) without an accessible in-app content reporting/flagging mechanism (`GenAiReportContentDialog`) or lacks automated input/output safety guardrails against offensive, hateful, CSAM, or non-consensual content
-- **Fix:** Attach reporting action to every GenAI output bubble/card; enforce safety filtering on both user prompts and model responses
+### E29.8: Generative AI Moderation, In-App Flagging & Third-Party AI Prominent Disclosure Gate (Aug 2026)
+- **Scan:** Generative AI prompts, LLM/AI SDK network callers, response renderers, image generation interfaces, and consent dialogs
+- **Reject if:** (1) App transmits user data (text, photos, voice, documents) to any third-party AI model/SDK without displaying a Prominent In-App Disclosure and obtaining explicit user consent first (effective August 2026); or (2) App features Generative AI without an accessible in-app content reporting/flagging mechanism (`GenAiReportContentDialog`) or automated input/output safety guardrails
+- **Fix:** Present a prominent consent dialog before sharing user data with third-party AI APIs, declare AI data sharing in Play Console Data Safety, attach reporting actions to GenAI outputs, and enforce safety filtering
 
 ### E29.9: Minimum Functionality & Anti-Spam Gate
 - **Scan:** Project structure, Compose screens, WebView wrappers, and launch activities
 - **Reject if:** App is merely an empty shell or direct wrapper of an existing website without native Android value-add; exhibits launch crashes / dead-ends; or duplicates existing published apps with trivial reskinning (spam/copycat)
 - **Fix:** Provide rich native UI components, offline capabilities, local hardware integrations (camera, sensors), and ensure crash-free launch (< 600ms TTID)
 
-### E29.10: Families Policy & Certified Ad SDK Gate
-- **Scan:** Target age group declarations, analytics tracking, advertising SDK dependencies, and age gates
-- **Reject if:** App target audience includes children (under 13) but includes non-certified Ad SDKs; collects Android Advertising ID (AAID); tracks persistent device identifiers; or lacks a neutral age screen (`NeutralAgeVerificationScreen`)
-- **Fix:** Integrate only Google Play Certified Ad SDKs for Families; zero out AAID collection for child accounts; enforce neutral age verification before collecting any personal data
+### E29.10: Families Policy, Certified Ad SDK & Anonymous Chat Age-Gate (Aug 26, 2026)
+- **Scan:** Target age group declarations, anonymous/random chat features, analytics tracking, advertising SDK dependencies, and age gates
+- **Reject if:** (1) App offers anonymous or random chat/pairing without enforcing a neutral age gate blocking minors under 18 (effective August 26, 2026); or (2) App target audience includes children (under 13) but includes non-certified Ad SDKs, collects Android Advertising ID (AAID), or lacks `NeutralAgeVerificationScreen`
+- **Fix:** Block minor access on anonymous/random chat features via neutral age verification; integrate only Google Play Certified Ad SDKs for Families; zero out AAID collection for child accounts
+
+### E29.11: 2027 Restricted Permissions Gate (`READ_CALL_LOG` Verification Ban & `READ_CONTACTS` Picker Mandate)
+- **Scan:** `AndroidManifest.xml` `<uses-permission>` declarations and runtime permission requests for `READ_CALL_LOG`, `READ_CONTACTS`, and Health Connect permissions
+- **Reject if:** (1) App requests `READ_CALL_LOG` for phone-call / missed-call account verification (banned effective January 27, 2027); (2) App requests broad `READ_CONTACTS` without being a core dialer/contact-management app instead of using the Android System Contact Picker (`PickContact`, effective January 27, 2027); or (3) Health Connect integration fails to use granular permissions
+- **Fix:** Migrate phone/account verification to the Digital Credentials API or SMS Retriever API; replace `READ_CONTACTS` with `ActivityResultContracts.PickContact()`; enforce granular Health Connect permissions
+
+### E29.12: Android Developer Verification & Package Registration Gate (Sept 2026 ➔ Global 2027)
+- **Scan:** Release signing configurations, `applicationId` declarations, and pre-release checklists
+- **Reject if:** Production package name (`applicationId`) and signing certificate are not registered and linked to a verified developer identity (KYC / D-U-N-S) in Google Play Console / Android Developer Console
+- **Fix:** Register `applicationId` under Play App Signing and complete Android Developer Verification in Play Console / Android Developer Console prior to distribution
 
 ---
 
@@ -1037,39 +1077,59 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** Any Scenario in `spec.md` lacks an explicit `@Scenario("ID")` tag, or if any Scenario ID in the specification lacks an executable test in code (Orphaned Scenario); or if tests are not linked 1-to-1 with specification rules
 - **Fix:** Assign unique Scenario IDs to all Gherkin scenarios in `spec.md` and map them 1-to-1 to executable test methods in Kotlin test suites
 
-### E33.4: Dual-Agent Adversarial Red-Team Gate
-- **Scan:** Completion claims for major features, core module refactors, or release candidates
-- **Reject if:** Completion is declared solely based on author self-audit without executing the 4 Chaos Vectors (chaotic inputs, concurrency stress, hostile runtime, gate compliance) or without an independent Adversarial Red-Team audit report
-- **Fix:** Submit handoff contract to Red Team auditor, execute the 4 Chaos Vectors, resolve all detected cracks via Rule 41, and obtain the "Adversarial Pass" certificate
+### E33.4: Zero-Compromise Dev ↔ QA-Enforcer Adversarial Gate (Rule 42)
+- **Scan:** Completion claims for features, bug fixes, refactors, or module changes
+- **Reject if:** Completion is declared based on Dev self-review, shared-context review, or soft warnings without spawning the independent read-only `qa-enforcer` subagent (`define_subagent` with `enable_write_tools = false` + `invoke_subagent` in a blind fresh context); or if `qa-enforcer` has not issued an explicit binary `VERDICT: APPROVED` (0 defects across Gate E38 Vitals, Gates E1–E36 Architecture/UI, Gate E31 6-Dimension Edge Cases, and Gate E20 Real Test Evidence)
+- **Fix:** Spawn `qa-enforcer` with blind handoff (Spec + Diff + Raw Test Logs only), resolve 100% of `[DEFECT-XX]` items via Rule 41 without arguing, and obtain `VERDICT: APPROVED`
 
 ---
 
-# CATEGORY E34: ANDROID 15/16 CORE APP QUALITY & VITALS COMPLIANCE GATES (Rule 27)
+# CATEGORY E34: ANDROID 2026–2027 CORE APP QUALITY & VITALS COMPLIANCE GATES (Rule 27)
 
 ### E34.1: Google Play Core Vitals Threshold Gate
 - **Scan:** Performance profiling, Crashlytics reports, and thread execution
 - **Reject if:** Crash rate exceeds 0.05%, ANR rate exceeds 0.02%, cold start exceeds 600ms, or dropped frames exceed 1.0% (violating Google Play Bad Behavior Thresholds)
 - **Fix:** Eliminate uncaught exceptions with `safeLaunch`, offload all disk/network I/O to background dispatchers, and optimize startup pipeline
 
-### E34.2: 16KB Memory Page Alignment Gate
-- **Scan:** Integrated Native C/C++ `.so` binaries in `jniLibs` and dependencies
-- **Reject if:** Any `.so` library fails 16KB page alignment (`-Wl,-z,max-page-size=16384`), causing SIGSEGV crashes on Android 15+ devices
-- **Fix:** Upgrade NDK to r27+ and recompile or upgrade native dependencies with 16KB alignment flags
+### E34.2: 16KB Memory Page Alignment Gate (May 1, 2026 & February 2027 Hard Block)
+- **Scan:** Integrated Native C/C++ `.so` binaries in `jniLibs` and 3rd-party dependencies (NDK, Flutter, React Native, Unity)
+- **Reject if:** Any 64-bit `.so` library fails 16KB ELF segment alignment (`0x4000` / `-Wl,-z,max-page-size=16384`), causing SIGSEGV crashes on Android 15/16+ devices and Google Play upload rejection
+- **Fix:** Upgrade NDK to r28+ and AGP to 8.5.1+/9.0+, recompile or upgrade native dependencies with 16KB alignment flags, and verify via `check16kb`
 
-### E34.3: Enforced Edge-to-Edge Insets Gate
-- **Scan:** Root composable scaffolds, top app bars, and bottom sheets
-- **Reject if:** Screens fail to consume `WindowInsets.safeDrawing`, or input fields lack `Modifier.imePadding()`, causing system bars or keyboard to overlap UI components
-- **Fix:** Apply `enableEdgeToEdge()` in Activity and consume `safeDrawing` and `imePadding()` in Compose layouts
+### E34.3: Target SDK 36 (Android 16 — Aug 31, 2026) & Enforced Edge-to-Edge Insets Gate
+- **Scan:** `build.gradle.kts` `targetSdk`, root composable scaffolds, top app bars, bottom sheets, and theme attributes
+- **Reject if:** `targetSdk < 36`; app uses removed `windowOptOutEdgeToEdgeEnforcement`; screens fail to consume `WindowInsets.safeDrawing`; or input fields lack `Modifier.imePadding()`
+- **Fix:** Set `compileSdk = 36` and `targetSdk = 36`, call `enableEdgeToEdge()` in Activity, and consume `safeDrawing` and `imePadding()` in Compose layouts
 
 ### E34.4: Baseline Profile Integration Gate
 - **Scan:** Release packaging configuration and Gradle build tasks
 - **Reject if:** Release APK/AAB lacks a generated `baseline-prof.txt` profile
 - **Fix:** Configure `:baselineprofile` generator module with Macrobenchmark to bundle AOT startup profile
 
-### E34.5: Zero-Permission Media Picker Gate
-- **Scan:** Image/video selection implementations and permission requests
-- **Reject if:** App requests `READ_MEDIA_IMAGES` or `READ_EXTERNAL_STORAGE` for user media picking instead of using the system Photo Picker
-- **Fix:** Migrate to `ActivityResultContracts.PickVisualMedia` with zero runtime permission requirements
+### E34.5: Zero-Permission System Pickers Gate (`PickVisualMedia` & Contact Picker — Jan 27, 2027)
+- **Scan:** Image/video/contact selection implementations and manifest permission declarations
+- **Reject if:** App requests `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`, or `READ_EXTERNAL_STORAGE` for user media picking, or requests broad `READ_CONTACTS` instead of using the system Contact Picker
+- **Fix:** Migrate media selection to `ActivityResultContracts.PickVisualMedia` and contact selection to `ActivityResultContracts.PickContact` with zero runtime permission requirements
+
+### E34.6: Excessive Partial Wake Locks Gate (March 2026 Vitals Enforcement)
+- **Scan:** `PowerManager.WakeLock` acquisitions, background services, and media/sync workers
+- **Reject if:** App manually acquires `PARTIAL_WAKE_LOCK` without strict timeout or holds non-exempt wake locks risking $\ge 2\text{ hours}$ cumulative duration in 24h across $> 5\%$ of sessions
+- **Fix:** Remove manual `WakeLock` usages; migrate background tasks to `WorkManager` with network/charging constraints or User-Initiated Data Transfer (`UIDT`)
+
+### E34.7: Dynamic Memory (RSS + Swap), Bitmap Memory & LMK Defense Gate (February 2027 P90 Enforcement)
+- **Scan:** Image loading configurations, `Application.onTrimMemory` handlers, ViewModels, and memory caches
+- **Reject if:** `Bitmap` or `ImageBitmap` objects are stored inside `ViewModel` / `UiState`; full-resolution images are decoded without viewport bounds; or `Application` fails to evict memory caches in `onTrimMemory(TRIM_MEMORY_UI_HIDDEN)` (risking Play's $> 200\text{ MB}$ Background / $> 400\text{ MB}$ Cached Bitmap bad thresholds and User-Perceived LMKs)
+- **Fix:** Store only `Uri`/URLs in state, downsample images to exact viewport size via Coil/Glide, and clear memory caches on `TRIM_MEMORY_UI_HIDDEN`
+
+### E34.8: Mandatory DEX Code Optimization Gate (February 2027 Enforcement)
+- **Scan:** `gradle.properties`, `build.gradle.kts` release buildTypes, and `proguard-rules.pro`
+- **Reject if:** Release build disables R8 shrinking/obfuscation (`isMinifyEnabled = false`), disables `android.enableR8.fullMode=true`, or achieves $< 75\%$ Optimization / $< 80\%$ Obfuscation (Play enforces a hard minimum of $25\%$ coverage for apps $> 10\text{ MB}$ DEX and games $> 50\text{ MB}$ DEX starting Feb 2027)
+- **Fix:** Enable `isMinifyEnabled = true`, `isShrinkResources = true`, `android.enableR8.fullMode=true`, and prune wildcard `-keep` rules
+
+### E34.9: Zero-Tap Sign-In Restoration Gate (`Restore Credentials API` — April 2027 Enforcement)
+- **Scan:** Authentication repositories, login/logout flows, and startup session restoration in non-game apps
+- **Reject if:** App features mandatory or optional user authentication but fails to integrate `androidx.credentials` (`CreateRestoreCredentialRequest` on login, `GetRestoreCredentialOption` on first launch, and `ClearCredentialStateRequest` on logout) to automatically restore sign-in state on a new Android device
+- **Fix:** Integrate `RestoreCredentialHelper` (`androidx.credentials`) into the authentication and cold-start session restoration pipeline
 
 ---
 
@@ -1119,6 +1179,91 @@ No task may be reported as complete until ALL applicable checks pass with ZERO v
 - **Reject if:** Passing arguments via raw String bundle keys (`bundle.putString("KEY", ...)`), or extracting args manually instead of using `by navArgs()`
 - **Fix:** Use Gradle SafeArgs generated Directions (`XxxDirections.action...()`) and `by navArgs()` delegate
 
+## E37: Context Engineering & GSD Wave Isolation (refs: `skills/gsd-orchestrator/SKILL.md`)
+
+### E37.1: Ban Monolithic Long-Session Execution
+- **Scan:** Execution flow on multi-file features (> 3 files), large-scale refactors, or cross-cutting migrations
+- **Reject if:** Main Agent attempts to perform sequential file edits across multiple layers directly in the main session without wave decomposition or subagent delegation
+- **Fix:** Delegate implementation tasks to fresh-context subagents (`invoke_subagent`) organized in sequential/parallel Waves (Wave 1: Data/Domain, Wave 2: State/VM, Wave 3: UI/Compose). Main session receives only diff summaries and test verification.
+
+### E37.2: Milestone Archiving & Zero Spec Drift Gate
+- **Scan:** Completion of milestones and feature epics
+- **Reject if:** Working spec artifacts (`spec.md`, `plan.md`, `tasks.md`) are left unarchived, or decisions accepted during implementation are not recorded into `memory/04-decision-memory.md`
+- **Fix:** Archive milestone artifacts to `.antigravity/archive/` or brain directory and commit architecture updates to Decision Memory before closing phase.
+
+---
+
+# CATEGORY E38: ZERO-TOLERANCE PRE-FLIGHT VITALS GATE (Anti-False-Safety & Vitals Defense)
+
+### E38.1: Zero-Crash Static Boundary Gate
+- **Scan:** Nullability handling, exception catching, coroutine scopes, and external module boundaries
+- **Reject if:** Force unwrapping via `!!`; `catch (e: Exception)` that swallows `CancellationException`; I/O, Room, Network, or SDK calls unhandled without `Result<T>` or `runCatchingSafe`; missing Error/Empty states in UI
+- **Fix:** Enforce null-safe `?.`, `?:`, `requireNotNull` with message; preserve coroutine cancellation; wrap untrusted/external calls in `Result<T>`; implement full 5-State UI
+
+### E38.2: Zero-ANR Main-Thread Budget Gate (< 5ms)
+- **Scan:** Dispatched work from Composables, ViewModels, and Application entry points
+- **Reject if:** Database, Disk I/O, Zip, Crypto, or JSON parsing executed on `Dispatchers.Main`; `runBlocking` used anywhere in UI or ViewModel; Composable body instantiates heavy objects (Regex, DateFormatters, large collections) without `remember`
+- **Fix:** Explicitly offload to `Dispatchers.IO` / `Dispatchers.Default`; ban `runBlocking`; hoist or memoize all Composable allocations via `remember`
+
+### E38.3: Zero-Leak Lifecycle Integrity Gate
+- **Scan:** Context references, coroutine scopes, flow collections, and listener/callback registrations
+- **Reject if:** `Activity` Context held in ViewModels, Repositories, or Singletons; UI uses `collectAsState()` instead of `collectAsStateWithLifecycle()`; coroutines launched in `GlobalScope`; event listeners registered without `DisposableEffect` cleanup
+- **Fix:** Pass only `applicationContext` when strictly required; enforce `collectAsStateWithLifecycle()`; scope coroutines to `viewModelScope` or `rememberCoroutineScope()`; unregister callbacks inside `DisposableEffect { onDispose { ... } }`
+
+### E38.4: Ban Verbal Safety Guarantees Gate
+- **Scan:** LLM responses, completion reports, and architectural reviews
+- **Reject if:** Verbally asserting code is "100% crash-free, ANR-free, or leak-free" without executing and demonstrating the 3-Pillar Pre-Flight Static Audit Checklist (E38.1–E38.3)
+- **Fix:** Replace empty verbal reassurances with deterministic static audit evidence and test execution logs
+
+---
+
+# CATEGORY E39: MANDATORY DEV MIRROR SELF-REVIEW GATE (Pre-Handoff Physical Read-Back & Self-Refactor — Rule 42)
+
+### E39.1: Post-Edit Physical Read-Back Gate (`view_file` / `git diff`)
+- **Scan:** Tool execution sequence of `dev-builder` and Main Agent after calling `write_to_file` or `replace_file_content`
+- **Reject if:** Agent finishes modifying/creating files and immediately runs final handoff or claims completion without calling `view_file` (or `git diff`) to physically inspect 100% of the modified code on disk ("First-Draft Dump")
+- **Fix:** Physically read back every modified/created file via `view_file` after edits complete to inspect the assembled file with a fresh critic lens
+
+### E39.2: The 5-Mirror Lens Self-Refactor Gate (Draft 1 ➔ Clean Draft 2)
+- **Scan:** Modified production and test files during the Pre-Handoff Mirror Self-Review phase
+- **Reject if:** Any violation across the **5 Mirror Lenses** remains unfixed before QA handoff:
+  1. *Mirror 1 (Minimalism — Rule 32):* Unused imports, redundant intermediate variables, pass-through wrappers, or duplicated helpers.
+  2. *Mirror 2 (Coding Conventions, Naming & Access Modifiers — Gates E28.6–E28.10):* Single-letter (`x`, `c`, `p`, `d`, `h`, `e`, `t`...) or cryptic (`rt`, `pc`, `fc`, `cfg`, `req`, `ctx`...) names; magic literals in logic (`delay(3000)`); non-affirmative boolean names (`loading` instead of `isLoading`); `var` or `MutableList` inside `data class`; missing named arguments on multi-boolean/4+ param calls; missing `internal`/`private` least-privilege access modifiers; or trivial comments.
+  3. *Mirror 3 (Vitals Survival — Gate E38):* Force unwrap `!!`, swallowed `CancellationException`, unwrapped I/O boundary, un-`remember`ed allocation in `@Composable`, `collectAsState()`, or uncleaned `ViewBinding`/`ComposeView`/`AndroidView`.
+  4. *Mirror 4 (Architecture, Compose Modifier & UI Purity — Gates E1–E4.6, E25, E35, E36):* Non-atomic state mutation, missing 5-State UI, hardcoded Color/Dp/String, inlined Emoji icons, missing `LazyColumn` `key`/`contentType`, `< 48dp` touch target, reusing `modifier` parameter on child nodes, or misordered `@Composable` parameters.
+  5. *Mirror 5 (6-Dimension Edge Cases — Gate E31):* Missing guards or tests for blank/overflow input, $<400\text{ms}$ rapid multi-tap, concurrent flow races, or Process Death (`SavedStateHandle`).
+- **Fix:** Immediately self-refactor Draft 1 into Clean Draft 2 before executing final Gradle verification and handing off to `qa-enforcer`
+
+### E39.3: Mandatory Mirror Self-Review Evidence Block Gate (`🪞 Dev Mirror Self-Review`)
+- **Scan:** Handoff report from `dev-builder` and completion report from Main Agent
+- **Reject if:** The handoff/completion report omits the structured **`🪞 Dev Mirror Self-Review`** summary block documenting: (a) Files physically re-read, (b) Flaws caught in Draft 1 & self-refactored in Draft 2, and (c) 5-Mirror Lens checklist verification
+- **Fix:** Include the explicit `🪞 Dev Mirror Self-Review` report block in every code implementation handoff and user response
+
+---
+
+# CATEGORY E40: BOUNDED 3-ROUND QA CONVERGENCE & CIRCUIT-BREAKER GATE (Rule 42)
+
+### E40.1: Hard 3-Round Review Cap & Circuit-Breaker Gate (`MAX_QA_ROUNDS = 3`)
+- **Scan:** Remediation loop count between `dev-builder` and `qa-enforcer`
+- **Reject if:** The `dev-builder` ↔ `qa-enforcer` cycle exceeds **3 rounds** (`Round > 3`), or `dev-builder` attempts a 4th patch after Round 3 fails
+- **Fix:** Immediately trigger **`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`** upon a Round 3 `VERDICT: REJECTED`. Cease all code patching, report the 3-round post-mortem and structural root cause, propose 2 alternative architectural approaches, and HARD STOP for user/CTO decision
+
+### E40.2: Delta-Only Review Scope Gate in Rounds 2 & 3 (`Delta-Only Audit`)
+- **Scan:** `qa-enforcer` audit scope in Round 2 and Round 3
+- **Reject if:** In Round 2 or Round 3, `qa-enforcer` re-scans the entire PR/codebase instead of restricting inspection strictly to: (1) verification of prior `[CLUSTER-XX]` items, and (2) the **Delta Diff** (lines modified since the prior round and their direct callers)
+- **Fix:** Restrict Round 2 and Round 3 audits exclusively to the Delta Diff and the prior round's `[CLUSTER-XX]` resolution status
+
+### E40.3: Pattern-Clustered Defect Batching Gate (`Systemic Cluster Sweep`)
+- **Scan:** Defect reports issued by `qa-enforcer` and remediation commits by `dev-builder`
+- **Reject if:** `qa-enforcer` drip-feeds isolated single-line instances of the same violation across multiple rounds ("whack-a-mole"), or `dev-builder` patches only a single line without sweeping all modified files for the same defect pattern
+- **Fix:** Group all identical/related violations into `[CLUSTER-XX] [Gate EXX.X] [Pattern Name] -> [all file:line locations]` in Round 1, and require `dev-builder` to perform a systemic sweep fixing 100% of occurrences in a single pass
+
+### E40.4: Zero Moving Goalposts & No Re-Litigation Gate (`4A + 4B`)
+- **Scan:** Round 2 and Round 3 `qa-enforcer` rejection reports
+- **Reject if:** (4A) `qa-enforcer` flags a "new" defect in Round 2/3 on pre-existing code from Round 1 that was NOT modified in the Delta Diff and was NOT reported in Round 1; or (4B) `qa-enforcer` re-litigates or reopens a `[CLUSTER-XX]` already marked `RESOLVED ✅` (unless broken by a new Delta Diff edit)
+- **Fix:** Grandfather all untouched Round-1 code after Round 1 completes; track prior clusters strictly via compact `RESOLVED ✅` / `UNRESOLVED ❌` ledger entries
+
+
 ---
 
 # EXECUTION PROTOCOL
@@ -1128,29 +1273,28 @@ When completing a task, the AI MUST:
 
 ```text
 1. Identify which enforcement categories apply:
-   - UI changes → E1 (Design System) + E4 (Compose) + E18.2 (5-State Matrix) + E19 (Layout Defense) + E21.7 (Adaptive UI/IME) + E21.8 (a11y 48dp) + E22 (Anti-Overengineering) + E23 (Blind Spots Defense) + E24.5 (UI Test Coverage) + E27 (UI/UX Polish & Anti-Cliché) + E29.4 (FLAG_SECURE) + E29.6 (Account Deletion UI) + E29.7 (Better Ads 15s Limit) + E29.8 (GenAI In-App Flagging) + E29.10 (Neutral Age Gate) + E30.5 (Multi-Tap Debounce) + E30.7 (200% Font & IME Insets) + E31.1 (6-Dimension Boundaries) + E34.3 (Enforced Edge-to-Edge Insets) + E34.5 (Zero-Permission Photo Picker) + E35 (Hybrid XML/Compose: DisposeOnViewTreeLifecycleDestroyed, ViewBinding Nullification, AndroidView onRelease) + E36 (100% Pure XML: ListAdapter DiffUtil, WindowInsetsCompat Edge-to-Edge, SafeArgs Type-Safety)
-   - ViewModel changes → E2 (Architecture-VM) + E18.3 (Gherkin Verification) + E20.2 (Koin Integrity) + E20.3 (Data Trigger) + E21.1 (Process Death) + E21.10 (Atomic StateFlow) + E22.2 (No Redundant UseCases) + E22.3 (Single Expression) + E23.2 (Re-entrancy Lock) + E24.1 (Turbine) + E24.2 (Fakes) + E24.3 (Zero Flakiness) + E29.6 (Account Deletion Logic) + E29.8 (GenAI Moderation) + E30.1 (Process Death) + E30.3 (401 Mutex) + E30.4 (Preserved Cancellation) + E30.5 (Re-entrancy Lock) + E31.1 (Boundary Test) + E31.2 (Concurrency Test) + E31.3 (Process Death Rehydration Test) + E33.3 (Living Traceability) + E34.1 (Core Vitals Budget)
-   - Data & Networking → E3 + E21.4 (SSOT Outbox) + E21.5 (Zero Data Loss Migration) + E21.15 (Keystore Security) + E22.5 (Zero Dependency Bloat) + E24.2 (Fakes) + E26.1 (No Destructive Migration) + E26.2 (Schema Test) + E29.1 (Zero DCL) + E29.6 (Account Deletion Web Link) + E30.2 (Captive Portal Guard) + E30.3 (401 Refresh Mutex) + E30.4 (Preserved Cancellation) + E30.6 (Atomic File Writes) + E31.4 (Invariants & Idempotency) + E33.3 (Living Traceability)
-   - Bug Fix & Debugging → E33.1 (Scientific Debugging Minimal Failing Test) + E33.2 (Single-Variable Isolation) + E20.1 (Full Test Verification)
-   - Refactoring & Migration → E32 (Senior Refactoring Safety Net: Pre-emptive Edit Block, Green Baseline, Micro-Steps, Zero Regression) + E22 (Minimalism) + E24 (Modern Testing) + E33.2 (Single-Variable Isolation) + E33.4 (Red-Team Audit)
-   - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard) + E29.1 (Zero DCL) + E30 (Runtime Hostility Defense) + E31 (Adversarial Coverage) + E33.3 (Living Traceability) + E33.4 (Red-Team Audit) + E34.2 (16KB Page Alignment)
-   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify) + E26.6 (Full Mode) + E26.7 (Ban Wildcard Keeps) + E26.8 (Zero Redundant Rules) + E26.9 (DEX Optimization & Blast Radius) + E29 (Google Play 7-Pillar Policy Compliance E29.1-E29.10) + E33.4 (Adversarial Audit) + E34.1 (Core Vitals) + E34.2 (16KB Compatibility) + E34.4 (Baseline Profile)
-   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29.2 (FGS & UIDT Policy) + E30.8 (JIT Permissions & Hardware In-Use)
-   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 + E30 + E31 + E33 + E34 + E35 + E36 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Google Play Policy 7 Pillars + Hostile Runtime Defense + 6-Dimension Adversarial Audit + Living Traceability + Red-Team Audit + Android 15/16 Core Vitals + Hybrid Interoperability + 100% Pure XML Modern Architecture)
-   - Any code change → E9 + E20.1 (Full Assemble Build & Test verification)
-```
+   - UI changes → E1 (Design System) + E4 (Compose & E4.6 Root-Only Modifier/Param Order) + E18.2 (5-State Matrix) + E19 (Layout Defense) + E21.7 (Adaptive UI/IME) + E21.8 (a11y 48dp) + E22 (Anti-Overengineering) + E23 (Blind Spots Defense) + E24.5 (UI Test Coverage) + E27 (UI/UX Polish & Anti-Cliché) + E28.6–E28.10 (Naming, Magic Literals, Booleans, Named Args, internal/private Visibility) + E29.4 (FLAG_SECURE) + E29.6 (Account Deletion UI) + E29.7 (Better Ads 15s Limit) + E29.8 (GenAI In-App Flagging) + E29.10 (Neutral Age Gate) + E30.5 (Multi-Tap Debounce) + E30.7 (200% Font & IME Insets) + E31.1 (6-Dimension Boundaries) + E34.3 (Enforced Edge-to-Edge Insets) + E34.5 (Zero-Permission Photo Picker) + E35 (Hybrid XML/Compose: DisposeOnViewTreeLifecycleDestroyed, ViewBinding Nullification, AndroidView onRelease) + E36 (100% Pure XML: ListAdapter DiffUtil, WindowInsetsCompat Edge-to-Edge, SafeArgs Type-Safety) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - ViewModel changes → E2 (Architecture-VM) + E18.3 (Gherkin Verification) + E20.2 (Koin Integrity) + E20.3 (Data Trigger) + E21.1 (Process Death) + E21.10 (Atomic StateFlow) + E22.2 (No Redundant UseCases) + E22.3 (Single Expression) + E23.2 (Re-entrancy Lock) + E24.1 (Turbine) + E24.2 (Fakes) + E24.3 (Zero Flakiness) + E28.6–E28.10 (Naming, Magic Literals, Affirmative Booleans & Immutable Data Class, Named Args, internal/private Visibility) + E29.6 (Account Deletion Logic) + E29.8 (GenAI Moderation) + E30.1 (Process Death) + E30.3 (401 Mutex) + E30.4 (Preserved Cancellation) + E30.5 (Re-entrancy Lock) + E31.1 (Boundary Test) + E31.2 (Concurrency Test) + E31.3 (Process Death Rehydration Test) + E33.3 (Living Traceability) + E34.1 (Core Vitals Budget) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - Data & Networking → E3 + E21.4 (SSOT Outbox) + E21.5 (Zero Data Loss Migration) + E21.15 (Keystore Security) + E22.5 (Zero Dependency Bloat) + E24.2 (Fakes) + E26.1 (No Destructive Migration) + E26.2 (Schema Test) + E28.6–E28.10 (Naming, Magic Literals, Booleans/Immutability, Named Args, internal/private Visibility) + E29.1 (Zero DCL) + E29.6 (Account Deletion Web Link) + E30.2 (Captive Portal Guard) + E30.3 (401 Refresh Mutex) + E30.4 (Preserved Cancellation) + E30.6 (Atomic File Writes) + E31.4 (Invariants & Idempotency) + E33.3 (Living Traceability) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - Bug Fix & Debugging → E33.1 (Scientific Debugging Minimal Failing Test) + E33.2 (Single-Variable Isolation) + E20.1 (Full Test Verification) + E28.6–E28.10 (Coding Conventions & Visibility) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - Refactoring & Migration → E32 (Senior Refactoring Safety Net: Pre-emptive Edit Block, Green Baseline, Micro-Steps, Zero Regression) + E22 (Minimalism) + E24 (Modern Testing) + E28.6–E28.10 (Coding Conventions & Visibility) + E33.2 (Single-Variable Isolation) + E33.4 (Red-Team Audit) + E37 (GSD Wave Isolation) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - SDK & Core Modules → E25 (Full SDK Audit: Public Surface, Fake Artifacts, Zero Auto-Init, Error Isolation) + E26.3 (Consumer Proguard) + E28.6–E28.10 (Coding Conventions & Visibility) + E29.1 (Zero DCL) + E30 (Runtime Hostility Defense) + E31 (Adversarial Coverage) + E33.3 (Living Traceability) + E33.4 (Red-Team Audit) + E34.2 (16KB Page Alignment) + E37 (GSD Wave Isolation) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - Release & Build → E9 + E20.1 (Assemble Debug) + E26.4 (Keep Rules) + E26.5 (Assemble Release Minify) + E26.6 (Full Mode) + E26.7 (Ban Wildcard Keeps) + E26.8 (Zero Redundant Rules) + E26.9 (DEX Optimization & Blast Radius) + E29 (Google Play 7-Pillar Policy Compliance E29.1–E29.12) + E33.4 (Adversarial Audit) + E34.1–E34.9 (2026–2027 Core Vitals, 16KB Alignment, Target SDK 36, Baseline Profile, System Pickers, WakeLocks, Memory/Bitmap P90, DEX Optimization, Zero-Tap Sign-In Restore) + E37.2 (Milestone Archiving) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - Background & Hardware → E21.2 (WorkManager Cancellation) + E21.3 (JIT Permissions) + E21.14 (Lifecycle Sensors) + E29.2 (FGS, UIDT & 2027 Geofencing FGS Ban) + E29.11 (2027 CallLog/Contacts/Health Restrictions) + E30.8 (JIT Permissions & Hardware In-Use) + E34.6 (Zero Excessive WakeLocks) + E39 (Dev Mirror Self-Review) + E40 (Bounded 3-Round QA Convergence)
+   - New feature → E1 + E2 + E3 + E4 + E6 + E10 + E18 + E19 + E20 + E21 + E22 + E23 + E24 + E25 + E26 + E27 + E28 + E29 + E30 + E31 + E33 + E34 + E35 + E36 + E37 + E38 + E39 + E40 (Full 19-Core + Minimalist + Blind Spots + Testing + SDK + Release + UI/UX + Ubiquitous + Google Play Policy 2026–2027 7 Pillars + Hostile Runtime Defense + 6-Dimension Adversarial Audit + Living Traceability + Red-Team Audit + Android 2026–2027 Core Vitals + Hybrid Interoperability + 100% Pure XML Modern Architecture + GSD Context Engineering Waves + Zero-Tolerance Pre-Flight Vitals Audit + Mandatory Dev Mirror Self-Review + Bounded 3-Round QA Convergence)
+   - Any code change → E9 + E20.1 (Full Assemble Build & Test verification) + E4.6 (Compose Modifier Root-Only & Param Order) + E28.6–E28.10 (Self-Documenting Naming, Zero Magic Literals, Affirmative Booleans & Immutable Data Class, Named Args, internal/private Visibility) + E38 (Zero-Tolerance Pre-Flight Vitals Audit: Zero-Crash, Zero-ANR, Zero-Leak) + E39 (Mandatory Dev Mirror Self-Review: Read-Back via view_file, 5-Mirror Self-Refactor, and 🪞 Dev Mirror Self-Review Report Block) + E40 (Bounded 3-Round QA Convergence: Max 3 Rounds, Delta-Only Rounds 2-3, Pattern-Clustered Batching, Zero Moving Goalposts)
 
-2. Run applicable scans on ALL modified files
+2. Physically read back (`view_file`) all modified files and execute the 5-Mirror Lens Self-Refactor (Gate E39)
 
-3. For each violation found:
-   a. Fix the violation immediately
-   b. Log the fix in the completion report
+3. For each violation found during Mirror Self-Review:
+   a. Fix the violation immediately (Draft 1 ➔ Clean Draft 2)
+   b. Log the self-corrected items in the `🪞 Dev Mirror Self-Review` report block
 
 4. Re-scan after fixes to confirm ZERO violations
 
-5. Run full build verification (E20.1: `./gradlew assembleDebug testDebugUnitTest`)
+5. Run full build verification (E20.1: `./gradlew assembleDebug testDebugUnitTest`) and dispatch `qa-enforcer` under Gate E40 (Max 3 Rounds, Pattern-Clustered Round 1, Delta-Only Rounds 2–3)
 
-6. Report completion with enforcement summary
+6. Report completion with `🪞 Dev Mirror Self-Review` summary and `qa-enforcer` `VERDICT: APPROVED` certificate (or trigger Circuit Breaker Architectural Pivot if Round 3 fails)
 ```
 
 ---

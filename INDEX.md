@@ -145,6 +145,8 @@ Deliver Result
 | `27-app-quality-vitals` | E34 (Android 15/16 App Quality & Vitals Gates) | Google Play Core Vitals (<0.05% Crash, <0.02% ANR, <600ms TTID), 16KB Page Alignment, Enforced Edge-to-Edge, Baseline Profiles, System Photo Picker |
 | `43-xml-compose-interoperability` | E35 (XML & Compose Hybrid Interoperability Gates) | DisposeOnViewTreeLifecycleDestroyed in Fragments, ViewBinding nullification in onDestroyView(), AndroidView onRelease cleanup, Shared UDF repeatOnLifecycle |
 | `44-pure-xml-modern-architecture` | E36 (100% Pure XML Modern Architecture Gates) | ViewBinding nullification in onDestroyView(), ListAdapter with background DiffUtil, Android 15 WindowInsetsCompat Edge-to-Edge, SafeArgs Type-Safety |
+| `skills/gsd-orchestrator` | E37 (Context Engineering & GSD Wave Isolation) | Ban Monolithic Long-Session, Fresh-Context 200k Subagents, Milestone Archiving |
+| `rules/21-enforcement-engine` | E38 (Zero-Tolerance Pre-Flight Vitals Gate) | Ban Verbal Reassurances, 3-Pillar Static Audit: Zero-Crash, Zero-ANR (<5ms Main), Zero-Leak |
 
 ---
 
@@ -212,6 +214,9 @@ Deliver Result
 | `request-processing-flow.md` | ⚠️ Unified | Refs master workflow |
 | `skills/dex-optimization/SKILL.md` | ✅ Primary | DEX code optimization, R8 Full Mode & Blast Radius [#dex] |
 | `skills/app-reskinning/SKILL.md` | ✅ Primary | Architecture-preserving reskinning & dead code purge [#reskin] |
+| `skills/gsd-orchestrator/SKILL.md` | ✅ Primary | GSD 5-Phase Loop, context engineering & subagent wave execution |
+| `skills/subagent-modes/SKILL.md` | ✅ Primary | Native specialized subagent modes (PO, UI Designer, Architect, SDK-Builder, App-Builder, Reviewer) |
+| `skills/ai-product-team/SKILL.md` | ✅ Primary | Virtual AI-Native Product Studio (PO -> UI -> Arch -> Builder -> QA -> CTO) |
 
 
 ---
@@ -227,11 +232,22 @@ Deliver Result
 6. `rules/39-android-runtime-edge-cases.md`
 7. `rules/21-enforcement-engine.md`
 
+## "I'm building or architecting an SDK / Core Module" → Read these files in order:
+1. `rules/34-sdk-modular-architecture.md`
+2. `skills/sdk-modular-engineering.md`
+3. `rules/35-database-migration-r8-defense.md` (Gate E26.3 consumer-rules.pro)
+4. `rules/21-enforcement-engine.md` (Gate E25 SDK Audit & Gate E34.2 16KB Page Alignment)
+
+## "I'm orchestrating a large feature without context rot" → Read these files:
+1. `skills/gsd-orchestrator/SKILL.md`
+2. `workflow/00-master-workflow.md` (Phase 5 & Phase 6)
+3. `rules/21-enforcement-engine.md` (Gate E37 Context Engineering)
+
 ## "I'm fixing a bug" → Read these files:
 1. `rules/13-error-handling.md`
 2. `rules/15-debugging.md`
 3. `rules/39-android-runtime-edge-cases.md`
-4. `rules/21-enforcement-engine.md`
+4. `rules/21-enforcement-engine.md` (Gate E33.1/E33.2 Scientific Closed-Loop Debugging)
 
 ## "I'm reviewing code" → Read these files:
 1. `rules/21-enforcement-engine.md`
@@ -241,8 +257,8 @@ Deliver Result
 5. `skills/clean-code.md`
 
 ## "I'm refactoring code" → Read these files:
-1. `rules/40-refactoring-safety-net.md`
-2. `rules/21-enforcement-engine.md`
+1. `rules/40-refactoring-safety-net.md` (Rule 40 Characterization / Pinning Tests First)
+2. `rules/21-enforcement-engine.md` (Gate E32)
 3. `rules/33-modern-testing-standard.md`
 4. `skills/clean-code.md`
 
@@ -250,3 +266,11 @@ Deliver Result
 1. `rules/11-navigation.md`
 2. `skills/navigation-3.md`
 3. `skills/navigation-3-di.md`
+
+## "I want to run a complete AI-Native Product Team" → Read these files:
+1. `skills/ai-product-team/SKILL.md`
+2. `skills/subagent-modes/SKILL.md`
+3. `rules/28-spec-driven-development.md`
+4. `rules/36-ui-ux-design-standard.md`
+5. `rules/42-adversarial-red-team-verification.md`
+6. `rules/21-enforcement-engine.md` (Gates E1–E37)

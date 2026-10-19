@@ -326,30 +326,38 @@ Never fabricate implementation details.
 
 ---
 
-# Review Rule
+# Review Rule (Tier 1 Dev Mirror Self-Review + Tier 2 Bounded 3-Round Zero-Compromise QA Separation)
 
-Every completed implementation must be reviewed.
+1. **Tier 1 — Mandatory Dev Mirror Self-Review (Gate E39):** Immediately after modifying or creating files, `dev-builder` (and Main Agent) MUST physically read back (`view_file` / `git diff`) 100% of modified files on disk, audit across the 5 Mirror Lenses (Minimalism, Self-Documenting Naming, Vitals Survival, Architecture/UI Purity, 6-Dimension Edge Cases), self-refactor Draft 1 into Clean Draft 2, and output a **`🪞 Dev Mirror Self-Review`** block.
+2. **Tier 2 — Uncompromising Blind-Context QA Audit with Bounded 3-Round Convergence (Gates E33.4 & E40):** Every completed implementation MUST be audited by the independent, read-only **`qa-enforcer`** subagent (`enable_write_tools = false`) in a blind fresh context. **QA NEVER COMPROMISES WITH DEV.** Self-approval in place of QA is strictly forbidden. To prevent infinite token-burning ping-pong loops, QA review is governed by **The 4 Laws of Bounded Convergence (`Gate E40`)**:
+   - **Law 1 (`E40.1` — Max 3 Rounds & Circuit Breaker):** Capped at `MAX_QA_ROUNDS = 3`. If Round 3 still results in `VERDICT: REJECTED`, trigger **`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`**, stop patching immediately, and escalate to the user with a root-cause post-mortem and 2 architectural pivot options.
+   - **Law 2 (`E40.2` — Delta-Only Scope in Rounds 2 & 3):** Round 1 performs a full-scope audit; Rounds 2 & 3 inspect ONLY prior `[CLUSTER-XX]` resolution and the **Delta Diff**.
+   - **Law 3 (`E40.3` — Pattern-Clustered Defect Batching & Systemic Sweep):** Group all identical violations into `[CLUSTER-XX]` in Round 1; `dev-builder` performs a Systemic Codebase Sweep to eradicate 100% of occurrences in one pass.
+   - **Law 4 (`E40.4` — Zero Moving Goalposts & Compact Ledger):** Untouched Round-1 code not flagged in Round 1 cannot be newly flagged in Rounds 2–3; prior clusters are tracked in a compact `RESOLVED ✅` / `UNRESOLVED ❌` ledger.
 
 Architecture
 
-Performance
+Performance & Vitals (Gate E38: Zero-Crash, Zero-ANR, Zero-Leak)
 
 Security
 
 Maintainability
 
-Testing
+Testing & 6-Dimension Edge Cases (Gate E31)
 
-Readability
+Readability & Self-Documenting Naming (Gate E28.6)
 
 Scalability
 
 Mobile Engineering 19 Core Matrix (`rules/31-mobile-engineering-core.md`)
 
-Enforcement Audit (`rules/21-enforcement-engine.md` — Gates E1 through E21)
+Enforcement Audit (`rules/21-enforcement-engine.md` — Gates E1 through E40)
+
+Binary Guillotine Verdict & 3-Round Circuit Breaker (`rules/42-adversarial-red-team-verification.md` — `VERDICT: APPROVED` vs `VERDICT: REJECTED` / `🛑 CIRCUIT BREAKER TRIGGERED`)
 
 No implementation is considered complete
-without review AND enforcement audit.
+without a `🪞 Dev Mirror Self-Review` report, an explicit `VERDICT: APPROVED` from `qa-enforcer` (within $\le 3$ rounds), AND zero enforcement violations.
+
 
 ---
 

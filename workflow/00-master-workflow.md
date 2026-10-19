@@ -108,7 +108,7 @@ Phase 5: Workflow Dispatch
 Phase 6: Workflow Execution
     │
     ▼
-Phase 7: Reflection & Gate E21 Enforcement Audit
+Phase 7: Reflection, Dev Mirror Self-Review & Gates E1–E40 Enforcement Audit
     │
     ▼
 Phase 8: Memory Update
@@ -129,7 +129,7 @@ Before parsing requirements or retrieving project memory, the AI MUST profile th
      - 19 Core Engineering Domains & Defense Rules
      - Drop-in Code Blueprints (ViewModel, Screen, Koin, SSOT Repository)
      - Anti-Patterns (DOs & DON'Ts)
-     - Quality Enforcement Gates (E1 — E21)
+     - Quality Enforcement Gates (E1 — E40)
    - *Result: Establish full context in ~2 seconds with ~5.4K tokens instead of reading 147 separate files!*
 
 2. **Working Directory & Project Root**:
@@ -144,6 +144,11 @@ Before parsing requirements or retrieving project memory, the AI MUST profile th
 4. **Active Context Alignment**:
    - Reconcile active workspace ground-truth with `memory/01-project-memory.md`.
    - Never assume an old project's package structure or tech stack applies to a new workspace.
+
+5. **Dynamic Module Persona Telepathy (App vs. SDK)**:
+   - Check if current module applies `com.android.library` or is a shared library module.
+   - **If SDK/Library Module**: Automatically switch to **SDK Persona & Gate E25** (`internal` by default, `:testing` test fakes, crash-proof isolation, minimal `consumer-rules.pro`, binary compatibility, 16KB page alignment).
+   - **If Application Module** (`com.android.application`): Automatically switch to **App Persona & Gates E1–E4, E29, E34** (Compose M3, Edge-to-Edge, Android Vitals, Atomic `_state.update`, Play Store policy).
 
 ---
 
@@ -194,10 +199,10 @@ Never retrieve unnecessary context.
 Brain engines execute in the following order.
 
 1. Context Engine (collect codebase context)
-2. Clarification Engine (ask only what context cannot answer)
+2. Clarification Engine (**Mandatory Auto-Grilling Protocol**: For features, architectural choices, and SDK design, automatically build a Design Tree and present the Frontier in numbered Rounds with `❓ Q1`, `❓ Q2` and `➡️ CTO Recommendation`, then HARD STOP to wait for user resolution)
 3. Assumption Engine (validate assumptions)
-4. Decision Engine (choose strategy)
-5. Confidence Engine (evaluate readiness)
+4. Decision Engine (choose strategy via Pareto frontier trade-off matrix)
+5. Confidence Engine (evaluate readiness >= 85)
 
 Each engine produces an output.
 
@@ -235,53 +240,41 @@ Do not continue.
 
 ---
 
-# Phase 5 — Workflow Dispatch
+# Phase 5 — Workflow Dispatch & GSD Loop Mapping
 
 Only after Readiness Validation succeeds.
 
-Select the appropriate workflow.
+Select the appropriate workflow, mapped directly into the **GSD Phased Execution Lifecycle** (`skills/gsd-orchestrator/SKILL.md`):
 
-Examples:
-
-Requirement Analysis
-
-Codebase Analysis
-
-Implementation Planning
-
-Implementation
-
-Refactoring (Mandatory Rule 40 Characterization Safety Net First)
-
-Code Review
-
-Testing
-
-Performance Review
-
-Security Review
-
-Release
+1. **Discuss (Pha 1):** Requirement Analysis, Consult Before Code, Clarification, Domain Modeling (`spec.md`).
+2. **Plan (Pha 2):** Implementation Planning, Tracer-bullet Slicing, Wave Decomposition (`plan.md`, `tasks.md`).
+3. **Execute (Pha 3):** Implementation, Refactoring, Bug Fixing (Subagent Wave Dispatcher + Gate E39 Dev Mirror Self-Review).
+4. **Verify (Pha 4):** Code Review, Gates E1–E40 Audit, Living Traceability, Bounded 3-Round Red-Team Testing (`qa-enforcer`).
+5. **Ship (Pha 5):** Milestone Closure, Memory Update, Zero-Auto-Commit Hand-off.
 
 Only one primary workflow should execute at a time.
 
 ---
 
-# Phase 6 — Workflow Execution
+# Phase 6 — Workflow Execution & Context Engineering
 
-Execute the selected workflow.
+Execute the selected workflow under strict **Context Engineering & Anti-Rot Governance**:
 
+### A. Context Delegation, Dev Mirror Self-Review & Bounded 3-Round Dev ↔ QA Separation Gate (Rule 42 & Gates E37, E39, E40)
+To prevent **Context Rot**, **First-Draft Dump Sloppiness**, **Confirmation Bias**, and **Infinite QA Ping-Pong Loops**:
+1. **Primary Adversarial Pair (`dev-builder` vs. `qa-enforcer`):**
+   - **`dev-builder` (`enable_write_tools = true`):** Executes code changes (Draft 1), **performs Mandatory 4-Step Dev Mirror Self-Review (Gate E39: `view_file` physical read-back ➔ 5-Mirror Lens audit ➔ self-refactor to Clean Draft 2 ➔ `🪞 Dev Mirror Self-Review` report block)**, performs **Systemic Codebase Sweeps (`Gate E40.3`)** across all modified files for any `[CLUSTER-XX]` reported by QA, writes unit/Turbine/UI tests, and runs `./gradlew testDebugUnitTest`.
+   - **`qa-enforcer` (`enable_write_tools = false`):** Registered via `define_subagent` (Read-Only) and invoked via `invoke_subagent` in a **100% blind fresh context** under **Bounded 3-Round Convergence (`Gate E40`)**: Round 1 Full-Scope Pattern-Clustered `[CLUSTER-XX]` audit; Rounds 2–3 Delta-Only scope + Zero Moving Goalposts; automatic Round 3 Circuit Breaker (`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`).
+2. **Mandatory Subagent Waves (`invoke_subagent`):** Enforced for all multi-file features, architecture refactors, and complex debugging.
+   - Main Agent functions strictly as CTO Orchestrator (and when editing < 1-2 files directly, Main Agent MUST also execute Gate E39 Mirror Self-Review).
+   - Tasks are grouped into sequential/parallel **Waves** (Wave 1: Data/Domain, Wave 2: ViewModel/State, Wave 3: UI/Compose), followed by mandatory `qa-enforcer` verification.
+   - Main session context remains lean, receiving only structured diff summaries, `🪞 Dev Mirror Self-Review` logs, test evidence, and the `qa-enforcer` binary verdict.
+
+### B. Engineering Guardrails
 During execution:
-
-Follow all engineering rules.
-
-Apply project patterns.
-
-Respect accepted decisions.
-
-Reuse existing implementations whenever appropriate.
-
-Never bypass project architecture.
+- Follow all engineering rules (Kotlin 2.x, Jetpack Compose M3, Atomic `_state.update`, Vector XMLs).
+- Apply project patterns and respect accepted architectural decisions.
+- Reuse existing implementations whenever appropriate; never bypass project architecture.
 
 **Mandatory Refactoring Safety Net (Rule 40 & Gate E32):**
 For any task involving Refactoring, Cleanup, Modularization, or Migration:
@@ -302,42 +295,52 @@ Zero production code changes are allowed before reproduction test is written and
 
 ---
 
-# Phase 7 — Reflection
+# Phase 7 — Reflection, Dev Mirror Self-Review & Bounded 3-Round QA Audit
 
-After execution run the Reflection Engine.
+After execution run the Dev Mirror Self-Review (Gate E39) & `qa-enforcer` Verification Engine (Gates E33.4 & E40).
 
 Verify:
 
 Architecture
 
-Code Quality
+Code Quality & Self-Documenting Naming (Gate E28.6)
 
 Error Handling
 
-Performance
+Performance & Vitals (Gate E38)
 
 Security
 
 Maintainability
 
-Testing Coverage
+Testing Coverage & 6-Dimension Edge Cases (Gate E31)
 
 Potential Risks
 
+**Mandatory Dev Mirror Self-Review (Gate E39):**
+Before dispatching `qa-enforcer` or reporting completion, verify that `dev-builder` (or Main Agent) has:
+1. Physically read back (`view_file`) 100% of modified/created files on disk.
+2. Audited and self-refactored Draft 1 into Clean Draft 2 across all 5 Mirror Lenses.
+3. Produced the explicit **`🪞 Dev Mirror Self-Review`** summary block.
+
 **Enforcement Audit (Mandatory):**
 
-Run all applicable checks from `rules/21-enforcement-engine.md` on modified files.
+Run all applicable checks from `rules/21-enforcement-engine.md` (Gates E1–E40) on modified files.
 
 ZERO violations must remain before proceeding to Memory Update.
 
 **Living Executable Traceability Audit (Rule 28, Rule 33 & Gate E33.3):**
 Verify that 100% of Gherkin Scenarios in `spec.md` have direct 1-to-1 mapped tests in code.
 
-**Adversarial Red-Team Audit (Rule 42 & Gate E33.4):**
-For major features, core module refactors, or release candidates:
-1. Package Handoff Contract (Diff, Living Traceability 1:1, Clean Baseline).
-2. Execute 4 Chaos Vectors (chaotic inputs, concurrency stress, hostile runtime, gate compliance).
-3. Obtain "Adversarial Pass" certificate prior to user delivery.
+**Bounded 3-Round Zero-Compromise QA-Enforcer Audit (Rule 42 & Gates E33.4, E40):**
+QA NEVER compromises with Dev, and NEVER loops beyond 3 rounds:
+1. Spawn `qa-enforcer` (`enable_write_tools = false`) in a blind fresh context with the Blind Handoff Contract (`QA Round: [1 | 2 | 3] / 3`, Prior Cluster Ledger, Spec, Full/Delta Diff, Raw Test Logs, Mirror Evidence Block).
+2. Audit across all 4 Mandatory Fronts (Gate E38 Vitals, Gates E1–E36 Architecture/UI, Gate E31 6-Dimension Edge Cases, Gates E20, E39 & E40 Real Execution, Mirror & Bounded 3-Round Convergence).
+3. Enforce Binary Guillotine Verdict & 4 Convergence Laws:
+   - **Round 1:** Full-Scope audit; batch all identical defects into `[CLUSTER-XX]` patterns (`Gate E40.3`).
+   - **Rounds 2 & 3:** Delta-Only audit (`Gate E40.2`) + Zero Moving Goalposts on untouched Round-1 code (`Gate E40.4`). `dev-builder` must fix 100% of `[CLUSTER-XX]` items via a Systemic Codebase Sweep + Rule 41.
+   - **Round 3 Circuit Breaker (`Gate E40.1`):** If Round 3 still yields `VERDICT: REJECTED`, trigger **`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`**, stop patching immediately, and escalate to the user with a root-cause post-mortem and 2 architectural pivot options.
+   - Only when **`VERDICT: APPROVED`** (0 defects) is issued may the task proceed to user delivery.
 
 If critical issues are found:
 
@@ -358,6 +361,12 @@ Decision Memory (if applicable)
 Pattern Memory (if discovered)
 
 Project Memory (if changed)
+
+**Autonomous Continuous Learning (Auto-Learn Loop):**
+Whenever the user corrects code, expresses a design preference ("tôi thích X hơn", "đừng dùng Y", "lần sau nhớ Z"), or rejects an architectural option:
+1. Automatically extract the invariant and specific preference rule.
+2. Persist the rule into `memory/06-user-preference-memory.md` without waiting for explicit `/learn` commands.
+3. Silently apply this rule across all future development sessions.
 
 Never update memory with unverified information.
 

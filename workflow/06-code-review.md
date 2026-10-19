@@ -13,23 +13,25 @@ next_step: ".antigravity/workflow/07-testing-validation.md"
 
 # Purpose
 
-This document defines the project's code review workflow.
+This document defines the project's **2-Tier Code Review Workflow**:
+1. **Tier 1 — Mandatory Dev Mirror Self-Review (Gate E39):** Every implementation (`dev-builder` or Main Agent) must undergo a physical read-back (`view_file` / `git diff`) and 5-Mirror self-refactor before leaving the builder's hands.
+2. **Tier 2 — Uncompromising Blind-Context QA Audit with Bounded 3-Round Convergence (Gates E33.4 & E40):** Independent prosecutorial verification by `qa-enforcer` (`enable_write_tools = false`), strictly governed by the **4 Laws of Bounded Convergence (`MAX_QA_ROUNDS = 3`)**:
+   - **Law 1 (`E40.1` — Max 3 Rounds & Circuit Breaker):** Stop patching if Round 3 still yields `VERDICT: REJECTED`; trigger `🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED` and escalate to the user with 2 architectural pivot options.
+   - **Law 2 (`E40.2` — Delta-Only Scope in Rounds 2 & 3):** Round 1 performs a Full-Scope PR scan; Rounds 2 & 3 inspect ONLY prior `[CLUSTER-XX]` resolution and the **Delta Diff** (modified lines + direct callers).
+   - **Law 3 (`E40.3` — Pattern-Clustered Defect Batching & Systemic Sweep):** Group identical violations into `[CLUSTER-XX]` in Round 1 so `dev-builder` performs a Systemic Codebase Sweep to eradicate 100% of occurrences in one pass.
+   - **Law 4 (`E40.4` — Zero Moving Goalposts & Compact Ledger):** Untouched Round-1 code not flagged in Round 1 cannot be newly flagged in Rounds 2–3; prior clusters are tracked in a compact `RESOLVED ✅` / `UNRESOLVED ❌` ledger.
 
-Every implementation must undergo a structured self-review before being considered complete.
-
-Code review ensures correctness, maintainability, consistency, and long-term quality.
-
-No implementation is complete until it has been reviewed.
+No implementation is complete until both Tier 1 Mirror Self-Review and Tier 2 QA Audit have passed within $\le 3$ rounds.
 
 ---
 
 # Philosophy
 
-Writing code is only half of the work.
+Writing code (Draft 1) is only half of the work.
 
-Reviewing code is part of implementation.
+Looking in the mirror (`view_file` physical read-back) and refactoring Draft 1 into Clean Draft 2 is a mandatory part of implementation.
 
-The goal is to improve the solution, not to validate the first attempt.
+The goal of Tier 1 Mirror Self-Review is to catch and eliminate one's own blind spots before handing off to Tier 2 QA, and the goal of Tier 2 Bounded 3-Round QA is to converge rapidly without infinite token-wasting ping-pong loops.
 
 ---
 
@@ -37,15 +39,15 @@ The goal is to improve the solution, not to validate the first attempt.
 
 Always:
 
-Review before delivering.
+Physically read back (`view_file`) every modified file after editing.
 
-Verify before assuming.
+Audit against the 5 Mirror Lenses (Minimalism, Naming, Vitals, Architecture/UI, 6-Dimension Edge Cases).
 
-Refactor when beneficial.
+Self-refactor Draft 1 into Clean Draft 2 before running final tests.
 
-Follow project standards.
+Output the `🪞 Dev Mirror Self-Review` evidence block before dispatching `qa-enforcer`.
 
-Preserve architecture.
+Enforce the 4 Laws of Bounded 3-Round QA Convergence (`Gate E40`): Max 3 Rounds + Circuit Breaker, Delta-Only Rounds 2–3, Pattern-Clustered `[CLUSTER-XX]` batching + Systemic Sweep, and Zero Moving Goalposts.
 
 ---
 
@@ -54,10 +56,13 @@ Preserve architecture.
 Every implementation follows this workflow.
 
 ```text
-Implementation
+Implementation (Draft 1)
         │
         ▼
-Architecture Review
+🪞 Step 0: Physical Read-Back (view_file / git diff — Gate E39.1)
+        │
+        ▼
+Architecture & Minimalism Review (Mirror 1)
         │
         ▼
 Code Quality Review
@@ -76,6 +81,9 @@ Testing Review
         │
         ▼
 Documentation Review
+        │
+        ▼
+⚖️ Tier 2: Bounded 3-Round QA-Enforcer Audit (Gate E40: Round 1 Full-Scope [CLUSTER-XX] ➔ Rounds 2-3 Delta-Only ➔ Circuit Breaker at Round 3)
         │
         ▼
 Ready

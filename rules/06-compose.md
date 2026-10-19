@@ -447,20 +447,30 @@ private fun ServerScreenPreview(
 
 ---
 
-# Modifier Chaining & Layout Insets Rules
+# Modifier Chaining & Layout Insets Rules (Gate E4.6)
 
-1. **Modifier Parameter Standard:**
-   Every public Composable function MUST accept a `modifier: Modifier = Modifier` parameter as its first optional parameter and apply it to the root layout node.
+1. **Modifier Parameter & Root-Only Application Standard:**
+   - Every public or reusable stateless `@Composable` function (`*Screen`, `*Content`, `*Card`, `*Item`, `*Component`) MUST accept `modifier: Modifier = Modifier` as its **first optional parameter**.
+   - **Root-Only Rule (Zero Modifier Reuse on Children):** The incoming `modifier` parameter (lowercase `m`) MUST be applied **exactly once** to the outermost Root Layout node (`Box`, `Column`, `Row`, `Surface`). Child nodes inside the Composable are **STRICTLY FORBIDDEN** from reusing the incoming `modifier` variable and MUST start a fresh chain using `Modifier` (uppercase `M`).
 
-2. **Chaining Order is Semantic:**
+2. **Canonical `@Composable` Parameter Ordering:**
+   Every `@Composable` function signature MUST strictly follow this 5-slot parameter order so trailing lambda syntax works ergonomically:
+   1. **Required State / Data parameters** (e.g., `state: FeatureState`, `title: String`)
+   2. **Required Callbacks / Intents** (e.g., `onIntent: (FeatureIntent) -> Unit`, `onClick: () -> Unit`)
+   3. **`modifier: Modifier = Modifier`** (ALWAYS the first parameter with a default value)
+   4. **Other Optional Configuration Parameters** (e.g., `isEnabled: Boolean = true`)
+   5. **Trailing `@Composable` Content Slot** (e.g., `content: @Composable () -> Unit` — ALWAYS last)
+
+3. **Chaining Order is Semantic:**
    Modifiers apply from outer to inner. Understand the ordering semantics:
-   - `Modifier.clickable { }.padding(16.dp)`: Ripple covers padding area (larger touch target).
-   - `Modifier.padding(16.dp).clickable { }`: Ripple only covers content inside padding.
+   - `Modifier.minimumInteractiveComponentSize().clip(shape).clickable { }.padding(AppSpacing.medium)`: Guarantees $\ge 48\text{dp}$ touch target, clips ripple to shape, and covers the entire padded area.
+   - `Modifier.padding(AppSpacing.medium).clickable { }`: Ripple only covers content inside padding (anti-pattern unless intentional).
    - `Modifier.clip(shape).background(color)`: Clips background to shape. (Reverse will produce square corners).
+   - `Modifier.imePadding().verticalScroll(scrollState)`: Applies keyboard inset before scrolling so focused fields stay visible.
 
-3. **WindowInsets & Edge-to-Edge Compliance:**
+4. **WindowInsets & Edge-to-Edge Compliance:**
    When targeting Android 15+ Edge-to-Edge:
-   - Always consume `WindowInsets` or apply `paddingValues` from layout containers.
+   - Always consume `WindowInsets` (`safeDrawing`) or apply `paddingValues` from layout containers.
    - Never allow interactive UI to be submerged under the Status Bar, Display Cutouts, or Navigation Bar.
 
 ---
@@ -468,11 +478,13 @@ private fun ServerScreenPreview(
 # Anti-Patterns & Prohibited Practices
 
 - ❌ **NO ViewModel in Child Composables:** Never pass `ViewModel` instances to Molecules, Atoms, or list items.
+- ❌ **NO Reusing `modifier` on Child Nodes:** Never pass the function's `modifier` parameter to more than one node or to an inner child node; child nodes must use `Modifier` (uppercase `M`).
+- ❌ **NO Misordered `modifier` Parameter:** Never place `modifier: Modifier = Modifier` after a trailing `@Composable () -> Unit` lambda or after other optional parameters.
 - ❌ **NO Direct State Mutation in UI:** UI only emits events.
-- ❌ **NO Missing Keys in Lazy Layouts:** Every `items()` call must have `key = { it.id }`.
+- ❌ **NO Missing Keys in Lazy Layouts:** Every `items()` call must have `key = { it.id }` and `contentType = { ... }`.
 - ❌ **NO Raw `collectAsState()`:** Always use `collectAsStateWithLifecycle()`.
 - ❌ **NO Heavy Calculations in Composition:** No date formatting, regex, or sorting inside `@Composable`.
 - ❌ **NO Unchecked Stale Closures:** Always use `rememberUpdatedState` for async callbacks in long-running effects.
 - ❌ **NO Hardcoded Design Tokens:** All colors, typography, shapes, and spacings must reference `AppTheme` / `AppSpacing`.
 - ❌ **NO Infinite Nested Scrollables:** Never put `LazyColumn` inside `Modifier.verticalScroll()`.
-- ❌ **NO Missing Previews:** All Stateless screens and components MUST provide `@Preview` functions.
+- ❌ **NO Missing Previews:** All Stateless screens and components MUST provide `private fun` `@Preview` functions.

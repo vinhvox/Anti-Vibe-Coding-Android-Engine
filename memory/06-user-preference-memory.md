@@ -627,7 +627,94 @@ Confuse project standards with user preferences.
     4. *E29.4 (FLAG_SECURE):* Bảo vệ màn hình nhạy cảm bằng `SecureScreenEffect`, cấm phá vỡ `FLAG_SECURE` của app khác.
     5. *E29.5 (WebView Hardening):* Cấm `addJavascriptInterface` trên WebView load URL không an toàn / không kiểm duyệt.
     6. *E29.6 (UIDT & Anti-Proxy):* Ràng buộc API chuyển dữ liệu người dùng khởi xướng, cấm lạm dụng Proxy/VPN ngầm hoặc gian lận ad/game.
-  - Xuất bảng báo cáo Compliance Checklist rõ ràng từng Gate và tự động cung cấp giải pháp/blueprint khắc phục.
+- **Zero-Tolerance for AI False Safety Claims & Pre-Flight Vitals Audit Gate (QUY TẮC CẤM CAM KẾT SUÔNG VỀ AN TOÀN - TRIỆT TIÊU CRASH, ANR, LEAK TRƯỚC KHI XUẤT CODE):**
+  - **Bối cảnh & Bài học thực tế:** Người dùng thường xuyên phải nhắc nhở AI về việc đảm bảo không crash, ANR, leak do AI thường cam kết suông ("chắc chắn an toàn") nhưng khi chạy thực tế trên thiết bị lại vi phạm nghiêm trọng.
+  - **CẤM TUYỆT ĐỐI CAM KẾT BẰNG LỜI (Ban Verbal Guarantees Without Static Audit):** AI tuyệt đối không bao giờ được khẳng định "code này an toàn 100% không crash/ANR/leak" nếu chưa thực hiện **Bảng kiểm điểm tĩnh 3 Trụ Cột (3-Pillar Pre-Flight Audit Checklist)**:
+    1. **Trụ cột 1 - Chống Crash (Zero-Crash Gate):**
+       - Kiểm tra biên kiểu Nullable (loại bỏ `!!`, bắt buộc null-safe `?.`, `?:` hoặc `requireNotNull` có message).
+       - Không nuốt `CancellationException` trong Coroutine (bắt buộc re-throw hoặc dùng `safeLaunch`).
+       - Mọi tương tác I/O, mạng, JSON, Room, SDK bên thứ ba PHẢI bọc trong `Result<T>` hoặc `runCatchingSafe`.
+       - Xử lý đầy đủ 5-State UI Matrix (đặc biệt là Error và Empty State).
+    2. **Trụ cột 2 - Chống Treo Máy (Zero-ANR Gate):**
+       - Quỹ thời gian Main Thread: Tối đa 5ms. Bắt buộc offload mọi tác vụ Room, I/O, crypto, nén zip, parse JSON sang `Dispatchers.IO` hoặc `Dispatchers.Default`.
+       - CẤM TUYỆT ĐỐI `runBlocking` trên Main Thread hoặc Composable.
+       - CẤM tính toán nặng trực tiếp trong body Composable mà không bọc `remember { ... }`.
+    3. **Trụ cột 3 - Chống Rò Rỉ Bộ Nhớ (Zero-Leak Gate):**
+       - CẤM truyền `Activity` Context vào ViewModel, Repository hay Singleton; chỉ dùng `ApplicationContext` khi thực sự cần.
+       - Trong Compose UI: Bắt buộc dùng `collectAsStateWithLifecycle()` thay vì `collectAsState()`.
+       - Coroutine bắt buộc gắn với vòng đời: `viewModelScope` trong ViewModel, `rememberCoroutineScope()` trong UI. Cấm `GlobalScope`.
+       - Hủy đăng ký listener/callback khi rời composition (`DisposableEffect(Unit) { onDispose { ... } }`).
+  - **The Single Source of Truth Preference & Ban on Ad-hoc SharedPreferences (QUY TẮC DUY NHẤT SSOT QUA APPCONFIGMANAGER):**
+    - Tuyệt đối CẤM tự ý tạo các file `SharedPreferences` mới khi dự án đã có `DataStoreManager` / `AppConfigManager` làm SSOT.
+    - Mọi cấu hình, cờ tính năng, tracking timestamp hay số liệu local đều bắt buộc phải được định nghĩa tập trung qua `AppConfigManager` (kế thừa `BasePreferenceManager`) và `KeyLocalConfig` để đảm bảo 100% tính nhất quán kiến trúc, quản lý tập trung và an toàn bất đồng bộ.
+
+- **Seamless ADB Testing & Execution Policy (QUY TẮC KIỂM THỬ ADB LIỀN MẠCH & TỰ ĐỘNG CHẤP NHẬN):**
+  - **Chế độ ADB Testing liền mạch (Seamless Mode):** Khi bước vào phiên kiểm thử / chẩn đoán / tự động hóa thiết bị qua ADB, toàn bộ chuỗi lệnh bắt đầu bằng `adb` (`command(adb)`) được ủy quyền thực thi tự động, không yêu cầu xác nhận lặp lại ở từng lệnh đơn lẻ để quá trình test của AI diễn ra xuyên suốt, không bị ngắt quãng.
+  - **Cơ chế Whitelist Vĩnh viễn (Persist to settings.json):** Lệnh `command(adb)` được cấu hình cố định trong danh sách whitelist quyền (`permissions.allow`) của Antigravity CLI để tự động phê duyệt mọi tiền tố `adb` (`adb exec-out`, `adb shell`, `adb logcat`, `adb push/pull`, `adb devices`).
+  - **Phạm vi an toàn:** AI tập trung thực hiện các luồng kiểm thử, trích xuất UI hierarchy (`uiautomator dump`), chụp màn hình (`screencap`), bắt log và thao tác input có chủ đích theo yêu cầu phiên làm việc; không tự ý xóa dữ liệu hệ điều hành hay can thiệp ngoài phạm vi ứng dụng đang kiểm thử.
+
+- **Quick Tag Directive: #rever / #reverse / #revers (QUY TẮC PHÍM TẮT #rever - THẨM ĐỊNH TĨNH & DỊCH NGƯỢC APK/APKS TỰ ĐỘNG TOÀN DIỆN):**
+  - **Kích hoạt & Định danh:** Nhận diện các trigger `#rever`, `#reverse`, hoặc `#revers` kèm đường dẫn file `.apk`, `.apks`, `.xapk`.
+  - **Ủy quyền tự động liền mạch (Seamless Execution - Tự động cấp mọi quyền):** AI được cấp quyền thực thi tự động xuyên suốt từ đầu đến cuối đối với toàn bộ chuỗi lệnh (giải nén, JADX decompile, AXML parsing, regex pattern scan) mà không dừng lại xin xác nhận trung gian, đảm bảo phiên kiểm toán diễn ra 100% tự chủ và tức thì.
+  - **Tự động định danh theo Package Name (Auto Package-Named Report):** Trích xuất chính xác `package_name` của app và tự động xuất file báo cáo Markdown độc lập tại `./<package_name>_audit_report.md` trong thư mục làm việc, đồng thời hiển thị bảng tóm lược cho người dùng.
+
+- **The Zero-Compromise Dev & QA Adversarial Separation Mandate (QUY TẮC PHÂN TÁCH ĐỐI KHÁNG TUYỆT ĐỐI DEV & QA — QA KHÔNG BAO GIỜ THỎA HIỆP VỚI DEV):**
+  - **Tập trung tối đa vào cặp đối kháng cốt lõi `dev-builder` (Write) vs. `qa-enforcer` (Read-Only):** Loại bỏ hoàn toàn tình trạng tự viết code rồi tự review trên cùng một phiên làm việc gây thiên kiến tự duyệt (Confirmation Bias).
+  - **4 Chốt Chặn Chống Thỏa Hiệp (4 Anti-Compromise Locks):**
+    1. *Blind-Context Isolation (Cô lập ngữ cảnh mù):* Subagent `qa-enforcer` BẮT BUỘC được khởi tạo bằng `define_subagent` và chạy qua `invoke_subagent` trên một **Fresh Context mới 100%**. QA không nhận lịch sử hội thoại hay lời trần tình của Dev; QA chỉ nhận: (1) Yêu cầu gốc / `spec.md`, (2) `git diff` thực tế của các file vừa sửa, và (3) Log kết quả chạy test.
+    2. *Hard Read-Only Lock (`enable_write_tools = false`):* Tước bỏ hoàn toàn quyền ghi file của `qa-enforcer` ở tầng công cụ. QA tuyệt đối không được tự ý sửa code hộ Dev hay hạ thấp điều kiện assert trong test.
+    3. *Binary Guillotine Verdict (Phán quyết nhị phân — Cấm cảnh báo mềm):* Cấm QA dùng từ ngữ giảm nhẹ (*minor, nitpick, optional, tạm chấp nhận*). Phán quyết của QA chỉ có 2 trạng thái: **`VERDICT: APPROVED` (0 lỗi)** hoặc **`VERDICT: REJECTED` (Bác bỏ toàn bộ)**. Chỉ cần 1 vi phạm Gate (`E1–E38`), thiếu 1 kịch bản biên trong ma trận 6 chiều, hoặc thiếu log test thật là lập tức `REJECTED`.
+    4. *No-Argue Remediation Loop (Lệnh cấm cãi & Quyền phủ quyết tối thượng):* Phán quyết của QA là quyền phủ quyết tối thượng (Absolute Veto). Khi bị `REJECTED`, `dev-builder` bị cấm biện minh hay xin miễn trừ, bắt buộc phải sửa triệt để 100% các mục `[DEFECT-ID]` theo chuẩn Rule 41 (viết test tái hiện đỏ ➔ sửa code xanh) và nộp lại cho đến khi `qa-enforcer` cấp chứng chỉ `VERDICT: APPROVED`.
+
+- **Self-Documenting Identifier, Coding Convention, Least-Privilege Access Modifiers & Compose Modifier Hygiene Mandate (QUY TẮC ĐẶT TÊN TỰ MÔ TẢ, CODING CONVENTION, ACCESS MODIFIER TỐI THIỂU & COMPOSE MODIFIER — GATES E4.6 & E28.6–E28.10):**
+  - **1. Cấm biến 1 ký tự & viết tắt tối nghĩa (`Gate E28.6`):**
+    - Cấm tuyệt đối biến cục bộ, tham số hàm, vòng lặp, lambda hoặc `catch` dùng 1 chữ cái (`x, c, p, d, w, g, s, r, b, n, h, e, k, v, a, f, q, t`) hoặc từ viết tắt 2–3 ký tự mơ hồ (`rt, pc, fc, st, bh, nh, fh, fs, t0, dt, ctx, req, cfg, bg, fb, cd, mv, mc, cb, cCfg, sCfg, bJob, rJob, cJob`).
+    - Bắt buộc dùng tên `camelCase` tự mô tả kèm đơn vị (`placementConfig`, `activeRuntime`, `startTimeMs`, `elapsedDeltaMs`, `cancellationException`, `throwable`, `viewContext`).
+  - **2. Cấm số/chuỗi cấu hình trôi nổi trong logic (`Zero Magic Literals — Gate E28.7`):**
+    - Cấm viết trực tiếp các con số thời gian, giới hạn retry, kích thước trang, hệ số alpha trong hàm logic (`delay(3000)`, `retry > 3`, `alpha = 0.38f`). Bắt buộc tách thành `private const val` viết hoa `UPPER_SNAKE_CASE` có hậu tố đơn vị và dấu `_` phân cách hàng nghìn (`private const val RETRY_DELAY_MS = 3_000L`, `private const val MAX_RETRY_ATTEMPTS = 3`).
+  - **3. Đặt tên Boolean khẳng định & Bất biến 100% trong `data class` (`Gate E28.8`):**
+    - Mọi biến, thuộc tính, tham số hoặc hàm trả về `Boolean` bắt buộc có tiền tố khẳng định (`is*`, `has*`, `can*`, `should*`, `was*`, `allows*`, `supports*`); cấm đặt tên danh từ trống (`loading`, `error`) hoặc phủ định kép (`isNotDisabled`).
+    - Cấm tuyệt đối từ khóa `var` và các kiểu tập hợp khả biến (`MutableList`, `MutableSet`, `MutableMap`) lọt vào `data class` của `UiState`, `Intent`, `Effect`, hoặc `Domain Model`.
+  - **4. Bắt buộc Named Arguments khi gọi hàm nhiều tham số cùng kiểu (`Gate E28.9`):**
+    - Bắt buộc ghi rõ tên tham số (`forceRefresh = true`, `includeArchived = false`) tại nơi gọi hàm khi truyền từ $\ge 2$ tham số `Boolean`, $\ge 2$ tham số cùng kiểu đứng cạnh nhau, hoặc hàm có $\ge 4$ tham số trở lên.
+  - **5. Đóng kín Access Modifier tối đa cho CẢ App lẫn SDK (`Strict Least-Privilege Visibility — Gate E28.10`):**
+    - Áp dụng `internal` / `private` mặc định cho toàn bộ dự án (cả App/Feature module lẫn SDK module): Mọi class triển khai (`*ViewModel`, `*RepositoryImpl`, `*DataSource`, `*Dao`, `*Entity`, `*Dto`, `*Mapper`, `*UseCase`, Koin `*Module`) bắt buộc khai báo **`internal`** trừ khi cần mở qua ranh giới module.
+    - Mọi hàm phụ trợ, sub-composable, hàm `@Preview`, và hằng số trong phạm vi 1 file bắt buộc là **`private`**.
+    - Trong `BaseViewModel`, biến `_state` bắt buộc là **`private`** (chỉ cập nhật qua `protected fun setState { copy(...) }`), cấm mở `open class` hoặc `protected var` làm rò rỉ trạng thái.
+  - **6. Quy chuẩn nhận & truyền `modifier: Modifier = Modifier` trong Compose (`Gate E4.6`):**
+    - **Root-Only `modifier`:** Mọi `@Composable` tái sử dụng (`*Screen`, `*Content`, `*Card`, `*Item`, `*Component`) bắt buộc nhận `modifier: Modifier = Modifier` và **chỉ gắn biến `modifier` (chữ `m` thường) đúng 1 lần duy nhất vào node gốc ngoài cùng (Root Layout)**. Tất cả các node con bên trong cấm dùng lại biến `modifier` của hàm mà phải khởi tạo mới từ `Modifier` (chữ `M` hoa).
+    - **Thứ tự tham số hàm `@Composable` chuẩn:** `(1) State/Data bắt buộc` ➔ `(2) Callbacks/Intents bắt buộc` ➔ `(3) modifier: Modifier = Modifier` (luôn là tham số optional đầu tiên) ➔ `(4) Các tham số optional khác` ➔ `(5) Content slot @Composable () -> Unit` (luôn ở cuối cùng).
+
+- **The Mandatory Dev Mirror Self-Review Protocol (QUY TẮC BẮT BUỘC DEV TỰ SOI GƯƠNG LẠI CHÍNH CODE CỦA MÌNH TRƯỚC KHI BÀN GIAO — RULE 42 & GATE E39):**
+  - **Phân Định Rạch Ròi (Cấm Tự Nghiệm Thu vs. Bắt Buộc Tự Soi Gương):**
+    - *Self-Approval (Tự ký duyệt thay QA):* CẤM TUYỆT ĐỐI. `dev-builder` không bao giờ được thay thế `qa-enforcer`.
+    - *Mirror Self-Review (Tự soi gương lại bản nháp đầu tiên):* BẮT BUỘC 100% đối với **cả subagent `dev-builder` VÀ Main Agent** sau mỗi lần viết/sửa code. Triệt tiêu hoàn toàn hội chứng "First-Draft Dump" (viết code xong ném đi ngay không đọc lại).
+  - **Chu Trình 4 Bước Tự Soi Gương Bắt Buộc (The 4-Step Mirror Protocol — Gate E39):**
+    1. *Bước 1 — Đọc Lại File Thực Tế Trên Đĩa (`Physical Read-Back — E39.1`):* Ngay sau khi hoàn tất `write_to_file` / `replace_file_content` (Draft 1), bắt buộc phải gọi `view_file` (và `git diff` nếu cần) để đọc lại 100% các file vừa tạo/sửa bằng đôi mắt phản biện mới, kiểm tra tổng thể mặt chữ, cấu trúc ghép nối và import.
+    2. *Bước 2 — Rà Soát Qua 5 Gương Phản Chiếu (`5-Mirror Lens Audit — E39.2`):*
+       - **Gương 1 (Minimalism — Rule 32):** Có import thừa, biến trung gian vô ích, hàm wrapper rỗng hay lặp code không?
+       - **Gương 2 (Coding Conventions, Naming & Access Modifiers — Gates E28.6–E28.10):** Có lọt biến 1 ký tự / viết tắt tối nghĩa (`E28.6`), số magic literal (`E28.7`), tên boolean thiếu `is/has/can/should` hoặc `var`/`MutableList` trong `data class` (`E28.8`), thiếu named arguments (`E28.9`), thiếu `internal`/`private` access modifier (`E28.10`), hay comment rác không?
+       - **Gương 3 (Vitals Survival — Gate E38):** Có điểm nào tiềm ẩn Crash (`!!`, nuốt `CancellationException`, thiếu `Result<T>`), ANR (tính toán/I/O trên Main, thiếu `remember` trong `@Composable`), hay Leak (`Activity` Context, thiếu `collectAsStateWithLifecycle`, quên `onDispose` / `_binding = null`) không?
+       - **Gương 4 (Architecture, Compose Modifier & UI Purity — Gates E1–E4.6, E25, E35, E36):** Đã chuẩn `_state.update { copy(...) }`, đủ 5-State UI, 100% token `AppTheme`, XML Vector Drawables (0 emoji), `LazyColumn` có `key`/`contentType`, vùng chạm $\ge 48\text{dp}$, `modifier` chỉ gắn 1 lần ở Root node & đúng thứ tự tham số `@Composable` (`E4.6`) chưa?
+       - **Gương 5 (6-Dimension Edge Cases — Gate E31):** Đã chặn chuỗi rỗng/tràn, bấm liên thanh `< 400ms`, đua bất đồng bộ và khôi phục `SavedStateHandle` sau Process Death chưa?
+    3. *Bước 3 — Tự Gọt Giũa Ngay Lập Tức (`Draft 1 ➔ Clean Draft 2`):* Tự sửa sạch mọi điểm gợn phát hiện được trong lúc soi gương trước khi chạy bộ test cuối cùng.
+    4. *Bước 4 — Xuất Biên Bản Tự Soi Gương (`Mirror Evidence Block — E39.3`):* Bắt buộc in mục **`🪞 Dev Mirror Self-Review`** trong báo cáo bàn giao/hoàn thành, nêu rõ: (a) Danh sách file đã đọc lại bằng `view_file`, (b) Các lỗi/điểm gợn ở bản nháp 1 đã tự phát hiện và tự gọt giũa sang bản nháp 2, và (c) Trạng thái vượt qua 5 Gương trước khi chuyển sang `qa-enforcer`.
+
+- **The Bounded 3-Round QA Convergence & Circuit-Breaker Mandate (QUY TẮC HỘI TỤ QA TỐI ĐA 3 VÒNG & CẦU DAO NGẮT MẠCH — RULE 42 & GATE E40):**
+  - **Bối cảnh & Lý do cốt lõi:** Hai Agent `dev-builder` và `qa-enforcer` khi nói chuyện qua lại rất dễ rơi vào vòng lặp vô tận (có thể kẹt > 50 vòng tốn hàng đống token mà không xong việc). Thống kê thực tế chỉ ra rằng ở các vòng sau, Reviewer hiếm khi bắt thêm được bug thực sự mới, và **59% lỗi bị nhai đi nhai lại thực chất đã nằm ở đó ngay từ lượt review đầu tiên** nhưng bị báo lẻ tẻ hoặc dịch chuyển tiêu chuẩn (Moving Goalposts).
+  - **4 Định Luật Hội Tụ QA Bắt Buộc (The 4 Laws of Bounded QA Convergence — Gate E40):**
+    1. *Định Luật 1 — Giới Hạn Tối Đa 3 Vòng & Cầu Dao Ngắt Mạch (`Max 3 Rounds & Circuit Breaker — Gate E40.1`):*
+       - Khóa cứng số vòng kiểm định tối đa cho mỗi Task/PR là `MAX_QA_ROUNDS = 3`.
+       - Nếu hết Vòng 3 mà `qa-enforcer` vẫn phán quyết `VERDICT: REJECTED`: BẮT BUỘC kích hoạt cầu dao **`🛑 CIRCUIT BREAKER TRIGGERED: ARCHITECTURAL PIVOT REQUIRED`**, lập tức **DỪNG VIỆC VÁ CODE (STOP PATCHING)**, tổng hợp báo cáo giải phẫu nguyên nhân gốc rễ qua 3 vòng và đề xuất 2 phương án đổi hướng tiếp cận/kiến trúc mới (Architectural Pivot Options), sau đó **HARD STOP** chờ người dùng quyết định. Tuyệt đối cấm tự ý chạy sang Vòng 4.
+    2. *Định Luật 2 — Chỉ Review Diff Mới Ở Vòng 2 & 3 (`Delta-Only Scope — Gate E40.2`):*
+       - **Vòng 1:** Quét toàn diện 100% phạm vi các file tạo mới/sửa đổi (Full-Scope Audit).
+       - **Vòng 2 & Vòng 3:** Khoanh vùng nghiêm ngặt — `qa-enforcer` chỉ được phép kiểm tra: (a) Các cụm lỗi `[CLUSTER-XX]` từ vòng trước đã được giải quyết dứt điểm chưa, và (b) Phần **Delta Diff** (những dòng code vừa mới sửa đổi ở vòng hiện tại cùng các hàm gọi trực tiếp tới chúng). Cấm quét lại từ đầu những vùng code không hề thay đổi.
+    3. *Định Luật 3 — Gom Bug Theo Loại & Quét Sạch Hệ Thống (`Pattern-Clustered Defect Batching & Systemic Sweep — Gate E40.3`):*
+       - **Phía `qa-enforcer`:** Cấm tuyệt đối kiểu bắt lỗi nhỏ giọt (mỗi vòng nhả ra 1 vị trí). Ngay tại Vòng 1, nếu phát hiện 1 loại lỗi vi phạm Gate, phải gom toàn bộ mọi vị trí xuất hiện lỗi cùng loại trên tất cả các file vào một cụm duy nhất: `[CLUSTER-01] [Gate EXX.X] [Tên Loại Lỗi] -> [fileA:line1, fileA:line2, fileB:line3]`.
+       - **Phía `dev-builder`:** Khi nhận 1 `[CLUSTER-XX]`, cấm chỉ sửa đối phó đúng dòng được chỉ điểm. Bắt buộc phải thực hiện **Quét Sạch Toàn Cục (Systemic Codebase Sweep)** để diệt tận gốc 100% các chỗ tương tự trong toàn bộ code vừa viết ngay trong 1 lần fix.
+    4. *Định Luật 4 — Không Dịch Chuyển Đích & Không Nhai Lại Chuyện Cũ (`Zero Moving Goalposts & No Re-Litigation — Gate E40.4 = 4A + 4B`):*
+       - **4A (Cấm đào bới lỗi mới trên code cũ ở Vòng 2–3):** Bất kỳ đoạn code nào đã có mặt từ Vòng 1, không bị sửa đổi ở Vòng 2–3 và không bị bắt lỗi ở Vòng 1 sẽ được đóng băng (Grandfathered). `qa-enforcer` bị CẤM TUYỆT ĐỐI việc ở Vòng 2–3 lại lôi code cũ của Vòng 1 ra bắt lỗi mới để tránh hiện tượng dịch chuyển đích đến (59% lỗi thực chất nằm ở đó từ Vòng 1).
+       - **4B (Sổ cái trạng thái tinh gọn — Không tranh luận lại chuyện cũ):** Ở Vòng 2–3, các cụm lỗi cũ chỉ được ghi nhận ngắn gọn trên bảng trạng thái (`[CLUSTER-01]: RESOLVED ✅` hoặc `UNRESOLVED ❌ [vị trí còn sót]`), cấm viết lại diễn giải dài dòng hay nhai đi nhai lại các lỗi đã đóng.
 
 ---
 
